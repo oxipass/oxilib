@@ -9,6 +9,8 @@ import (
 
 const dbFile = "test.sqlite"
 
+var fullPathDBFile string
+
 //const dbFile = ":memory:"
 
 var dbPass = ""
@@ -94,10 +96,11 @@ func setup() error {
 	bsInstance := GetInstance()
 
 	// Setting temporary SQLite DB file
-	fullFilename := os.TempDir() + "/bs-" + generateRandomString(4) + dbFile
-	fmt.Println(fullFilename)
+	fullPathDBFile = os.TempDir() + "/bs-" + generateRandomString(4) + dbFile
 
-	errOpen := bsInstance.Open(fullFilename)
+	fmt.Println(fullPathDBFile)
+
+	errOpen := bsInstance.Open(fullPathDBFile)
 
 	if errOpen != nil {
 		return errOpen
@@ -117,5 +120,8 @@ func setup() error {
 }
 
 func teardown() error {
-	return os.Remove(dbFile)
+	if fullPathDBFile != "" {
+		return os.Remove(fullPathDBFile)
+	}
+	return nil
 }

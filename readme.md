@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/bykovme/bslib.svg?branch=master)](https://travis-ci.com/bykovme/bslib)
 ## BykovStorage 
 
 BykovStorage is a library to work with secure storage of the data
