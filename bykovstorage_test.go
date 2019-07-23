@@ -90,10 +90,11 @@ func TestMain(m *testing.M) {
 }
 
 func setup() error {
+	// Getting package instance
 	bsInstance := GetInstance()
 
+	// Setting temporary SQLite DB file
 	fullFilename := os.TempDir() + "/bs-" + generateRandomString(4) + dbFile
-	//fullFilename := os.TempDir() + "/bs-" + generateRandomString(4) + dbFile
 	fmt.Println(fullFilename)
 
 	errOpen := bsInstance.Open(fullFilename)
@@ -103,6 +104,7 @@ func setup() error {
 	}
 	fmt.Println("File open")
 
+	// Generating random password for the database
 	dbPass = generateRandomString(12)
 	fmt.Println("DB password: " + dbPass)
 	errSetPassword := bsInstance.SetNewPassword(dbPass, "AES256")

@@ -58,12 +58,12 @@ func (sdb *storageDB) selectAllItems() (items []BSItem, err error) {
 
 	var bsItem BSItem
 
-	if rows.Next() {
+	for rows.Next() {
 		err = rows.Scan(&bsItem.ID,
 			&bsItem.Name,
 			&bsItem.Icon,
-			//&bsItem.Created,
-			//&bsItem.Updated,
+			&bsItem.Created,
+			&bsItem.Updated,
 			&bsItem.Deleted)
 		if err != nil {
 			return items, err
