@@ -38,7 +38,7 @@ func (sdb *storageDB) insertItem(itemName string, itemIcon string) (itemID strin
 
 // creation_timestamp, update_timestamp,
 const sqlListItems = `
-	SELECT item_id, name, icon_id, deleted
+	SELECT item_id, name, icon_id, creation_timestamp, update_timestamp, deleted
 		FROM items 
 		WHERE deleted='0'
 `
