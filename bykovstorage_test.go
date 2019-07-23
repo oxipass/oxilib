@@ -7,30 +7,65 @@ import (
 	"testing"
 )
 
-var dbFile = "/tmp/test.sqlite"
+const dbFile = "test.sqlite"
+
+//const dbFile = ":memory:"
+
 var dbPass = ""
 
 func TestLogin(t *testing.T) {
 	// Getting storage instance
 	bsInstance := GetInstance()
 
-	// Opening file
-	/* already should be open
-	errOpen := bsInstance.Open(dbFile)
-	if errOpen != nil {
-		t.Error(errOpen)
-		t.FailNow()
-		return
-	}
-	*/
-
-	// Checking password
 	errPass := bsInstance.SetPassword(dbPass)
 	if errPass != nil {
 		t.Error(errPass)
 		t.FailNow()
 		return
 	}
+}
+
+func TestAddItem(t *testing.T) {
+	bsInstance := GetInstance()
+	errPass := bsInstance.SetPassword(dbPass)
+	if errPass != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return
+	}
+	itemName := generateRandomString(20)
+	response, err := bsInstance.AddNewItem(JSONInputAddItem{ItemName: itemName, ItemIcon: "icon"})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+		return
+	}
+	if response.Status != ConstSuccessResponse {
+		t.Error(errors.New("Rsponse is not success"))
+		t.FailNow()
+		return
+	}
+	bsInstance.Lock()
+
+	errPass = bsInstance.SetPassword(dbPass)
+	if errPass != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return
+	}
+	items, respErr := bsInstance.ReadAllItems()
+	if respErr != nil {
+		t.Error(respErr)
+		t.FailNow()
+		return
+	}
+	for _, item := range items {
+		if item.ID == response.ItemID && item.Name == itemName {
+			return
+		}
+	}
+	t.Error(errors.New("Created item is not found"))
+	t.FailNow()
 
 }
 
@@ -55,22 +90,14 @@ func TestMain(m *testing.M) {
 }
 
 func setup() error {
-	/*
-		file, err := ioutil.TempFile(os.TempDir(), "test_file.sqlite")
-		if err != nil {
-			return err
-		}
-		dbFile = file.Name()
-		fmt.Println("DB file: " + dbFile)
-		errClose := file.Close()
-		if errClose != nil {
-			return errClose
-		}
-		fmt.Println("File closed")
-	*/
 	bsInstance := GetInstance()
 
-	errOpen := bsInstance.Open(dbFile)
+	fullFilename := os.TempDir() + "/bs-" + generateRandomString(4) + dbFile
+	//fullFilename := os.TempDir() + "/bs-" + generateRandomString(4) + dbFile
+	fmt.Println(fullFilename)
+
+	errOpen := bsInstance.Open(fullFilename)
+
 	if errOpen != nil {
 		return errOpen
 	}
@@ -88,9 +115,5 @@ func setup() error {
 }
 
 func teardown() error {
-	if dbFile != "not_set" {
-		//return nil
-		return os.Remove(dbFile)
-	}
-	return errors.New("File was not set, do not call teardown without setup")
+	return os.Remove(dbFile)
 }

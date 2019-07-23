@@ -52,6 +52,8 @@ func (sdb *storageDB) EndTransaction(commit bool) (err error) {
 	return err
 }
 
+const cDBOpenParms = "?_txlock=immediate"
+
 // Open method opens database in the provided file
 func (sdb *storageDB) Open(filePath string) error {
 	var err error
@@ -59,7 +61,7 @@ func (sdb *storageDB) Open(filePath string) error {
 
 	if _, err = os.Stat(filePath); err == nil {
 		// File exists, open and check integrity
-		sdb.sDB, err = sql.Open("sqlite3", filePath)
+		sdb.sDB, err = sql.Open("sqlite3", "file:"+filePath+cDBOpenParms)
 		if err != nil {
 			return err
 		}
@@ -72,10 +74,11 @@ func (sdb *storageDB) Open(filePath string) error {
 	}
 
 	// File does not exists
-	sdb.sDB, err = sql.Open("sqlite3", filePath)
+	sdb.sDB, err = sql.Open("sqlite3", "file:"+filePath+cDBOpenParms)
 	if err != nil {
 		return err
 	}
+	sdb.sDB.SetMaxOpenConns(1) // trying to remove db is locked issue
 
 	err = sdb.StartTransaction()
 	if err != nil {
@@ -123,28 +126,48 @@ func (sdb *storageDB) checkIntegrityGetSettings() error {
 	if err != nil {
 		return formError(BSERR00001DbIntegrityCheckFailed, err.Error())
 	}
-	defer rows.Close()
+
+	foundSettings := false
+
 	if rows.Next() {
 		var tableName string
 		err = rows.Scan(&tableName)
 		if err != nil {
+			errRowsClose := rows.Close()
+			if errRowsClose != nil {
+				return formError(BSERR00001DbIntegrityCheckFailed, err.Error(), errRowsClose.Error())
+			}
 			return formError(BSERR00001DbIntegrityCheckFailed, err.Error())
 		}
 
 		if tableName == "settings" {
-			rowsSet, errSet := sdb.sDB.Query(constSelectVersion)
-			if errSet != nil {
-				return formError(BSERR00001DbIntegrityCheckFailed, errSet.Error())
-			}
-			if rowsSet.Next() {
-				errSet = rowsSet.Scan(&sdb.dbVersion, &sdb.dbID, &sdb.cryptID, &sdb.keyWord)
-				if errSet != nil {
-					return formError(BSERR00001DbIntegrityCheckFailed, errSet.Error())
-				}
-			}
+			foundSettings = true
+
 		}
 	}
-	return nil
+	err = rows.Close()
+	if err != nil {
+		return formError(BSERR00001DbIntegrityCheckFailed, err.Error())
+	}
+
+	if foundSettings {
+		rowsSet, errSet := sdb.sDB.Query(constSelectVersion)
+		if errSet != nil {
+			return formError(BSERR00001DbIntegrityCheckFailed, errSet.Error())
+		}
+		if rowsSet.Next() {
+			errSet = rowsSet.Scan(&sdb.dbVersion, &sdb.dbID, &sdb.cryptID, &sdb.keyWord)
+			if errSet != nil {
+				errSetClose := rowsSet.Close()
+				if errSetClose != nil {
+					return formError(BSERR00001DbIntegrityCheckFailed, errSet.Error(), errSetClose.Error())
+				}
+				return formError(BSERR00001DbIntegrityCheckFailed, errSet.Error())
+			}
+		}
+		return rowsSet.Close()
+	}
+	return formError(BSERR00001DbIntegrityCheckFailed, "settings table is not found")
 }
 
 func (sdb *storageDB) initDb() (err error) {

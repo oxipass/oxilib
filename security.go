@@ -1,35 +1,36 @@
 package bykovstorage
 
-import "gitlab.com/bkvstorage/bsencryption"
+import (
+	"github.com/bykovme/bsencrypt"
+)
 
 type bsEncryptor struct {
-	cipher  bsencryption.BSCipher
+	cipher  bsencrypt.BSCipher
 	cryptID string
-	//ciphers []bsencryption.BSCipher
 }
 
-func (encryptor bsEncryptor) getCypherNames() []string {
+func (enc bsEncryptor) getCypherNames() []string {
 	var lCyphers []string
-	for _, cypher := range bsencryption.Ciphers {
+	for _, cypher := range bsencrypt.Ciphers {
 		lCyphers = append(lCyphers, cypher.GetCipherName())
 	}
 	return lCyphers
 }
 
-func (encryptor *bsEncryptor) Init(cryptID string) error {
-	for _, cypher := range bsencryption.Ciphers {
+func (enc *bsEncryptor) Init(cryptID string) error {
+	for _, cypher := range bsencrypt.Ciphers {
 		if cypher.GetGryptID() == cryptID {
-			encryptor.cipher = cypher
-			encryptor.cryptID = cryptID
-			encryptor.cipher.CleanAndInit()
+			enc.cipher = cypher
+			enc.cryptID = cryptID
+			enc.cipher.CleanAndInit()
 			return nil
 		}
 	}
 	return formError(BSERR00004EncCypherNotExist, "bsEncryptor.Init", "CryptID: "+cryptID)
 }
 
-func (encryptor bsEncryptor) getCryptIDbyName(cypherName string) (string, error) {
-	for _, cypher := range bsencryption.Ciphers {
+func (enc bsEncryptor) getCryptIDbyName(cypherName string) (string, error) {
+	for _, cypher := range bsencrypt.Ciphers {
 		if cypher.GetCipherName() == cypherName {
 			return cypher.GetGryptID(), nil
 		}
@@ -37,22 +38,22 @@ func (encryptor bsEncryptor) getCryptIDbyName(cypherName string) (string, error)
 	return "", formError(BSERR00004EncCypherNotExist, "bsEncryptor.getCryptIDbyName", "cypherName: "+cypherName)
 }
 
-func (encryptor *bsEncryptor) Encrypt(plainText string) (string, error) {
-	encString, err := encryptor.cipher.Encrypt(plainText)
+func (enc *bsEncryptor) Encrypt(plainText string) (string, error) {
+	encString, err := enc.cipher.Encrypt(plainText)
 	if err != nil {
-		return "", formError(BSERR00008EncEncryptionError, err.Error(), encryptor.cipher.GetCipherName())
+		return "", formError(BSERR00008EncEncryptionError, err.Error(), enc.cipher.GetCipherName())
 	}
 	return encString, nil
 }
 
-func (encryptor *bsEncryptor) Decrypt(plainText string) (string, error) {
-	return encryptor.cipher.Decrypt(plainText)
+func (encrypter *bsEncryptor) Decrypt(plainText string) (string, error) {
+	return encrypter.cipher.Decrypt(plainText)
 }
 
-func (encryptor *bsEncryptor) SetPassword(password string) error {
-	return encryptor.cipher.SetPassword(password)
+func (encrypter *bsEncryptor) SetPassword(password string) error {
+	return encrypter.cipher.SetPassword(password)
 }
 
-func (encryptor *bsEncryptor) IsReady() bool {
-	return encryptor.cipher.IsKeyGenerated()
+func (encrypter *bsEncryptor) IsReady() bool {
+	return encrypter.cipher.IsKeyGenerated()
 }

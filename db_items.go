@@ -1,14 +1,10 @@
 package bykovstorage
 
 import (
-	"fmt"
-	"log"
 	"time"
 )
 
-const sqlInsertItem = `
-	INSERT INTO items (item_id,name,icon_id,creation_timestamp,update_timestamp,deleted)
-		VALUES ('%s','%s','%s','%s','%s', 0)
+const sqlInsertItem = `INSERT INTO items (item_id,name,icon_id,creation_timestamp,update_timestamp,deleted) VALUES (?,?,?,?,?, 0)
 `
 
 func (sdb *storageDB) insertItem(itemName string, itemIcon string) (itemID string, err error) {
@@ -19,19 +15,22 @@ func (sdb *storageDB) insertItem(itemName string, itemIcon string) (itemID strin
 	creationTime := prepareTimeForDb(time.Now())
 	itemID = generateRandomString(8)
 
-	sqlQuery := fmt.Sprintf(sqlInsertItem,
-		itemID,
+	stmt, err := sdb.sTX.Prepare(sqlInsertItem)
+	if err != nil {
+		return "", formError(BSERR00006DbInsertFailed, err.Error(), "insertItem")
+	}
+	_, errStmt := stmt.Exec(itemID,
 		itemName,
 		itemIcon,
 		creationTime,
 		creationTime)
 
-	log.Print(sqlQuery)
-
-	_, err = sdb.sTX.Exec(sqlQuery) // FIXME: remove it after debugging
-
-	if err != nil {
-		return itemID, formError(BSERR00006DbInsertFailed, err.Error(), "insertItem")
+	if errStmt != nil {
+		return "", formError(BSERR00006DbInsertFailed, errStmt.Error(), "insertItem")
+	}
+	errClose := stmt.Close()
+	if errClose != nil {
+		return "", formError(BSERR00006DbInsertFailed, errClose.Error(), "insertItem")
 	}
 
 	return itemID, nil
@@ -49,7 +48,13 @@ func (sdb *storageDB) selectAllItems() (items []BSItem, err error) {
 	if err != nil {
 		return items, formError(BSERR00014ItemsReadFailed, err.Error())
 	}
-	defer rows.Close()
+	defer func() {
+		errClose := rows.Close()
+		if errClose != nil {
+			err = formError(BSERR00014ItemsReadFailed, err.Error(), errClose.Error())
+		}
+
+	}()
 
 	var bsItem BSItem
 

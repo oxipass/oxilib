@@ -23,7 +23,7 @@ func formErrorResponse(err error) string {
 		errorResponse.MsgNum = strItems[0]
 		errorResponse.MsgTxt = err.Error()[len(strItems[0]):]
 		jsonStr, jsonErr := EncodeJSON(errorResponse)
-		if jsonErr != nil {
+		if jsonErr == nil {
 			return jsonStr
 		}
 	}
@@ -33,7 +33,7 @@ func formErrorResponse(err error) string {
 	errorResponse.MsgTxt = err.Error()
 
 	jsonStr, jsonErr := EncodeJSON(errorResponse)
-	if jsonErr != nil {
+	if jsonErr == nil {
 		return jsonStr
 	}
 
