@@ -21,7 +21,11 @@ func formErrorResponse(err error) string {
 	if len(strItems) > 0 && len(strItems[0]) > 11 && strings.Contains(strItems[0], "BSERR") {
 		errorResponse.Status = CErrorResponse
 		errorResponse.MsgNum = strItems[0]
-		errorResponse.MsgTxt = err.Error()[len(strItems[0]):]
+		if len(strItems) > 1 && len(strItems[1]) > 3 {
+			errorResponse.MsgTxt = err.Error()[len(strItems[0])+2:]
+		} else {
+			errorResponse.MsgTxt = err.Error()[len(strItems[0]):]
+		}
 		jsonStr, jsonErr := EncodeJSON(errorResponse)
 		if jsonErr == nil {
 			return jsonStr
