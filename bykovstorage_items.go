@@ -1,56 +1,80 @@
 package bykovstorage
 
-import "log"
-
 func (storage *StorageSingleton) checkReadiness() error {
-	if storage.sencObject == nil || storage.sencObject.IsReady() == false {
+	if storage.encObject == nil || storage.encObject.IsReady() == false {
 		return formError("Encrypter is not initialized", "checkReadiness")
 	}
 
-	if storage.sdbObject == nil {
+	if storage.dbObject == nil {
 		return formError("Database is not initialized", "checkReadiness")
 	}
 
 	return nil
 }
 
+func (storage *StorageSingleton) DeleteItem(deleteItemParms JSONInputUpdateItem) (response JSONResponseCommon, err error) {
+	err = storage.checkReadiness()
+	if err != nil {
+		return response, err
+	}
+	err = storage.dbObject.StartTX()
+	if err != nil {
+		return response, err
+	}
+
+	err = storage.dbObject.dbDeleteItem(deleteItemParms.ItemID)
+	if err != nil {
+		errEndTX := storage.dbObject.RollbackTX()
+		if errEndTX != nil {
+			return response, formError(BSERR00016DbDeleteFailed, err.Error(), errEndTX.Error())
+		}
+		return response, err
+	}
+
+	err = storage.dbObject.CommitTX()
+	if err != nil {
+		return response, err
+	}
+
+	response.Status = ConstSuccessResponse
+
+	return response, nil
+}
+
 // AddNewItem - adds new item
-func (storage *StorageSingleton) AddNewItem(addItemParms JSONInputAddItem) (response JSONResponseAddItem, err error) {
+func (storage *StorageSingleton) AddNewItem(addItemParms JSONInputUpdateItem) (response JSONResponseItemAdded, err error) {
 
 	err = storage.checkReadiness()
 	if err != nil {
-		log.Println("Check readiness: " + err.Error())
 		return response, err
 	}
 
-	encrypredItemName, err := storage.sencObject.Encrypt(addItemParms.ItemName)
+	encryptedItemName, err := storage.encObject.Encrypt(addItemParms.ItemName)
 	if err != nil {
-		log.Println("Encryot item name: " + err.Error())
 		return response, err
 	}
 
-	encrypredIconName, err := storage.sencObject.Encrypt(addItemParms.ItemIcon)
+	encryptedIconName, err := storage.encObject.Encrypt(addItemParms.ItemIcon)
 	if err != nil {
-		log.Println("Encryot item icon: " + err.Error())
 		return response, err
 	}
 
-	err = storage.sdbObject.StartTransaction()
+	err = storage.dbObject.StartTX()
 	if err != nil {
-		log.Println("Start DB transaction: " + err.Error())
 		return response, err
 	}
 
-	response.ItemID, err = storage.sdbObject.insertItem(encrypredItemName, encrypredIconName)
+	response.ItemID, err = storage.dbObject.dbInsertItem(encryptedItemName, encryptedIconName)
 	if err != nil {
-		log.Println("Insert item into DB: " + err.Error())
-		storage.sdbObject.EndTransaction(false)
+		errEndTX := storage.dbObject.RollbackTX()
+		if errEndTX != nil {
+			return response, formError(BSERR00006DbInsertFailed, err.Error(), errEndTX.Error())
+		}
 		return response, err
 	}
 
-	err = storage.sdbObject.EndTransaction(true)
+	err = storage.dbObject.CommitTX()
 	if err != nil {
-		log.Println("Finish transaction: " + err.Error())
 		return response, err
 	}
 
@@ -66,17 +90,17 @@ func (storage *StorageSingleton) ReadAllItems() (items []BSItem, err error) {
 		return items, err
 	}
 
-	items, err = storage.sdbObject.selectAllItems()
+	items, err = storage.dbObject.selectAllItems()
 	if err != nil {
 		return items, err
 	}
 
 	for i := range items {
-		items[i].Name, err = storage.sencObject.Decrypt(items[i].Name)
+		items[i].Name, err = storage.encObject.Decrypt(items[i].Name)
 		if err != nil {
 			return items, err
 		}
-		items[i].Icon, err = storage.sencObject.Decrypt(items[i].Icon)
+		items[i].Icon, err = storage.encObject.Decrypt(items[i].Icon)
 		if err != nil {
 			return items, err
 		}

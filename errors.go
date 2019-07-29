@@ -19,7 +19,7 @@ func formErrorResponse(err error) string {
 	var errorResponse JSONResponseCommon
 	strItems := strings.Split(err.Error(), ": ")
 	if len(strItems) > 0 && len(strItems[0]) > 11 && strings.Contains(strItems[0], "BSERR") {
-		errorResponse.Status = ConstErrorResponse
+		errorResponse.Status = CErrorResponse
 		errorResponse.MsgNum = strItems[0]
 		errorResponse.MsgTxt = err.Error()[len(strItems[0]):]
 		jsonStr, jsonErr := EncodeJSON(errorResponse)
@@ -28,7 +28,7 @@ func formErrorResponse(err error) string {
 		}
 	}
 
-	errorResponse.Status = ConstErrorResponse
+	errorResponse.Status = CErrorResponse
 	errorResponse.MsgNum = BSERR00015UnknownError
 	errorResponse.MsgTxt = err.Error()
 
@@ -56,7 +56,7 @@ const BSERR00004EncCypherNotExist = "BSERR00004_CYPHERNOTEXIST"
 const BSERR00005ParseTimeFailed = "BSERR00005_PARSETIMEFAILED"
 
 // BSERR00006DbInsertFailed - insert into database has failed
-const BSERR00006DbInsertFailed = "BSERR00006_INSERTFAILED"
+const BSERR00006DbInsertFailed = "BSERR00006_DB_INSERT_FAILED"
 
 // BSERR00008EncEncryptionError - general encryption error
 const BSERR00008EncEncryptionError = "BSERR00008_ENCRYPTIONERROR"
@@ -67,8 +67,8 @@ const BSERR00009DbNotOpen = "BSERR00009_DBNOTOPEN"
 // BSERR00010EncWrongPassword - wrong password
 const BSERR00010EncWrongPassword = "BSERR00010_WRONGPASSWORD"
 
-// BSERR00011EncCypherNotProvided - cypher algorythm is not provided
-const BSERR00011EncCypherNotProvided = "BSERR00011_CYPHERNOTPROVICED"
+// BSERR00011EncCypherNotProvided - cypher algorithm is not provided
+const BSERR00011EncCypherNotProvided = "BSERR00011_CYPHER_NOT_PROVIDED"
 
 // BSERR00012DbTxStartFailed - tx start failed
 const BSERR00012DbTxStartFailed = "BSERR00012_TXSTARTFAILED"
@@ -81,3 +81,9 @@ const BSERR00014ItemsReadFailed = "BSERR00014_ITEMSREADFAILED"
 
 // BSERR00015UnknownError - unknown error, details will be in error text
 const BSERR00015UnknownError = "BSERR00015_UNKNOWN_ERROR"
+
+// BSERR00016DbDeleteFailed - failed to delete item
+const BSERR00016DbDeleteFailed = "BSERR00016_DB_DELETE_FAILED"
+
+// BSERR00017JSONFailed - failed to process jSON operation
+const BSERR00017JSONFailed = "BSERR00017_JSON_FAILED"

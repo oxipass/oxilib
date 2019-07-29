@@ -2,9 +2,7 @@ package bykovstorage
 
 import (
 	"database/sql"
-	"fmt"
 	"os"
-	"time"
 
 	_ "github.com/mattn/go-sqlite3" // Needed to work correctly with database/sql
 )
@@ -23,7 +21,7 @@ type storageDB struct {
 	keyWord   string
 }
 
-func (sdb *storageDB) StartTransaction() (err error) {
+func (sdb *storageDB) StartTX() (err error) {
 
 	if sdb.sDB == nil {
 		return formError(BSERR00012DbTxStartFailed, "Database is not open")
@@ -37,6 +35,14 @@ func (sdb *storageDB) StartTransaction() (err error) {
 	}
 
 	return nil
+}
+
+func (sdb *storageDB) CommitTX() (err error) {
+	return sdb.EndTransaction(true)
+}
+
+func (sdb *storageDB) RollbackTX() (err error) {
+	return sdb.EndTransaction(false)
 }
 
 func (sdb *storageDB) EndTransaction(commit bool) (err error) {
@@ -80,7 +86,7 @@ func (sdb *storageDB) Open(filePath string) error {
 	}
 	sdb.sDB.SetMaxOpenConns(1) // trying to remove db is locked issue
 
-	err = sdb.StartTransaction()
+	err = sdb.StartTX()
 	if err != nil {
 		return err
 	}
@@ -184,29 +190,6 @@ func (sdb *storageDB) initDb() (err error) {
 	err = sdb.createTableItems()
 	if err != nil {
 		return err
-	}
-
-	return nil
-}
-
-const sqlInsertInitialSettings = `
-	INSERT INTO settings (database_id,keyword,crypt_id,database_version,update_timestamp,sync_timestamp)
-		VALUES ('%s','%s','%s','%d','%s','%s')
-`
-
-func (sdb *storageDB) initSettings(dbID, keyWord, cryptID string) error {
-	if sdb.sTX == nil {
-		return formError(BSERR00003DbTransactionFailed, "initSettings")
-	}
-
-	lastUpdate := prepareTimeForDb(time.Now())
-	sqlQuery := fmt.Sprintf(sqlInsertInitialSettings, dbID, keyWord, cryptID,
-		defaultDbVersion, lastUpdate, constZeroTime)
-
-	_, err := sdb.sTX.Exec(sqlQuery)
-
-	if err != nil {
-		return formError(BSERR00006DbInsertFailed, err.Error(), "initSettings")
 	}
 
 	return nil

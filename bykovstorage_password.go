@@ -13,31 +13,34 @@ func (storage *StorageSingleton) SetNewPassword(newPassword string, encMethod st
 	return storage.changePassword(newPassword)
 }
 
-// SetPassword sets & checks the password for the open storage
-func (storage *StorageSingleton) SetPassword(password string) error {
+// Unlock sets & checks the password for the open storage
+func (storage *StorageSingleton) Unlock(password string) error {
 	if storage.IsActive() == false {
-		return formError(BSERR00009DbNotOpen, "SetPassword", "IsActive", strconv.FormatBool(storage.IsActive()))
+		return formError(BSERR00009DbNotOpen, "Unlock", "IsActive", strconv.FormatBool(storage.IsActive()))
 	}
-	if storage.sencObject == nil {
-		storage.sencObject = new(bsEncryptor)
+	if storage.encObject == nil {
+		storage.encObject = new(bsEncryptor)
 	}
-	err := storage.sencObject.Init(storage.sdbObject.cryptID)
+	err := storage.encObject.Init(storage.dbObject.cryptID)
 	if err != nil {
 		return err
 	}
 
-	passErr := storage.sencObject.SetPassword(password)
+	passErr := storage.encObject.SetPassword(password)
 	if passErr != nil {
 		return passErr
 	}
 
-	dbID, encErr := storage.sencObject.Decrypt(storage.sdbObject.keyWord)
+	dbID, encErr := storage.encObject.Decrypt(storage.dbObject.keyWord)
 	if encErr != nil {
 		return encErr
 	}
 
-	if dbID != storage.sdbObject.dbID {
-		storage.sencObject.Init(storage.sdbObject.cryptID) //if password is wrong, clean everything
+	if dbID != storage.dbObject.dbID {
+		err := storage.encObject.Init(storage.dbObject.cryptID) //if password is wrong, clean everything
+		if err != nil {
+			return formError(BSERR00010EncWrongPassword, err.Error())
+		}
 		return formError(BSERR00010EncWrongPassword)
 	}
 
@@ -46,45 +49,48 @@ func (storage *StorageSingleton) SetPassword(password string) error {
 
 func (storage *StorageSingleton) initStorage(newPassword string, encMethod string) error {
 
-	storage.sencObject = new(bsEncryptor)
-	cryptID, err := storage.sencObject.getCryptIDbyName(encMethod)
+	storage.encObject = new(bsEncryptor)
+	cryptID, err := storage.encObject.getCryptIDbyName(encMethod)
 	if err != nil {
 		return err
 	}
 
-	err = storage.sencObject.Init(cryptID)
+	err = storage.encObject.Init(cryptID)
 	if err != nil {
 		return err
 	}
 
 	dbID := generateRandomString(DatabaseIDLength)
 
-	err = storage.sencObject.SetPassword(newPassword)
+	err = storage.encObject.SetPassword(newPassword)
 	if err != nil {
 		return err
 	}
-	keyWord, encErr := storage.sencObject.Encrypt(dbID)
+	keyWord, encErr := storage.encObject.Encrypt(dbID)
 	if encErr != nil {
 		return encErr
 	}
 
-	err = storage.sdbObject.StartTransaction()
+	err = storage.dbObject.StartTX()
 	if err != nil {
 		return err
 	}
 
-	err = storage.sdbObject.initSettings(dbID, keyWord, storage.sencObject.cryptID)
+	err = storage.dbObject.initSettings(dbID, keyWord, storage.encObject.cryptID)
 	if err != nil {
-		storage.sdbObject.EndTransaction(false)
+		errRollback := storage.dbObject.RollbackTX()
+		if errRollback != nil {
+
+		}
 		return err
 	}
 
-	err = storage.sdbObject.EndTransaction(true)
+	err = storage.dbObject.CommitTX()
 	if err != nil {
 		return err
 	}
 
-	err = storage.sdbObject.checkIntegrityGetSettings()
+	err = storage.dbObject.checkIntegrityGetSettings()
 	if err != nil {
 		return err
 	}
@@ -94,4 +100,12 @@ func (storage *StorageSingleton) initStorage(newPassword string, encMethod strin
 
 func (storage *StorageSingleton) changePassword(newPassword string) error {
 	return nil
+}
+
+// Lock - locks the storage, delete the key and password
+func (storage *StorageSingleton) Lock() error {
+	if storage.encObject != nil && storage.dbObject != nil {
+		return storage.encObject.Init(storage.dbObject.cryptID)
+	}
+	return formError(BSERR00009DbNotOpen, "func Lock()")
 }

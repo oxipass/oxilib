@@ -29,16 +29,23 @@ type JSONResponseCommon struct {
 	MsgTxt string `json:"msg_text"`
 }
 
-// JSONInputAddItem - input structure to add the item
-type JSONInputAddItem struct {
+// JSONInputUpdateItem - input structure to add the item
+type JSONInputUpdateItem struct {
+	ItemID   string `json:"item_id"`
 	ItemName string `json:"item_name"`
 	ItemIcon string `json:"item_icon"`
 }
 
-// JSONResponseAddItem - response structure for adding item
-type JSONResponseAddItem struct {
+// JSONResponseItemAdded - response structure for adding item
+type JSONResponseItemAdded struct {
 	JSONResponseCommon
 	ItemID string `json:"item_id"`
+}
+
+type JSONInputInitStorage struct {
+	FileName   string `json:"filename"`
+	Password   string `json:"password"`
+	Encryption string `json:"encryption"`
 }
 
 // JSONInputReadAll parameters for reading from database

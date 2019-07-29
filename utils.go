@@ -4,9 +4,22 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
+	"os"
+	"strings"
 	"time"
 	"unicode/utf8"
 )
+
+func generateTempFilename() string {
+	fullPathDBFile := os.TempDir()
+	tempFileName := generateRandomString(4) + cTempDBFile
+	if strings.HasSuffix(fullPathDBFile, "/") {
+		fullPathDBFile += tempFileName
+	} else {
+		fullPathDBFile += "/" + tempFileName
+	}
+	return fullPathDBFile
+}
 
 func generateRandomString(length int) string {
 	rb := make([]byte, length)

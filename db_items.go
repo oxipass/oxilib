@@ -4,12 +4,37 @@ import (
 	"time"
 )
 
+const sqlDeleteItem = `UPDATE items SET deleted=1 WHERE item_id=? `
+
+func (sdb *storageDB) dbDeleteItem(itemID string) (err error) {
+	if sdb.sTX == nil {
+		return formError(BSERR00003DbTransactionFailed, "dbDeleteItem")
+	}
+
+	stmt, err := sdb.sTX.Prepare(sqlDeleteItem)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(itemID)
+	if err != nil {
+		return err
+	}
+
+	errClose := stmt.Close()
+	if errClose != nil {
+		err = formError(BSERR00016DbDeleteFailed, errClose.Error())
+	}
+
+	return nil
+}
+
 const sqlInsertItem = `INSERT INTO items (item_id,name,icon_id,creation_timestamp,update_timestamp,deleted) VALUES (?,?,?,?,?, 0)
 `
 
-func (sdb *storageDB) insertItem(itemName string, itemIcon string) (itemID string, err error) {
+func (sdb *storageDB) dbInsertItem(itemName string, itemIcon string) (itemID string, err error) {
 	if sdb.sTX == nil {
-		return "", formError(BSERR00003DbTransactionFailed, "insertItem")
+		return "", formError(BSERR00003DbTransactionFailed, "dbInsertItem")
 	}
 
 	creationTime := prepareTimeForDb(time.Now())
@@ -17,7 +42,7 @@ func (sdb *storageDB) insertItem(itemName string, itemIcon string) (itemID strin
 
 	stmt, err := sdb.sTX.Prepare(sqlInsertItem)
 	if err != nil {
-		return "", formError(BSERR00006DbInsertFailed, err.Error(), "insertItem")
+		return "", formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertItem")
 	}
 	_, errStmt := stmt.Exec(itemID,
 		itemName,
@@ -26,17 +51,17 @@ func (sdb *storageDB) insertItem(itemName string, itemIcon string) (itemID strin
 		creationTime)
 
 	if errStmt != nil {
-		return "", formError(BSERR00006DbInsertFailed, errStmt.Error(), "insertItem")
+		return "", formError(BSERR00006DbInsertFailed, errStmt.Error(), "dbInsertItem")
 	}
 	errClose := stmt.Close()
 	if errClose != nil {
-		return "", formError(BSERR00006DbInsertFailed, errClose.Error(), "insertItem")
+		return "", formError(BSERR00006DbInsertFailed, errClose.Error(), "dbInsertItem")
 	}
 
 	return itemID, nil
 }
 
-// creation_timestamp, update_timestamp,
+// List all non-deleted items
 const sqlListItems = `
 	SELECT item_id, name, icon_id, creation_timestamp, update_timestamp, deleted
 		FROM items 

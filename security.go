@@ -46,14 +46,14 @@ func (enc *bsEncryptor) Encrypt(plainText string) (string, error) {
 	return encString, nil
 }
 
-func (encrypter *bsEncryptor) Decrypt(plainText string) (string, error) {
-	return encrypter.cipher.Decrypt(plainText)
+func (enc *bsEncryptor) Decrypt(plainText string) (string, error) {
+	return enc.cipher.Decrypt(plainText)
 }
 
-func (encrypter *bsEncryptor) SetPassword(password string) error {
-	return encrypter.cipher.SetPassword(password)
+func (enc *bsEncryptor) SetPassword(password string) error {
+	return enc.cipher.SetPassword(password)
 }
 
-func (encrypter *bsEncryptor) IsReady() bool {
-	return encrypter.cipher.IsKeyGenerated()
+func (enc *bsEncryptor) IsReady() bool {
+	return enc.cipher.IsKeyGenerated()
 }

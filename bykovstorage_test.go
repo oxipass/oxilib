@@ -3,23 +3,19 @@ package bykovstorage
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"testing"
 )
 
-const dbFile = "test.sqlite"
-
 var fullPathDBFile string
-
-//const dbFile = ":memory:"
-
 var dbPass = ""
 
 func TestLogin(t *testing.T) {
 	// Getting storage instance
 	bsInstance := GetInstance()
 
-	errPass := bsInstance.SetPassword(dbPass)
+	errPass := bsInstance.Unlock(dbPass)
 	if errPass != nil {
 		t.Error(errPass)
 		t.FailNow()
@@ -27,29 +23,111 @@ func TestLogin(t *testing.T) {
 	}
 }
 
-func TestAddItem(t *testing.T) {
+func TestDeleteItem(t *testing.T) {
 	bsInstance := GetInstance()
-	errPass := bsInstance.SetPassword(dbPass)
+	errPass := bsInstance.Unlock(dbPass)
 	if errPass != nil {
 		t.Error(errPass)
 		t.FailNow()
 		return
 	}
 	itemName := generateRandomString(20)
-	response, err := bsInstance.AddNewItem(JSONInputAddItem{ItemName: itemName, ItemIcon: "icon"})
+	response, err := bsInstance.AddNewItem(JSONInputUpdateItem{ItemName: itemName, ItemIcon: "icon"})
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 		return
 	}
 	if response.Status != ConstSuccessResponse {
-		t.Error(errors.New("Rsponse is not success"))
+		t.Error(errors.New("response is not successful"))
 		t.FailNow()
 		return
 	}
-	bsInstance.Lock()
+	errLock := bsInstance.Lock()
+	if errLock != nil {
+		t.Error(errLock)
+		t.FailNow()
+		return
+	}
 
-	errPass = bsInstance.SetPassword(dbPass)
+	errPass = bsInstance.Unlock(dbPass)
+	if errPass != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return
+	}
+
+	delResponse, errDelete := bsInstance.DeleteItem(JSONInputUpdateItem{ItemID: response.ItemID})
+	if errDelete != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return
+	}
+	if delResponse.Status != ConstSuccessResponse {
+		t.Error(errors.New("deletion response is not successful"))
+		t.FailNow()
+		return
+	}
+
+	errLock = bsInstance.Lock()
+	if errLock != nil {
+		t.Error(errLock)
+		t.FailNow()
+		return
+	}
+
+	errPass = bsInstance.Unlock(dbPass)
+	if errPass != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return
+	}
+
+	items, respErr := bsInstance.ReadAllItems()
+	if respErr != nil {
+		t.Error(respErr)
+		t.FailNow()
+		return
+	}
+
+	for _, item := range items {
+		if item.ID == response.ItemID && item.Deleted == false {
+			t.Error(errors.New("deleted item is found as not deleted"))
+			t.FailNow()
+			return
+		}
+	}
+
+}
+
+func TestAddItem(t *testing.T) {
+	bsInstance := GetInstance()
+	errPass := bsInstance.Unlock(dbPass)
+	if errPass != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return
+	}
+	itemName := generateRandomString(20)
+	response, err := bsInstance.AddNewItem(JSONInputUpdateItem{ItemName: itemName, ItemIcon: "icon"})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+		return
+	}
+	if response.Status != ConstSuccessResponse {
+		t.Error(errors.New("response is not successfull"))
+		t.FailNow()
+		return
+	}
+	errLock := bsInstance.Lock()
+	if errLock != nil {
+		t.Error(errLock)
+		t.FailNow()
+		return
+	}
+
+	errPass = bsInstance.Unlock(dbPass)
 	if errPass != nil {
 		t.Error(errPass)
 		t.FailNow()
@@ -66,7 +144,7 @@ func TestAddItem(t *testing.T) {
 			return
 		}
 	}
-	t.Error(errors.New("Created item is not found"))
+	t.Error(errors.New("created item is not found"))
 	t.FailNow()
 
 }
@@ -93,28 +171,39 @@ func TestMain(m *testing.M) {
 
 func setup() error {
 	// Getting package instance
+	log.Println("Tests initial setup")
+
 	bsInstance := GetInstance()
+	if bsInstance == nil {
+		return errors.New("cannot retrieve BSLib instance")
+	}
+	log.Println("BSLib instance successfully retrieved")
 
 	// Setting temporary SQLite DB file
-	fullPathDBFile = os.TempDir() + "/bs-" + generateRandomString(4) + dbFile
-
-	fmt.Println(fullPathDBFile)
+	fullPathDBFile = generateTempFilename()
+	log.Println("Full path to database file: " + fullPathDBFile)
 
 	errOpen := bsInstance.Open(fullPathDBFile)
-
 	if errOpen != nil {
 		return errOpen
 	}
-	fmt.Println("File open")
+	log.Println("BSLib is initiated successfully")
 
 	// Generating random password for the database
 	dbPass = generateRandomString(12)
-	fmt.Println("DB password: " + dbPass)
+	log.Println("Generated DB password: " + dbPass)
+
 	errSetPassword := bsInstance.SetNewPassword(dbPass, "AES256")
 	if errSetPassword != nil {
 		return errSetPassword
 	}
-	fmt.Println("Password is set")
+	log.Println("Password is successfully set")
+
+	errLock := bsInstance.Lock()
+	if errLock != nil {
+		return errLock
+	}
+	log.Println("Database is locked, the tests can be started")
 
 	return nil
 }
