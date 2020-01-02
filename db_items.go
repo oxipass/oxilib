@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-const sqlDeleteItem = `UPDATE items SET deleted=1 WHERE item_id=? `
+const sqlDeleteItem = `UPDATE items SET deleted=1, update_timestamp=? WHERE item_id=? `
 
 func (sdb *storageDB) dbDeleteItem(itemID string) (err error) {
 	if sdb.sTX == nil {
@@ -16,7 +16,9 @@ func (sdb *storageDB) dbDeleteItem(itemID string) (err error) {
 		return err
 	}
 
-	_, err = stmt.Exec(itemID)
+	updateTime := prepareTimeForDb(time.Now())
+
+	_, err = stmt.Exec(updateTime, itemID)
 	if err != nil {
 		return err
 	}
@@ -25,7 +27,6 @@ func (sdb *storageDB) dbDeleteItem(itemID string) (err error) {
 	if errClose != nil {
 		err = formError(BSERR00016DbDeleteFailed, errClose.Error())
 	}
-
 	return nil
 }
 
@@ -68,7 +69,7 @@ const sqlListItems = `
 		WHERE deleted='0'
 `
 
-func (sdb *storageDB) selectAllItems() (items []BSItem, err error) {
+func (sdb *storageDB) dbSelectAllItems() (items []BSItem, err error) {
 	rows, err := sdb.sDB.Query(sqlListItems)
 	if err != nil {
 		return items, formError(BSERR00014ItemsReadFailed, err.Error())
@@ -97,4 +98,30 @@ func (sdb *storageDB) selectAllItems() (items []BSItem, err error) {
 		items = append(items, bsItem)
 	}
 	return items, nil
+}
+
+const sqlUpdateItemName = `UPDATE items SET name=?, update_timestamp=? WHERE item_id=? `
+
+func (sdb *storageDB) dbUpdateItemName(itemID string, newName string) (err error) {
+	if sdb.sTX == nil {
+		return formError(BSERR00003DbTransactionFailed, "dbUpdateItemName")
+	}
+
+	stmt, err := sdb.sTX.Prepare(sqlUpdateItemName)
+	if err != nil {
+		return err
+	}
+
+	updateTime := prepareTimeForDb(time.Now())
+
+	_, err = stmt.Exec(newName, updateTime, itemID)
+	if err != nil {
+		return err
+	}
+
+	errClose := stmt.Close()
+	if errClose != nil {
+		err = formError(BSERR00018DbItemNameUpdateFailed, errClose.Error())
+	}
+	return nil
 }
