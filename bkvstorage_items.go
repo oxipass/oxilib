@@ -90,7 +90,7 @@ func (storage *StorageSingleton) ReadAllItems() (items []BSItem, err error) {
 		return items, err
 	}
 
-	items, err = storage.dbObject.selectAllItems()
+	items, err = storage.dbObject.dbSelectAllItems()
 	if err != nil {
 		return items, err
 	}
