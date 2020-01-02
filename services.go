@@ -1,4 +1,4 @@
-package bykovstorage
+package bslib
 
 // All public services to be used by mobile or web app are here
 

@@ -1,4 +1,4 @@
-package bykovstorage
+package bslib
 
 // !!! WARNING !!!
 // Never reduce the length of the database fields as

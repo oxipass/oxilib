@@ -1,4 +1,4 @@
-package bykovstorage
+package bslib
 
 import "database/sql"
 

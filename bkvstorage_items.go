@@ -1,4 +1,4 @@
-package bykovstorage
+package bslib
 
 func (storage *StorageSingleton) checkReadiness() error {
 	if storage.encObject == nil || storage.encObject.IsReady() == false {

@@ -1,4 +1,4 @@
-package bykovstorage
+package bslib
 
 // BSItem - bykovstorage item structure
 type BSItem struct {

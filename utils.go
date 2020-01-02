@@ -1,4 +1,4 @@
-package bykovstorage
+package bslib
 
 import (
 	"crypto/rand"
