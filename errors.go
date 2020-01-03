@@ -94,3 +94,6 @@ const BSERR00017JSONFailed = "BSERR00017_JSON_FAILED"
 
 // BSERR00018DbItemNameUpdateFailed - failed to update item name
 const BSERR00018DbItemNameUpdateFailed = "BSERR00018_DB_NAME_UPDATE_FAILED"
+
+// BSERR00019ItemNotFound - item not found
+const BSERR00019ItemNotFound = "BSERR00019_ITEMNOTFOUND"

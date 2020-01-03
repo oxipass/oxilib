@@ -125,3 +125,38 @@ func (sdb *storageDB) dbUpdateItemName(itemID string, newName string) (err error
 	}
 	return nil
 }
+
+// List all non-deleted items
+const sqlGetItemById = `
+	SELECT item_id, name, icon_id, creation_timestamp, update_timestamp, deleted
+		FROM items 
+		WHERE item_id=?
+`
+
+func (sdb *storageDB) dbGetItemById(itemId string) (item BSItem, err error) {
+	rows, err := sdb.sDB.Query(sqlGetItemById, itemId)
+	if err != nil {
+		return item, formError(BSERR00014ItemsReadFailed, err.Error())
+	}
+	defer func() {
+		errClose := rows.Close()
+		if errClose != nil {
+			err = formError(BSERR00014ItemsReadFailed, err.Error(), errClose.Error())
+		}
+	}()
+	var bsItem BSItem
+
+	if rows.Next() {
+		err = rows.Scan(&bsItem.ID,
+			&bsItem.Name,
+			&bsItem.Icon,
+			&bsItem.Created,
+			&bsItem.Updated,
+			&bsItem.Deleted)
+		if err != nil {
+			return item, err
+		}
+		return item, nil
+	}
+	return item, formError(BSERR00019ItemNotFound)
+}
