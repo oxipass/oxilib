@@ -193,7 +193,7 @@ func setup() error {
 	dbPass = generateRandomString(12)
 	log.Println("Generated DB password: " + dbPass)
 
-	errSetPassword := bsInstance.SetNewPassword(dbPass, "AES256")
+	errSetPassword := bsInstance.SetNewPassword(dbPass, "AES256V1")
 	if errSetPassword != nil {
 		return errSetPassword
 	}

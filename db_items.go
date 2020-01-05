@@ -70,6 +70,7 @@ const sqlListItems = `
 `
 
 func (sdb *storageDB) dbSelectAllItems() (items []BSItem, err error) {
+
 	rows, err := sdb.sDB.Query(sqlListItems)
 	if err != nil {
 		return items, formError(BSERR00014ItemsReadFailed, err.Error())
@@ -134,19 +135,28 @@ const sqlGetItemById = `
 `
 
 func (sdb *storageDB) dbGetItemById(itemId string) (item BSItem, err error) {
-	rows, err := sdb.sDB.Query(sqlGetItemById, itemId)
+	stmt, err := sdb.sDB.Prepare(sqlGetItemById)
 	if err != nil {
 		return item, formError(BSERR00014ItemsReadFailed, err.Error())
 	}
+	rows, err := stmt.Query(itemId)
+	if err != nil {
+		return item, formError(BSERR00014ItemsReadFailed, err.Error())
+	}
+
 	defer func() {
 		errClose := rows.Close()
 		if errClose != nil {
 			err = formError(BSERR00014ItemsReadFailed, err.Error(), errClose.Error())
 		}
+		errClose = stmt.Close()
+		if errClose != nil {
+			err = formError(BSERR00014ItemsReadFailed, err.Error(), errClose.Error())
+		}
 	}()
-	var bsItem BSItem
 
 	if rows.Next() {
+		var bsItem BSItem
 		err = rows.Scan(&bsItem.ID,
 			&bsItem.Name,
 			&bsItem.Icon,
@@ -156,7 +166,7 @@ func (sdb *storageDB) dbGetItemById(itemId string) (item BSItem, err error) {
 		if err != nil {
 			return item, err
 		}
-		return item, nil
+		return bsItem, nil
 	}
 	return item, formError(BSERR00019ItemNotFound)
 }

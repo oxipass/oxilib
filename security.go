@@ -19,7 +19,7 @@ func (enc bsEncryptor) getCypherNames() []string {
 
 func (enc *bsEncryptor) Init(cryptID string) error {
 	for _, cypher := range bsencrypt.Ciphers {
-		if cypher.GetGryptID() == cryptID {
+		if cypher.GetCryptID() == cryptID {
 			enc.cipher = cypher
 			enc.cryptID = cryptID
 			enc.cipher.CleanAndInit()
@@ -32,7 +32,7 @@ func (enc *bsEncryptor) Init(cryptID string) error {
 func (enc bsEncryptor) getCryptIDbyName(cypherName string) (string, error) {
 	for _, cypher := range bsencrypt.Ciphers {
 		if cypher.GetCipherName() == cypherName {
-			return cypher.GetGryptID(), nil
+			return cypher.GetCryptID(), nil
 		}
 	}
 	return "", formError(BSERR00004EncCypherNotExist, "bsEncryptor.getCryptIDbyName", "cypherName: "+cypherName)
@@ -55,5 +55,5 @@ func (enc *bsEncryptor) SetPassword(password string) error {
 }
 
 func (enc *bsEncryptor) IsReady() bool {
-	return enc.cipher.IsKeyGenerated()
+	return enc.cipher.IsPasswordSet()
 }
