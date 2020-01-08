@@ -1,6 +1,25 @@
 package bslib
 
+import "errors"
+
 // All public services to be used by mobile or web app are here
+
+func BSLibService(functionName string, inputJSON string) string {
+	switch functionName {
+	case "lock":
+		return ServiceLockStorage()
+	case "init":
+		return ServiceInitStorage(inputJSON)
+	case "initnew":
+		return ServiceInitNewStorage(inputJSON)
+	case "additem":
+		return ServiceAddNewItem(inputJSON)
+	case "readall":
+		return ServiceReadAllItems(inputJSON)
+	default:
+		return formErrorResponse(errors.New(BSERR00020FunctionNotFound + ", " + functionName))
+	}
+}
 
 func ServiceLockStorage() string {
 	storage := GetInstance()
@@ -15,9 +34,9 @@ func ServiceLockStorage() string {
 	return jsonResponse
 }
 
-func ServiceInitStorage(jsonInputParms string) string {
+func ServiceInitStorage(jsonInputParams string) string {
 	var jsonInitStorage JSONInputInitStorage
-	err := DecodeJSON(jsonInputParms, jsonInitStorage)
+	err := DecodeJSON(jsonInputParams, jsonInitStorage)
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
