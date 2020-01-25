@@ -1,6 +1,6 @@
 package bslib
 
-// BSItem - bykovstorage item structure
+// BSItem - item structure
 type BSItem struct {
 	ID      string `json:"item_id"`
 	Name    string `json:"item_name"`

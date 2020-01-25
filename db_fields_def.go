@@ -3,7 +3,7 @@ package bslib
 import "time"
 
 const sqlCreateTableFieldsDefinitions = `
-	CREATE TABLE fields_definitions (
+	CREATE TABLE IF NOT EXISTS fields_definitions (
    		field_def_id 		CHAR PRIMARY KEY NOT NULL,
    		name 			    VARCHAR NOT NULL,
 		icon             	VARCHAR NOT NULL,
