@@ -180,12 +180,11 @@ func setup() error {
 	log.Println("BSLib instance successfully retrieved")
 
 	// Setting temporary SQLite DB file
-	// fullPathDBFile = generateTempFilename()
-	fullPathDBFile = "/Users/bykov/etc/bsweb/bs.sqlite"
+	fullPathDBFile = generateTempFilename()
+	///fullPathDBFile = "/Users/bykov/etc/bsweb/bs.sqlite"
 	log.Println("Full path to database file: " + fullPathDBFile)
 
 	if _, err := os.Stat(fullPathDBFile); err == nil {
-		// path/to/whatever exists
 		err = os.Remove(fullPathDBFile)
 		if err != nil {
 			return err
@@ -218,10 +217,12 @@ func setup() error {
 }
 
 func teardown() error {
-
-	//if fullPathDBFile != "" {
-	//	return os.Remove(fullPathDBFile)
-	//}
+	if _, err := os.Stat(fullPathDBFile); err == nil {
+		err = os.Remove(fullPathDBFile)
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
