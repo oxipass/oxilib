@@ -5,6 +5,21 @@ import (
 	"time"
 )
 
+type SettingInfo struct {
+	DatabaseId string `json:"database_id"`
+}
+
+const sqlCreateTableSettings = `
+	CREATE TABLE settings (
+   		database_id 		CHAR PRIMARY KEY NOT NULL,
+   		keyword 			CHAR NOT NULL,
+		crypt_id            CHAR NOT NULL,
+		database_version 	INT NOT NULL,
+   		update_timestamp    DATETIME NOT NULL,
+		sync_timestamp		DATETIME NOT NULL
+	)
+`
+
 const sqlInsertInitialSettings = `
 	INSERT INTO settings (database_id,keyword,crypt_id,database_version,update_timestamp,sync_timestamp)
 		VALUES ('%s','%s','%s','%d','%s','%s')

@@ -4,7 +4,18 @@ import (
 	"time"
 )
 
-const sqlDeleteItem = `UPDATE items SET deleted=1, update_timestamp=? WHERE item_id=? `
+const sqlCreateTableItems = `
+	CREATE TABLE items (
+   		item_id 		    CHAR PRIMARY KEY NOT NULL,
+   		name 			    VARCHAR NOT NULL,
+		icon             	VARCHAR NOT NULL,
+		created  			DATETIME NOT NULL,
+   		updated    			DATETIME NOT NULL,
+		deleted				BOOLEAN NOT NULL CHECK (deleted IN (0,1)) default '0'
+	)
+`
+
+const sqlDeleteItem = `UPDATE items SET deleted=1, updated=? WHERE item_id=? `
 
 func (sdb *storageDB) dbDeleteItem(itemID string) (err error) {
 	if sdb.sTX == nil {
@@ -30,7 +41,10 @@ func (sdb *storageDB) dbDeleteItem(itemID string) (err error) {
 	return nil
 }
 
-const sqlInsertItem = `INSERT INTO items (item_id,name,icon_id,creation_timestamp,update_timestamp,deleted) VALUES (?,?,?,?,?, 0)
+const sqlInsertItem = `
+	INSERT 
+		INTO items (item_id,name,icon,created,updated,deleted) 
+		VALUES (?,?,?,?,?, 0)
 `
 
 func (sdb *storageDB) dbInsertItem(itemName string, itemIcon string) (itemID string, err error) {
@@ -64,7 +78,7 @@ func (sdb *storageDB) dbInsertItem(itemName string, itemIcon string) (itemID str
 
 // List all non-deleted items
 const sqlListItems = `
-	SELECT item_id, name, icon_id, creation_timestamp, update_timestamp, deleted
+	SELECT item_id, name, icon, created, updated, deleted
 		FROM items 
 		WHERE deleted='0'
 `
@@ -101,7 +115,7 @@ func (sdb *storageDB) dbSelectAllItems() (items []BSItem, err error) {
 	return items, nil
 }
 
-const sqlUpdateItemName = `UPDATE items SET name=?, update_timestamp=? WHERE item_id=? `
+const sqlUpdateItemName = `UPDATE items SET name=?, updated=? WHERE item_id=? `
 
 func (sdb *storageDB) dbUpdateItemName(itemID string, newName string) (err error) {
 	if sdb.sTX == nil {
@@ -129,7 +143,7 @@ func (sdb *storageDB) dbUpdateItemName(itemID string, newName string) (err error
 
 // List all non-deleted items
 const sqlGetItemById = `
-	SELECT item_id, name, icon_id, creation_timestamp, update_timestamp, deleted
+	SELECT item_id, name, icon, created, updated, deleted
 		FROM items 
 		WHERE item_id=?
 `

@@ -10,6 +10,17 @@ type BSItem struct {
 	Deleted bool   `json:"deleted"`
 }
 
+// BSFieldDefinition - fields definitions
+type BSFieldDefinition struct {
+	ID        string `json:"field_type_id"`
+	Name      string `json:"name"`
+	Icon      string `json:"icon_id"`
+	ValueType string `json:"value_type"`
+	Created   string `json:"created"`
+	Updated   string `json:"updated"`
+	Deleted   bool   `json:"deleted"`
+}
+
 // JSONResponseItem - response returning one item
 type JSONResponseItem struct {
 	JSONResponseCommon

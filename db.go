@@ -182,12 +182,22 @@ func (sdb *storageDB) initDb() (err error) {
 		return formError(BSERR00003DbTransactionFailed)
 	}
 
-	err = sdb.createTableSettings()
+	err = sdb.createTable(sqlCreateTableSettings)
 	if err != nil {
 		return err
 	}
 
-	err = sdb.createTableItems()
+	err = sdb.createTable(sqlCreateTableFieldsDefinitions)
+	if err != nil {
+		return err
+	}
+
+	err = sdb.createTable(sqlCreateTableFields)
+	if err != nil {
+		return err
+	}
+
+	err = sdb.createTable(sqlCreateTableItems)
 	if err != nil {
 		return err
 	}
