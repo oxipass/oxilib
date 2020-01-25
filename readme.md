@@ -1,4 +1,8 @@
-[![Build Status](https://travis-ci.com/bykovme/bslib.svg?branch=master)](https://travis-ci.com/bykovme/bslib) [![codecov](https://codecov.io/gh/bykovme/bslib/branch/master/graph/badge.svg)](https://codecov.io/gh/bykovme/bslib)
+[![Build Status](https://travis-ci.com/bykovme/bslib.svg?branch=master)](https://travis-ci.com/bykovme/bslib)
+[![codecov](https://codecov.io/gh/bykovme/bslib/branch/master/graph/badge.svg)](https://codecov.io/gh/bykovme/bslib)
+[![Go Report Card](https://goreportcard.com/badge/github.com/bykovme/bslib)](https://goreportcard.com/report/github.com/bykovme/bslib)
+[![Maintainability](https://api.codeclimate.com/v1/badges/80b653b7e105e848aff5/maintainability)](https://codeclimate.com/github/bykovme/bslib/maintainability)
+
 ## BSLib
 
 bkv storage is a library to work with encrypted personal data stored as SQLite file keeping items/fields safe and secure.
