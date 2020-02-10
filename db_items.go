@@ -6,7 +6,7 @@ import (
 
 const sqlCreateTableItems = `
 	CREATE TABLE IF NOT EXISTS items (
-   		item_id 		    CHAR PRIMARY KEY NOT NULL,
+   		item_id 		    INTEGER PRIMARY KEY AUTOINCREMENT,
    		name 			    VARCHAR NOT NULL,
 		icon             	VARCHAR NOT NULL,
 		created  			DATETIME NOT NULL,
