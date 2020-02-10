@@ -32,7 +32,7 @@ func TestDeleteItem(t *testing.T) {
 		return
 	}
 	itemName := generateRandomString(20)
-	response, err := bsInstance.AddNewItem(JSONInputUpdateItem{ItemName: itemName, ItemIcon: "icon"})
+	response, err := bsInstance.AddNewItem(JSONInputUpdateItem{ItemName: itemName, ItemIcon: "fas fa-ambulance"})
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -100,6 +100,28 @@ func TestDeleteItem(t *testing.T) {
 
 }
 
+func TestAddItemWithNonExistingIcon(t *testing.T) {
+	bsInstance := GetInstance()
+	errPass := bsInstance.Unlock(dbPass)
+	if errPass != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return
+	}
+	itemName := generateRandomString(20)
+	response, err := bsInstance.AddNewItem(JSONInputUpdateItem{ItemName: itemName, ItemIcon: "ewfdwejfnerfkj"})
+	if err == nil {
+		t.Error(errors.New("no error returned in spite of the fact that icon is not existing"))
+		t.FailNow()
+		return
+	}
+	if response.Status == ConstSuccessResponse {
+		t.Error(errors.New("item was added in spite of the fact that icon is not existing"))
+		t.FailNow()
+		return
+	}
+}
+
 func TestAddItem(t *testing.T) {
 	bsInstance := GetInstance()
 	errPass := bsInstance.Unlock(dbPass)
@@ -109,7 +131,7 @@ func TestAddItem(t *testing.T) {
 		return
 	}
 	itemName := generateRandomString(20)
-	response, err := bsInstance.AddNewItem(JSONInputUpdateItem{ItemName: itemName, ItemIcon: "icon"})
+	response, err := bsInstance.AddNewItem(JSONInputUpdateItem{ItemName: itemName, ItemIcon: "fas fa-ambulance"})
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

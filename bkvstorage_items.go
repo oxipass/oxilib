@@ -49,6 +49,10 @@ func (storage *StorageSingleton) AddNewItem(addItemParms JSONInputUpdateItem) (r
 		return response, err
 	}
 
+	if CheckIfExistsFontAwesome(addItemParms.ItemIcon) == false {
+		return response, formError(BSERR00006DbInsertFailed)
+	}
+
 	encryptedItemName, err := storage.encObject.Encrypt(addItemParms.ItemName)
 	if err != nil {
 		return response, err
