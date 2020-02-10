@@ -36,7 +36,7 @@ func (sdb *storageDB) dbDeleteItem(itemID int64) (err error) {
 
 	errClose := stmt.Close()
 	if errClose != nil {
-		err = formError(BSERR00016DbDeleteFailed, errClose.Error())
+		return formError(BSERR00016DbDeleteFailed, errClose.Error())
 	}
 	return nil
 }
@@ -138,7 +138,7 @@ func (sdb *storageDB) dbUpdateItemName(itemID string, newName string) (err error
 
 	errClose := stmt.Close()
 	if errClose != nil {
-		err = formError(BSERR00018DbItemNameUpdateFailed, errClose.Error())
+		return formError(BSERR00018DbItemNameUpdateFailed, errClose.Error())
 	}
 	return nil
 }
