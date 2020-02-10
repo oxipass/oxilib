@@ -2,7 +2,7 @@ package bslib
 
 // BSItem - item structure
 type BSItem struct {
-	ID      string `json:"item_id"`
+	ID      int64  `json:"item_id"`
 	Name    string `json:"item_name"`
 	Icon    string `json:"item_icon"`
 	Created string `json:"created"`
@@ -42,7 +42,7 @@ type JSONResponseCommon struct {
 
 // JSONInputUpdateItem - input structure to add the item
 type JSONInputUpdateItem struct {
-	ItemID   string `json:"item_id"`
+	ItemID   int64  `json:"item_id"`
 	ItemName string `json:"item_name"`
 	ItemIcon string `json:"item_icon"`
 }
@@ -50,7 +50,7 @@ type JSONInputUpdateItem struct {
 // JSONResponseItemAdded - response structure for adding item
 type JSONResponseItemAdded struct {
 	JSONResponseCommon
-	ItemID string `json:"item_id"`
+	ItemID int64 `json:"item_id"`
 }
 
 type JSONInputInitStorage struct {

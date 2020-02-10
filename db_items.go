@@ -17,7 +17,7 @@ const sqlCreateTableItems = `
 
 const sqlDeleteItem = `UPDATE items SET deleted=1, updated=? WHERE item_id=? `
 
-func (sdb *storageDB) dbDeleteItem(itemID string) (err error) {
+func (sdb *storageDB) dbDeleteItem(itemID int64) (err error) {
 	if sdb.sTX == nil {
 		return formError(BSERR00003DbTransactionFailed, "dbDeleteItem")
 	}
@@ -43,34 +43,36 @@ func (sdb *storageDB) dbDeleteItem(itemID string) (err error) {
 
 const sqlInsertItem = `
 	INSERT 
-		INTO items (item_id,name,icon,created,updated,deleted) 
-		VALUES (?,?,?,?,?, 0)
+		INTO items (name,icon,created,updated,deleted) 
+		VALUES (?,?,?,?, 0)
 `
 
-func (sdb *storageDB) dbInsertItem(itemName string, itemIcon string) (itemID string, err error) {
+func (sdb *storageDB) dbInsertItem(itemName string, itemIcon string) (itemID int64, err error) {
 	if sdb.sTX == nil {
-		return "", formError(BSERR00003DbTransactionFailed, "dbInsertItem")
+		return 0, formError(BSERR00003DbTransactionFailed, "dbInsertItem")
 	}
 
 	creationTime := prepareTimeForDb(time.Now())
-	itemID = generateRandomString(8)
 
 	stmt, err := sdb.sTX.Prepare(sqlInsertItem)
 	if err != nil {
-		return "", formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertItem")
+		return 0, formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertItem")
 	}
-	_, errStmt := stmt.Exec(itemID,
-		itemName,
+	res, errStmt := stmt.Exec(itemName,
 		itemIcon,
 		creationTime,
 		creationTime)
 
 	if errStmt != nil {
-		return "", formError(BSERR00006DbInsertFailed, errStmt.Error(), "dbInsertItem")
+		return 0, formError(BSERR00006DbInsertFailed, errStmt.Error(), "dbInsertItem")
+	}
+	itemID, err = res.LastInsertId()
+	if err != nil {
+		return 0, formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertItem")
 	}
 	errClose := stmt.Close()
 	if errClose != nil {
-		return "", formError(BSERR00006DbInsertFailed, errClose.Error(), "dbInsertItem")
+		return 0, formError(BSERR00006DbInsertFailed, errClose.Error(), "dbInsertItem")
 	}
 
 	return itemID, nil
