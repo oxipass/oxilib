@@ -62,7 +62,7 @@ func (storage *StorageSingleton) DBVersion() int {
 	return -1
 }
 
-// GetAvailableCyphers - get available cypers as one string
+// GetAvailableCyphers - get available cyphers as one string
 func (storage *StorageSingleton) GetAvailableCyphers() (allCyphers []string) {
 	for _, cypherName := range storage.encObject.getCypherNames() {
 		allCyphers = append(allCyphers, cypherName)
@@ -92,4 +92,18 @@ func (storage *StorageSingleton) Open(filePath string) error {
 	storage.storageAccess()
 	return nil
 
+}
+
+func (storage *StorageSingleton) Close() error {
+	if storage.dbObject != nil && storage.dbObject.IsOpen() == true {
+		err := storage.dbObject.Close()
+		if err != nil {
+			return err
+		}
+		storage.dbObject = nil
+		storage.encObject = nil
+		return nil
+	}
+	storage.encObject = nil
+	return nil
 }

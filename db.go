@@ -105,6 +105,21 @@ func (sdb *storageDB) Open(filePath string) error {
 	return nil
 }
 
+func (sdb *storageDB) Close() error {
+	if sdb.dbOpen == false {
+		return nil
+	}
+	if sdb.sDB != nil {
+		err := sdb.sDB.Close()
+		if err != nil {
+			return err
+		}
+		sdb.dbOpen = false
+		sdb.sDB = nil
+	}
+	return nil
+}
+
 // IsOpen  - returns the flag if the database os already open
 func (sdb *storageDB) IsOpen() bool {
 	return sdb.dbOpen
