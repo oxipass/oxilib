@@ -1,7 +1,9 @@
 package bslib
 
-import "errors"
-import "strings"
+import (
+	"errors"
+	"strings"
+)
 
 func formError(errorID string, errorText ...string) error {
 	var finalText string
@@ -11,6 +13,9 @@ func formError(errorID string, errorText ...string) error {
 		} else {
 			finalText = finalText + ", " + errorStr
 		}
+	}
+	if finalText == "" {
+		return errors.New(errorID)
 	}
 	return errors.New(errorID + ": " + finalText)
 }

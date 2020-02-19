@@ -38,3 +38,28 @@ func TestFormErrorResponse(t *testing.T) {
 		return
 	}
 }
+
+func TestFormErrorResponseShort(t *testing.T) {
+	const unknownError = "unknown error"
+	newErr := formError(unknownError)
+	response := formErrorResponse(newErr)
+	var messageResponse JSONResponseCommon
+	err := DecodeJSON(response, &messageResponse)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+		return
+	}
+	if messageResponse.Status != CErrorResponse {
+		t.Errorf("Expected '%s', retrieved '%s'", CErrorResponse, messageResponse.Status)
+		return
+	}
+	if messageResponse.MsgTxt != unknownError {
+		t.Errorf("Expected '%s', retrieved '%s'", unknownError, messageResponse.MsgTxt)
+		return
+	}
+	if messageResponse.MsgNum != BSERR00015UnknownError {
+		t.Errorf("Expected '%s', retrieved '%s'", BSERR00015UnknownError, messageResponse.MsgNum)
+		return
+	}
+}
