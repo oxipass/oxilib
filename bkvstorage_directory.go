@@ -19,6 +19,15 @@ func GetValueTypes() (vTypes []string) {
 	}
 }
 
+func CheckValueType(vType string) bool {
+	for _, v := range GetValueTypes() {
+		if v == vType {
+			return true
+		}
+	}
+	return false
+}
+
 func GetFontAwesomeList() (faValues []string) {
 	return faCachedValues
 }

@@ -31,31 +31,75 @@ const sqlInsertField = `
 		VALUES (?,?,?,?,?,?,?,0)
 `
 
-func (sdb *storageDB) dbInsertField(fieldDefinition BSField) (err error) {
+func (sdb *storageDB) dbInsertField(itemID int64, field BSField) (err error) {
+	if err := ValidateField(field); err != nil {
+		return err
+	}
 	if sdb.sTX == nil {
-		return formError(BSERR00003DbTransactionFailed, "dbInsertFieldDefinition")
+		return formError(BSERR00003DbTransactionFailed, "dbInsertField")
 	}
 
 	creationTime := prepareTimeForDb(time.Now())
 
 	stmt, err := sdb.sTX.Prepare(sqlInsertField)
 	if err != nil {
-		return formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertFieldDefinition")
+		return formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertField")
 	}
-	_, errStmt := stmt.Exec(fieldDefinition.ID,
-		fieldDefinition.Name,
-		fieldDefinition.Icon,
-		fieldDefinition.ValueType,
+	_, errStmt := stmt.Exec(itemID,
+		field.Icon,
+		field.Name,
+		field.ValueType,
+		field.Value,
 		creationTime,
 		creationTime)
 
 	if errStmt != nil {
-		return formError(BSERR00006DbInsertFailed, errStmt.Error(), "dbInsertFieldDefinition")
+		return formError(BSERR00006DbInsertFailed, errStmt.Error(), "dbInsertField")
 	}
 	errClose := stmt.Close()
 	if errClose != nil {
-		return formError(BSERR00006DbInsertFailed, errClose.Error(), "dbInsertFieldDefinition")
+		return formError(BSERR00006DbInsertFailed, errClose.Error(), "dbInsertField")
 	}
 
 	return nil
+}
+
+// List all non-deleted items
+const sqlListItemFields = `
+	SELECT field_id, field_name, field_icon, field_value, value_type, created, updated, deleted
+		FROM fields 
+		WHERE deleted='0' and item_id=?
+`
+
+func (sdb *storageDB) dbSelectAllItemFields(itemId int64) (fields []BSField, err error) {
+
+	rows, err := sdb.sDB.Query(sqlListItemFields, itemId)
+	if err != nil {
+		return fields, formError(BSERR00021FieldsReadFailed, err.Error())
+	}
+	defer func() {
+		errClose := rows.Close()
+		if errClose != nil {
+			err = formError(BSERR00021FieldsReadFailed, err.Error(), errClose.Error())
+		}
+	}()
+
+	var bsField BSField
+
+	for rows.Next() {
+		err = rows.Scan(&bsField.ID,
+			&bsField.Name,
+			&bsField.Icon,
+			&bsField.Value,
+			&bsField.ValueType,
+			&bsField.Created,
+			&bsField.Updated,
+			&bsField.Deleted)
+		if err != nil {
+			return fields, err
+		}
+
+		fields = append(fields, bsField)
+	}
+	return fields, nil
 }

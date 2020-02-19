@@ -99,3 +99,9 @@ const BSERR00018DbItemNameUpdateFailed = "BSERR00018_DB_NAME_UPDATE_FAILED"
 const BSERR00019ItemNotFound = "BSERR00019_ITEMNOTFOUND"
 
 const BSERR00020FunctionNotFound = "BSERR00020_FUNCTION_NOT_FOUND"
+
+// BSERR00021FieldsReadFailed - fields read failure
+const BSERR00021FieldsReadFailed = "BSERR00021_FIELDSREADFAILED"
+
+// BSERR00022ValidationFailed - fields read failure
+const BSERR00022ValidationFailed = "BSERR00022_VALIDATIONFAILED"
