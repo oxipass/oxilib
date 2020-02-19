@@ -1,7 +1,7 @@
 package bslib
 
 func (storage *StorageSingleton) checkReadiness() error {
-	if storage.encObject == nil || storage.encObject.IsReady() == false {
+	if storage.encObject == nil || !storage.encObject.IsReady() {
 		return formError("Encrypter is not initialized", "checkReadiness")
 	}
 
@@ -49,7 +49,7 @@ func (storage *StorageSingleton) AddNewItem(addItemParms JSONInputUpdateItem) (r
 		return response, err
 	}
 
-	if CheckIfExistsFontAwesome(addItemParms.ItemIcon) == false {
+	if !CheckIfExistsFontAwesome(addItemParms.ItemIcon) {
 		return response, formError(BSERR00006DbInsertFailed)
 	}
 

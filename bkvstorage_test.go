@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-var fullPathDBFile string
+var globalDBFile string
 var dbPass = ""
 
 func TestLogin(t *testing.T) {
@@ -201,20 +201,17 @@ func setup() error {
 	}
 	log.Println("BSLib instance successfully retrieved")
 
-	// Setting temporary SQLite DB file
-	// fullPathDBFile = generateTempFilename()
-	// FIXME: change hardcoded back to temporary file name
-	fullPathDBFile = "/Users/bykov/etc/bsweb/bs.sqlite"
-	log.Println("Full path to database file: " + fullPathDBFile)
+	dbFile := getTestDbFileName()
+	log.Println("Full path to database file: " + dbFile)
 
-	if _, err := os.Stat(fullPathDBFile); err == nil {
-		err = os.Remove(fullPathDBFile)
+	if _, err := os.Stat(dbFile); err == nil {
+		err = os.Remove(dbFile)
 		if err != nil {
 			return err
 		}
 	}
 
-	errOpen := bsInstance.Open(fullPathDBFile)
+	errOpen := bsInstance.Open(dbFile)
 	if errOpen != nil {
 		return errOpen
 	}
@@ -240,13 +237,38 @@ func setup() error {
 }
 
 func teardown() error {
-	if _, err := os.Stat(fullPathDBFile); err == nil {
-		// FIXME: uncomment file removal before submitting to git
-		//err = os.Remove(fullPathDBFile)
-		if err != nil {
-			return err
+	bsInstance := GetInstance()
+	err := bsInstance.Close()
+	if err != nil {
+		return nil
+	}
+	if _, err := os.Stat(getTestDbFileName()); err == nil {
+		// Do not delete if local file is used (use build tag 'local' to configure)
+		// Check bkv_config_global.go for default configuration
+		if !isLocalFileUsed() {
+			err = os.Remove(getTestDbFileName())
+			if err != nil {
+				return err
+			}
 		}
 	}
-
 	return nil
+}
+
+func isLocalFileUsed() bool {
+	return getTestDbFileName() == localTestFile
+}
+
+func getTestDbFileName() string {
+	if globalDBFile != "" {
+		return globalDBFile
+	}
+	if useLocalTestFile {
+		globalDBFile = localTestFile
+		return globalDBFile
+	}
+
+	globalDBFile = generateTempFilename()
+
+	return globalDBFile
 }

@@ -3,10 +3,10 @@ package bslib
 import "errors"
 
 func ValidateField(field BSField) error {
-	if CheckIfExistsFontAwesome(field.Icon) == false {
+	if !CheckIfExistsFontAwesome(field.Icon) {
 		return errors.New(BSERR00022ValidationFailed + ": icon not found")
 	}
-	if CheckValueType(field.ValueType) == false {
+	if !CheckValueType(field.ValueType) {
 		return errors.New(BSERR00022ValidationFailed + ": value type not found")
 	}
 	if field.Name == "" {

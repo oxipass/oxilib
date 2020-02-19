@@ -1,6 +1,9 @@
 package bslib
 
-import "strconv"
+import (
+	"log"
+	"strconv"
+)
 
 // SetNewPassword sets new master password for existing database or generates all the data for the new one
 func (storage *StorageSingleton) SetNewPassword(newPassword string, encMethod string) error {
@@ -15,7 +18,7 @@ func (storage *StorageSingleton) SetNewPassword(newPassword string, encMethod st
 
 // Unlock sets & checks the password for the open storage
 func (storage *StorageSingleton) Unlock(password string) error {
-	if storage.IsActive() == false {
+	if !storage.IsActive() {
 		return formError(BSERR00009DbNotOpen, "Unlock", "IsActive", strconv.FormatBool(storage.IsActive()))
 	}
 	if storage.encObject == nil {
@@ -80,7 +83,7 @@ func (storage *StorageSingleton) initStorage(newPassword string, encMethod strin
 	if err != nil {
 		errRollback := storage.dbObject.RollbackTX()
 		if errRollback != nil {
-
+			log.Println(errRollback.Error())
 		}
 		return err
 	}

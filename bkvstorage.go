@@ -31,15 +31,12 @@ func (storage *StorageSingleton) storageAccess() {
 
 // IsNew - checks if database was already initialized
 func (storage *StorageSingleton) IsNew() bool {
-	if storage.DBVersion() > 0 {
-		return false
-	}
-	return true
+	return storage.DBVersion() <= 0
 }
 
 // IsActive is checking if storage is active
 func (storage *StorageSingleton) IsActive() bool {
-	if storage.IsNew() == false && storage.dbObject.IsOpen() == true {
+	if !storage.IsNew() && storage.dbObject.IsOpen() {
 		return true
 	}
 	return false
@@ -47,7 +44,7 @@ func (storage *StorageSingleton) IsActive() bool {
 
 //IsLocked - checks if the storage is locked
 func (storage *StorageSingleton) IsLocked() bool {
-	if storage.IsActive() == true && storage.encObject != nil && storage.encObject.IsReady() == true {
+	if storage.IsActive() && storage.encObject != nil && storage.encObject.IsReady() {
 		return false
 	}
 	return true
@@ -64,15 +61,12 @@ func (storage *StorageSingleton) DBVersion() int {
 
 // GetAvailableCyphers - get available cyphers as one string
 func (storage *StorageSingleton) GetAvailableCyphers() (allCyphers []string) {
-	for _, cypherName := range storage.encObject.getCypherNames() {
-		allCyphers = append(allCyphers, cypherName)
-	}
-	return allCyphers
+	return append(allCyphers, storage.encObject.getCypherNames()...)
 }
 
 // Open - opens the database on specified file
 func (storage *StorageSingleton) Open(filePath string) error {
-	if storage.dbObject != nil && storage.dbObject.IsOpen() == true && storage.encObject != nil {
+	if storage.dbObject != nil && storage.dbObject.IsOpen() && storage.encObject != nil {
 		return nil
 	}
 	storage.dbObject = new(storageDB)
@@ -82,7 +76,7 @@ func (storage *StorageSingleton) Open(filePath string) error {
 	}
 
 	storage.encObject = new(bsEncryptor)
-	if storage.IsNew() == false {
+	if !storage.IsNew() {
 		err := storage.encObject.Init(storage.dbObject.cryptID)
 		if err != nil {
 			return err
@@ -95,7 +89,7 @@ func (storage *StorageSingleton) Open(filePath string) error {
 }
 
 func (storage *StorageSingleton) Close() error {
-	if storage.dbObject != nil && storage.dbObject.IsOpen() == true {
+	if storage.dbObject != nil && storage.dbObject.IsOpen() {
 		err := storage.dbObject.Close()
 		if err != nil {
 			return err

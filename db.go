@@ -106,7 +106,7 @@ func (sdb *storageDB) Open(filePath string) error {
 }
 
 func (sdb *storageDB) Close() error {
-	if sdb.dbOpen == false {
+	if !sdb.dbOpen {
 		return nil
 	}
 	if sdb.sDB != nil {

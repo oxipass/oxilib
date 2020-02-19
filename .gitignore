@@ -29,3 +29,5 @@ _testmain.go
 
 .vscode/
 .idea/
+
+bkv_config_local.go

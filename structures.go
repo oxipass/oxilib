@@ -11,7 +11,7 @@ type BSItem struct {
 	Fields  []BSField `json:"fields"`
 }
 
-// BSFieldDefinition - fields definitions
+// BSField - fields definitions
 type BSField struct {
 	ID        string `json:"field_id"`
 	Name      string `json:"field_name"`
