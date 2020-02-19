@@ -13,7 +13,7 @@ func TestValueTypes(t *testing.T) {
 		t.FailNow()
 		return
 	}
-	if len(vTypes) != 10 {
+	if len(vTypes) != 12 {
 		t.Error(errors.New("wrong value types count or unhandled value type is added"))
 		t.FailNow()
 		return

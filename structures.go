@@ -2,20 +2,22 @@ package bslib
 
 // BSItem - item structure
 type BSItem struct {
-	ID      int64  `json:"item_id"`
-	Name    string `json:"item_name"`
-	Icon    string `json:"item_icon"`
-	Created string `json:"created"`
-	Updated string `json:"updated"`
-	Deleted bool   `json:"deleted"`
+	ID      int64     `json:"item_id"`
+	Name    string    `json:"item_name"`
+	Icon    string    `json:"item_icon"`
+	Created string    `json:"created"`
+	Updated string    `json:"updated"`
+	Deleted bool      `json:"deleted"`
+	Fields  []BSField `json:"fields"`
 }
 
 // BSFieldDefinition - fields definitions
-type BSFieldDefinition struct {
-	ID        string `json:"field_type_id"`
-	Name      string `json:"name"`
-	Icon      string `json:"icon_id"`
+type BSField struct {
+	ID        string `json:"field_id"`
+	Name      string `json:"field_name"`
+	Icon      string `json:"field_icon"`
 	ValueType string `json:"value_type"`
+	Value     string `json:"field_value"`
 	Created   string `json:"created"`
 	Updated   string `json:"updated"`
 	Deleted   bool   `json:"deleted"`

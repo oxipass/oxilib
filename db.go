@@ -202,10 +202,10 @@ func (sdb *storageDB) initDb() (err error) {
 		return err
 	}
 
-	err = sdb.createTable(sqlCreateTableFieldsDefinitions)
-	if err != nil {
-		return err
-	}
+	//err = sdb.createTable(sqlCreateTableFieldsDefinitions)
+	//if err != nil {
+	//	return err
+	//}
 
 	err = sdb.createTable(sqlCreateTableFields)
 	if err != nil {
