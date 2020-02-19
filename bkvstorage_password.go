@@ -93,7 +93,7 @@ func (storage *StorageSingleton) initStorage(newPassword string, encMethod strin
 		return err
 	}
 
-	err = storage.dbObject.checkIntegrityGetSettings()
+	err = storage.dbObject.getSettings()
 	if err != nil {
 		return err
 	}
