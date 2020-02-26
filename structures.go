@@ -42,6 +42,18 @@ type JSONResponseCommon struct {
 	MsgTxt string `json:"msg_text"`
 }
 
+// JSONInputUpdateField input structure to add or update the field
+type JSONInputUpdateField struct {
+	ItemID int64 `json:"item_id"`
+	BSField
+}
+
+// JSONResponseFieldAdded - response structure for adding field
+type JSONResponseFieldAdded struct {
+	JSONResponseCommon
+	FieldID int64 `json:"field_id"`
+}
+
 // JSONInputUpdateItem - input structure to add the item
 type JSONInputUpdateItem struct {
 	ItemID   int64  `json:"item_id"`

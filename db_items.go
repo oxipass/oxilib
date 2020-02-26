@@ -150,7 +150,7 @@ const sqlGetItemById = `
 		WHERE item_id=?
 `
 
-func (sdb *storageDB) dbGetItemById(itemId string) (item BSItem, err error) {
+func (sdb *storageDB) dbGetItemById(itemId int64) (item BSItem, err error) {
 	stmt, err := sdb.sDB.Prepare(sqlGetItemById)
 	if err != nil {
 		return item, formError(BSERR00014ItemsReadFailed, err.Error())

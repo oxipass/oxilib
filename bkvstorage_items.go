@@ -114,7 +114,7 @@ func (storage *StorageSingleton) ReadAllItems() (items []BSItem, err error) {
 }
 
 // ReadAllItems - read all not deleted items from the database and decrypt them
-func (storage *StorageSingleton) ReadItemById(itemId string) (item BSItem, err error) {
+func (storage *StorageSingleton) ReadItemById(itemId int64) (item BSItem, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
 		return item, err
@@ -130,6 +130,11 @@ func (storage *StorageSingleton) ReadItemById(itemId string) (item BSItem, err e
 		return item, err
 	}
 	item.Icon, err = storage.encObject.Decrypt(item.Icon)
+	if err != nil {
+		return item, err
+	}
+
+	item.Fields, err = storage.ReadFieldsByItemID(itemId)
 	if err != nil {
 		return item, err
 	}
