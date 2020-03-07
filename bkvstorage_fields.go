@@ -8,9 +8,9 @@ func (storage *StorageSingleton) AddNewField(addFieldForm UpdateFieldForm) (resp
 	if err != nil {
 		return response, err
 	}
+	if err := ValidateField(addFieldForm.BSField); err != nil {
+		return response, formError(BSERR00006DbInsertFailed, err.Error())
 
-	if !CheckIfExistsFontAwesome(addFieldForm.Icon) {
-		return response, formError(BSERR00006DbInsertFailed)
 	}
 
 	field.Name, err = storage.encObject.Encrypt(addFieldForm.Name)
@@ -76,19 +76,19 @@ func (storage *StorageSingleton) ReadFieldsByItemID(itemId int64) (fields []BSFi
 }
 
 func (storage *StorageSingleton) DecryptField(fieldEncrypted BSField) (field BSField, err error) {
-	field.Value, err = storage.encObject.Encrypt(fieldEncrypted.Value)
+	field.Value, err = storage.encObject.Decrypt(fieldEncrypted.Value)
 	if err != nil {
 		return field, err
 	}
-	field.Name, err = storage.encObject.Encrypt(fieldEncrypted.Name)
+	field.Name, err = storage.encObject.Decrypt(fieldEncrypted.Name)
 	if err != nil {
 		return field, err
 	}
-	field.ValueType, err = storage.encObject.Encrypt(fieldEncrypted.ValueType)
+	field.ValueType, err = storage.encObject.Decrypt(fieldEncrypted.ValueType)
 	if err != nil {
 		return field, err
 	}
-	field.Icon, err = storage.encObject.Encrypt(fieldEncrypted.Value)
+	field.Icon, err = storage.encObject.Decrypt(fieldEncrypted.Icon)
 	if err != nil {
 		return field, err
 	}

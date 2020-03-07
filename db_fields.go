@@ -32,9 +32,7 @@ const sqlInsertField = `
 `
 
 func (sdb *storageDB) dbInsertField(itemID int64, field BSField) (err error) {
-	if err := ValidateField(field); err != nil {
-		return err
-	}
+
 	if sdb.sTX == nil {
 		return formError(BSERR00003DbTransactionFailed, "dbInsertField")
 	}
