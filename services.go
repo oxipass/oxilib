@@ -27,7 +27,7 @@ func ServiceLockStorage() string {
 	if err != nil {
 		return formErrorResponse(err)
 	}
-	jsonResponse, err := EncodeJSON(JSONResponseCommon{Status: ConstSuccessResponse})
+	jsonResponse, err := EncodeJSON(CommonResponse{Status: ConstSuccessResponse})
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
@@ -35,17 +35,17 @@ func ServiceLockStorage() string {
 }
 
 func ServiceInitStorage(jsonInputParams string) string {
-	var jsonInitStorage JSONInputInitStorage
-	err := DecodeJSON(jsonInputParams, jsonInitStorage)
+	var isForm InitStorageForm
+	err := DecodeJSON(jsonInputParams, isForm)
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
 	storage := GetInstance()
-	err = storage.Open(jsonInitStorage.FileName)
+	err = storage.Open(isForm.FileName)
 	if err != nil {
 		return formErrorResponse(err)
 	}
-	jsonResponse, err := EncodeJSON(JSONResponseCommon{Status: ConstSuccessResponse})
+	jsonResponse, err := EncodeJSON(CommonResponse{Status: ConstSuccessResponse})
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
@@ -53,23 +53,23 @@ func ServiceInitStorage(jsonInputParams string) string {
 }
 
 func ServiceInitNewStorage(jsonInputParms string) string {
-	var jsonInitStorage JSONInputInitStorage
-	err := DecodeJSON(jsonInputParms, jsonInitStorage)
+	var isForm InitStorageForm
+	err := DecodeJSON(jsonInputParms, isForm)
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
 	storage := GetInstance()
-	err = storage.Open(jsonInitStorage.FileName)
+	err = storage.Open(isForm.FileName)
 	if err != nil {
 		return formErrorResponse(err)
 	}
 
-	errSetPassword := storage.SetNewPassword(jsonInitStorage.Password, jsonInitStorage.Encryption)
+	errSetPassword := storage.SetNewPassword(isForm.Password, isForm.Encryption)
 	if errSetPassword != nil {
 		return formErrorResponse(errSetPassword)
 	}
 
-	jsonResponse, err := EncodeJSON(JSONResponseCommon{Status: ConstSuccessResponse})
+	jsonResponse, err := EncodeJSON(CommonResponse{Status: ConstSuccessResponse})
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
@@ -78,13 +78,13 @@ func ServiceInitNewStorage(jsonInputParms string) string {
 
 // ServiceAddNewItem - wrapper for adding item with JSON for using it with mobile
 func ServiceAddNewItem(jsonInputParms string) string {
-	var jsonAddItem JSONInputUpdateItem
-	err := DecodeJSON(jsonInputParms, jsonAddItem)
+	var addItemForm UpdateItemForm
+	err := DecodeJSON(jsonInputParms, addItemForm)
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
 	storage := GetInstance()
-	response, err := storage.AddNewItem(jsonAddItem)
+	response, err := storage.AddNewItem(addItemForm)
 	if err != nil {
 		return formErrorResponse(err)
 	}
@@ -96,14 +96,14 @@ func ServiceAddNewItem(jsonInputParms string) string {
 }
 
 // ServiceReadAllItems - wrapper for reading all the items
-func ServiceReadAllItems(jsonInputParms string) string {
-	var jsonAddItem JSONInputReadAll
-	err := DecodeJSON(jsonInputParms, jsonAddItem)
+func ServiceReadAllItems(inputParams string) string {
+	var jsonAddItem ReadAllForm
+	err := DecodeJSON(inputParams, jsonAddItem)
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
 	storage := GetInstance()
-	allItems, err := storage.ReadAllItems()
+	allItems, err := storage.ReadAllItems(false)
 	if err != nil {
 		return formErrorResponse(err)
 	}

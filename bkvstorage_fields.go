@@ -1,7 +1,7 @@
 package bslib
 
 // AddNewItem - adds new item
-func (storage *StorageSingleton) AddNewField(addFieldForm JSONInputUpdateField) (response JSONResponseFieldAdded, err error) {
+func (storage *StorageSingleton) AddNewField(addFieldForm UpdateFieldForm) (response FieldAddedResponse, err error) {
 	var field BSField
 
 	err = storage.checkReadiness()

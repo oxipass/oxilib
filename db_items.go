@@ -85,8 +85,8 @@ const sqlListItems = `
 		WHERE deleted='0'
 `
 
-func (sdb *storageDB) dbSelectAllItems() (items []BSItem, err error) {
-
+func (sdb *storageDB) dbSelectAllItems(bool) (items []BSItem, err error) {
+	// FIXME: return also deleted items if requested
 	rows, err := sdb.sDB.Query(sqlListItems)
 	if err != nil {
 		return items, formError(BSERR00014ItemsReadFailed, err.Error())

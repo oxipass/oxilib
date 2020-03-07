@@ -21,7 +21,7 @@ func formError(errorID string, errorText ...string) error {
 }
 
 func formErrorResponse(err error) string {
-	var errorResponse JSONResponseCommon
+	var errorResponse CommonResponse
 	strItems := strings.Split(err.Error(), ": ")
 	if len(strItems) > 0 && len(strItems[0]) > 11 && strings.Contains(strItems[0], "BSERR") {
 		errorResponse.Status = CErrorResponse

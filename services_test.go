@@ -9,7 +9,7 @@ import (
 func TestWrapperServiceFuncNotExists(t *testing.T) {
 	log.Println("Checking not existing service function")
 	const cNotExistingFunction = "blahblahfunc"
-	var messageResponse JSONResponseCommon
+	var messageResponse CommonResponse
 
 	response := BSLibService(cNotExistingFunction, "")
 
@@ -30,7 +30,7 @@ func TestServiceLogin(t *testing.T) {
 	filename := generateTempFilename()
 	dbPass = generateRandomString(12)
 
-	encodedJson, err := EncodeJSON(JSONInputInitStorage{
+	encodedJson, err := EncodeJSON(InitStorageForm{
 		FileName:   filename,
 		Encryption: "AES256",
 		Password:   dbPass})
@@ -41,7 +41,7 @@ func TestServiceLogin(t *testing.T) {
 	}
 	response := ServiceInitNewStorage(encodedJson)
 
-	var messageResponse JSONResponseCommon
+	var messageResponse CommonResponse
 	err = DecodeJSON(response, &messageResponse)
 	if err != nil {
 		t.Error(err)

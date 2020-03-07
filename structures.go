@@ -23,57 +23,57 @@ type BSField struct {
 	Deleted   bool   `json:"deleted"`
 }
 
-// JSONResponseItem - response returning one item
-type JSONResponseItem struct {
-	JSONResponseCommon
-	BSItem
-}
-
-// JSONResponseItems - response returning many items
-type JSONResponseItems struct {
-	JSONResponseCommon
-	Items []BSItem `json:"items"`
-}
-
-// JSONResponseCommon - common response header structure
-type JSONResponseCommon struct {
+// CommonResponse - common response header structure
+type CommonResponse struct {
 	Status string `json:"status"`
 	MsgNum string `json:"msg_num"`
 	MsgTxt string `json:"msg_text"`
 }
 
-// JSONInputUpdateField input structure to add or update the field
-type JSONInputUpdateField struct {
+// ItemResponse - response returning one item
+type ItemResponse struct {
+	CommonResponse
+	BSItem
+}
+
+// ItemsResponse - response returning many items
+type ItemsResponse struct {
+	CommonResponse
+	Items []BSItem `json:"items"`
+}
+
+// UpdateFieldForm input structure to add or update the field
+type UpdateFieldForm struct {
 	ItemID int64 `json:"item_id"`
 	BSField
 }
 
-// JSONResponseFieldAdded - response structure for adding field
-type JSONResponseFieldAdded struct {
-	JSONResponseCommon
+// FieldAddedResponse - response structure for adding field
+type FieldAddedResponse struct {
+	CommonResponse
 	FieldID int64 `json:"field_id"`
 }
 
-// JSONInputUpdateItem - input structure to add the item
-type JSONInputUpdateItem struct {
-	ItemID   int64  `json:"item_id"`
-	ItemName string `json:"item_name"`
-	ItemIcon string `json:"item_icon"`
+// UpdateItemForm - input structure to add the item
+type UpdateItemForm struct {
+	Action string
+	BSItem
 }
 
-// JSONResponseItemAdded - response structure for adding item
-type JSONResponseItemAdded struct {
-	JSONResponseCommon
+// ItemAddedResponse - response structure for adding item
+type ItemAddedResponse struct {
+	CommonResponse
 	ItemID int64 `json:"item_id"`
 }
 
-type JSONInputInitStorage struct {
+// InitStorageForm - initializing the database
+type InitStorageForm struct {
 	FileName   string `json:"filename"`
 	Password   string `json:"password"`
 	Encryption string `json:"encryption"`
 }
 
-// JSONInputReadAll parameters for reading from database
-type JSONInputReadAll struct {
+// ReadAllForm parameters for reading from database
+type ReadAllForm struct {
 	ReadDeleted bool `json:"read_deleted"`
 }

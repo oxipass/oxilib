@@ -12,7 +12,7 @@ func (storage *StorageSingleton) checkReadiness() error {
 	return nil
 }
 
-func (storage *StorageSingleton) DeleteItem(deleteItemParms JSONInputUpdateItem) (response JSONResponseCommon, err error) {
+func (storage *StorageSingleton) DeleteItem(deleteItemParams UpdateItemForm) (response CommonResponse, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
 		return response, err
@@ -22,7 +22,7 @@ func (storage *StorageSingleton) DeleteItem(deleteItemParms JSONInputUpdateItem)
 		return response, err
 	}
 
-	err = storage.dbObject.dbDeleteItem(deleteItemParms.ItemID)
+	err = storage.dbObject.dbDeleteItem(deleteItemParams.ID)
 	if err != nil {
 		errEndTX := storage.dbObject.RollbackTX()
 		if errEndTX != nil {
@@ -42,23 +42,23 @@ func (storage *StorageSingleton) DeleteItem(deleteItemParms JSONInputUpdateItem)
 }
 
 // AddNewItem - adds new item
-func (storage *StorageSingleton) AddNewItem(addItemParms JSONInputUpdateItem) (response JSONResponseItemAdded, err error) {
+func (storage *StorageSingleton) AddNewItem(addItemParms UpdateItemForm) (response ItemAddedResponse, err error) {
 
 	err = storage.checkReadiness()
 	if err != nil {
 		return response, err
 	}
 
-	if !CheckIfExistsFontAwesome(addItemParms.ItemIcon) {
+	if !CheckIfExistsFontAwesome(addItemParms.Icon) {
 		return response, formError(BSERR00006DbInsertFailed)
 	}
 
-	encryptedItemName, err := storage.encObject.Encrypt(addItemParms.ItemName)
+	encryptedItemName, err := storage.encObject.Encrypt(addItemParms.Name)
 	if err != nil {
 		return response, err
 	}
 
-	encryptedIconName, err := storage.encObject.Encrypt(addItemParms.ItemIcon)
+	encryptedIconName, err := storage.encObject.Encrypt(addItemParms.Icon)
 	if err != nil {
 		return response, err
 	}
@@ -88,13 +88,13 @@ func (storage *StorageSingleton) AddNewItem(addItemParms JSONInputUpdateItem) (r
 }
 
 // ReadAllItems - read all not deleted items from the database and decrypt them
-func (storage *StorageSingleton) ReadAllItems() (items []BSItem, err error) {
+func (storage *StorageSingleton) ReadAllItems(readDeleted bool) (items []BSItem, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
 		return items, err
 	}
 
-	items, err = storage.dbObject.dbSelectAllItems()
+	items, err = storage.dbObject.dbSelectAllItems(readDeleted)
 	if err != nil {
 		return items, err
 	}

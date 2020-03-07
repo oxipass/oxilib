@@ -32,7 +32,13 @@ func TestDeleteItem(t *testing.T) {
 		return
 	}
 	itemName := generateRandomString(20)
-	response, err := bsInstance.AddNewItem(JSONInputUpdateItem{ItemName: itemName, ItemIcon: "fas fa-ambulance"})
+	response, err := bsInstance.AddNewItem(
+		UpdateItemForm{
+			BSItem: BSItem{
+				Name: itemName,
+				Icon: "fas fa-ambulance"},
+		},
+	)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -57,7 +63,13 @@ func TestDeleteItem(t *testing.T) {
 		return
 	}
 
-	delResponse, errDelete := bsInstance.DeleteItem(JSONInputUpdateItem{ItemID: response.ItemID})
+	delResponse, errDelete := bsInstance.DeleteItem(
+		UpdateItemForm{
+			BSItem: BSItem{
+				ID: response.ItemID,
+			},
+		},
+	)
 	if errDelete != nil {
 		t.Error(errPass)
 		t.FailNow()
@@ -83,7 +95,7 @@ func TestDeleteItem(t *testing.T) {
 		return
 	}
 
-	items, respErr := bsInstance.ReadAllItems()
+	items, respErr := bsInstance.ReadAllItems(false)
 	if respErr != nil {
 		t.Error(respErr)
 		t.FailNow()
@@ -109,7 +121,14 @@ func TestAddItemWithNonExistingIcon(t *testing.T) {
 		return
 	}
 	itemName := generateRandomString(20)
-	response, err := bsInstance.AddNewItem(JSONInputUpdateItem{ItemName: itemName, ItemIcon: "ewfdwejfnerfkj"})
+	response, err := bsInstance.AddNewItem(
+		UpdateItemForm{
+			BSItem: BSItem{
+				Name: itemName,
+				Icon: "ewfdwejfnerfkj",
+			},
+		},
+	)
 	if err == nil {
 		t.Error(errors.New("no error returned in spite of the fact that icon is not existing"))
 		t.FailNow()
@@ -131,7 +150,14 @@ func TestAddItem(t *testing.T) {
 		return
 	}
 	itemName := generateRandomString(20)
-	response, err := bsInstance.AddNewItem(JSONInputUpdateItem{ItemName: itemName, ItemIcon: "fas fa-ambulance"})
+	response, err := bsInstance.AddNewItem(
+		UpdateItemForm{
+			BSItem: BSItem{
+				Name: itemName,
+				Icon: "fas fa-ambulance",
+			},
+		},
+	)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -155,7 +181,7 @@ func TestAddItem(t *testing.T) {
 		t.FailNow()
 		return
 	}
-	items, respErr := bsInstance.ReadAllItems()
+	items, respErr := bsInstance.ReadAllItems(false)
 	if respErr != nil {
 		t.Error(respErr)
 		t.FailNow()

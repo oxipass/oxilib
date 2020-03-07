@@ -18,7 +18,7 @@ func TestFormError(t *testing.T) {
 func TestFormErrorResponse(t *testing.T) {
 	newErr := formError(BSERR00015UnknownError, cError1Test, cError2text)
 	response := formErrorResponse(newErr)
-	var messageResponse JSONResponseCommon
+	var messageResponse CommonResponse
 	err := DecodeJSON(response, &messageResponse)
 	if err != nil {
 		t.Error(err)
@@ -43,7 +43,7 @@ func TestFormErrorResponseShort(t *testing.T) {
 	const unknownError = "unknown error"
 	newErr := formError(unknownError)
 	response := formErrorResponse(newErr)
-	var messageResponse JSONResponseCommon
+	var messageResponse CommonResponse
 	err := DecodeJSON(response, &messageResponse)
 	if err != nil {
 		t.Error(err)
