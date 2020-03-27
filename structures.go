@@ -13,7 +13,7 @@ type BSItem struct {
 
 // BSField - fields definitions
 type BSField struct {
-	ID        string `json:"field_id"`
+	ID        int64  `json:"field_id"`
 	Name      string `json:"field_name"`
 	Icon      string `json:"field_icon"`
 	ValueType string `json:"value_type"`

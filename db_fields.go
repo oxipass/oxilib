@@ -31,19 +31,19 @@ const sqlInsertField = `
 		VALUES (?,?,?,?,?,?,?,0)
 `
 
-func (sdb *storageDB) dbInsertField(itemID int64, field BSField) (err error) {
+func (sdb *storageDB) dbInsertField(itemID int64, field BSField) (fieldId int64, err error) {
 
 	if sdb.sTX == nil {
-		return formError(BSERR00003DbTransactionFailed, "dbInsertField")
+		return 0, formError(BSERR00003DbTransactionFailed, "dbInsertField")
 	}
 
 	creationTime := prepareTimeForDb(time.Now())
 
 	stmt, err := sdb.sTX.Prepare(sqlInsertField)
 	if err != nil {
-		return formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertField")
+		return 0, formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertField")
 	}
-	_, errStmt := stmt.Exec(itemID,
+	res, errStmt := stmt.Exec(itemID,
 		field.Icon,
 		field.Name,
 		field.ValueType,
@@ -52,14 +52,14 @@ func (sdb *storageDB) dbInsertField(itemID int64, field BSField) (err error) {
 		creationTime)
 
 	if errStmt != nil {
-		return formError(BSERR00006DbInsertFailed, errStmt.Error(), "dbInsertField")
+		return 0, formError(BSERR00006DbInsertFailed, errStmt.Error(), "dbInsertField")
 	}
 	errClose := stmt.Close()
 	if errClose != nil {
-		return formError(BSERR00006DbInsertFailed, errClose.Error(), "dbInsertField")
+		return 0, formError(BSERR00006DbInsertFailed, errClose.Error(), "dbInsertField")
 	}
 
-	return nil
+	return res.LastInsertId()
 }
 
 // List all non-deleted items

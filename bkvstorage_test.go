@@ -192,6 +192,41 @@ func TestAddField(t *testing.T) {
 		t.FailNow()
 		return
 	}
+	errLock := bsInstance.Lock()
+	if errLock != nil {
+		t.Error(errLock)
+		t.FailNow()
+		return
+	}
+
+	errPass = bsInstance.Unlock(dbPass)
+	if errPass != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return
+	}
+
+	fields, errFields := bsInstance.ReadFieldsByItemID(response.ItemID)
+	if errFields != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return
+	}
+
+	for _, field := range fields {
+		if field.ID == fieldResult.FieldID {
+			if field.Icon == "fab fa-amazon" &&
+				field.Name == fieldName &&
+				field.Value == fieldValue {
+				return
+			}
+			t.Error("ID is found but content is wrong")
+			t.FailNow()
+			return
+		}
+	}
+	t.Error("Saved ID is not found")
+	t.FailNow()
 }
 
 func TestAddItem(t *testing.T) {

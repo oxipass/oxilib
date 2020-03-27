@@ -38,7 +38,7 @@ func (storage *StorageSingleton) AddNewField(addFieldForm UpdateFieldForm) (resp
 		return response, err
 	}
 
-	err = storage.dbObject.dbInsertField(addFieldForm.ItemID, field)
+	fieldId, err := storage.dbObject.dbInsertField(addFieldForm.ItemID, field)
 	if err != nil {
 		errEndTX := storage.dbObject.RollbackTX()
 		if errEndTX != nil {
@@ -53,6 +53,7 @@ func (storage *StorageSingleton) AddNewField(addFieldForm UpdateFieldForm) (resp
 	}
 
 	response.Status = ConstSuccessResponse
+	response.FieldID = fieldId
 
 	return response, nil
 }
