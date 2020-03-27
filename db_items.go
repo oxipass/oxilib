@@ -16,25 +16,41 @@ const sqlCreateTableItems = `
 `
 
 const sqlDeleteItem = `UPDATE items SET deleted=1, updated=? WHERE item_id=? `
+const sqlDeleteItemField = `UPDATE fields SET deleted=1, updated=? WHERE item_id=? `
 
 func (sdb *storageDB) dbDeleteItem(itemID int64) (err error) {
 	if sdb.sTX == nil {
 		return formError(BSERR00003DbTransactionFailed, "dbDeleteItem")
 	}
 
-	stmt, err := sdb.sTX.Prepare(sqlDeleteItem)
-	if err != nil {
-		return err
-	}
-
 	updateTime := prepareTimeForDb(time.Now())
 
-	_, err = stmt.Exec(updateTime, itemID)
+	stmtItem, err := sdb.sTX.Prepare(sqlDeleteItem)
 	if err != nil {
 		return err
 	}
 
-	errClose := stmt.Close()
+	_, err = stmtItem.Exec(updateTime, itemID)
+	if err != nil {
+		return err
+	}
+
+	errClose := stmtItem.Close()
+	if errClose != nil {
+		return formError(BSERR00016DbDeleteFailed, errClose.Error())
+	}
+
+	stmtItemFields, err := sdb.sTX.Prepare(sqlDeleteItemField)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmtItemFields.Exec(updateTime, itemID)
+	if err != nil {
+		return err
+	}
+
+	errClose = stmtItemFields.Close()
 	if errClose != nil {
 		return formError(BSERR00016DbDeleteFailed, errClose.Error())
 	}
@@ -85,7 +101,7 @@ const sqlListItems = `
 		WHERE deleted='0'
 `
 
-func (sdb *storageDB) dbSelectAllItems(bool) (items []BSItem, err error) {
+func (sdb *storageDB) dbSelectAllItems(returnDeleted bool) (items []BSItem, err error) {
 	// FIXME: return also deleted items if requested
 	rows, err := sdb.sDB.Query(sqlListItems)
 	if err != nil {
@@ -110,6 +126,10 @@ func (sdb *storageDB) dbSelectAllItems(bool) (items []BSItem, err error) {
 			&bsItem.Deleted)
 		if err != nil {
 			return items, err
+		}
+
+		if bsItem.Deleted == true && returnDeleted == false {
+			continue
 		}
 
 		items = append(items, bsItem)

@@ -1,5 +1,34 @@
 package bslib
 
+// DeleteField - delete existing field
+func (storage *StorageSingleton) DeleteField(deleteFieldForm UpdateFieldForm) (response CommonResponse, err error) {
+	err = storage.checkReadiness()
+	if err != nil {
+		return response, err
+	}
+
+	err = storage.dbObject.StartTX()
+	if err != nil {
+		return response, err
+	}
+	err = storage.dbObject.dbDeleteField(deleteFieldForm.ID)
+	if err != nil {
+		errEndTX := storage.dbObject.RollbackTX()
+		if errEndTX != nil {
+			return response, formError(BSERR00016DbDeleteFailed, err.Error(), errEndTX.Error())
+		}
+		return response, err
+	}
+
+	err = storage.dbObject.CommitTX()
+	if err != nil {
+		return response, err
+	}
+
+	response.Status = ConstSuccessResponse
+	return response, nil
+}
+
 // AddNewItem - adds new item
 func (storage *StorageSingleton) AddNewField(addFieldForm UpdateFieldForm) (response FieldAddedResponse, err error) {
 	var field BSField
@@ -74,6 +103,20 @@ func (storage *StorageSingleton) ReadFieldsByItemID(itemId int64) (fields []BSFi
 	}
 
 	return fields, nil
+}
+
+// AddNewItem - adds new item
+func (storage *StorageSingleton) ReadFieldsByFieldID(fieldId int64) (field BSField, err error) {
+	fieldEncrypted, err := storage.dbObject.dbGetFieldById(fieldId)
+	if err != nil {
+		return field, err
+	}
+
+	fieldReady, err := storage.DecryptField(fieldEncrypted)
+	if err != nil {
+		return field, err
+	}
+	return fieldReady, nil
 }
 
 func (storage *StorageSingleton) DecryptField(fieldEncrypted BSField) (field BSField, err error) {
