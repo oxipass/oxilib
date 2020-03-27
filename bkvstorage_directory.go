@@ -2,20 +2,35 @@ package bslib
 
 import "strings"
 
+const (
+	VTText             = "text"
+	VTLongText         = "longtext"
+	VTCard             = "card"
+	VTPassword         = "password"
+	VTLink             = "link"
+	VTEmail            = "email"
+	VTPhone            = "phone"
+	VTDate             = "date"
+	VTExpirationDate   = "expdate"
+	VTTime             = "time"
+	VTOneTimePassword  = "otp"
+	VTPreviousPassword = "prevpass"
+)
+
 func GetValueTypes() (vTypes []string) {
 	return []string{
-		"text",
-		"longtext",
-		"card",
-		"password",
-		"link",
-		"email",
-		"phone",
-		"date",
-		"expdate",
-		"time",
-		"2fa",
-		"prevpass",
+		VTText,
+		VTLongText,
+		VTCard,
+		VTPassword,
+		VTLink,
+		VTEmail,
+		VTPhone,
+		VTDate,
+		VTExpirationDate,
+		VTTime,
+		VTOneTimePassword,
+		VTPreviousPassword,
 	}
 }
 

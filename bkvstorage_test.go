@@ -141,6 +141,59 @@ func TestAddItemWithNonExistingIcon(t *testing.T) {
 	}
 }
 
+func TestAddField(t *testing.T) {
+	bsInstance := GetInstance()
+	errPass := bsInstance.Unlock(dbPass)
+	if errPass != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return
+	}
+	itemName := generateRandomString(20)
+	response, err := bsInstance.AddNewItem(
+		UpdateItemForm{
+			BSItem: BSItem{
+				Name: itemName,
+				Icon: "fas fa-ambulance",
+			},
+		},
+	)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+		return
+	}
+	if response.Status != ConstSuccessResponse {
+		t.Error(errors.New("response is not successfull"))
+		t.FailNow()
+		return
+	}
+
+	fieldName := generateRandomString(20)
+	fieldValue := generateRandomString(20)
+	fieldResult, errField := bsInstance.AddNewField(
+		UpdateFieldForm{
+			ItemID: response.ItemID,
+			BSField: BSField{
+				Name:      fieldName,
+				Icon:      "fab fa-amazon",
+				ValueType: VTText,
+				Value:     fieldValue,
+			},
+		},
+	)
+	if errField != nil {
+		t.Error(errField)
+		t.FailNow()
+		return
+	}
+	if fieldResult.Status != ConstSuccessResponse {
+		t.Error(errors.New("response is not successful: " + fieldResult.MsgTxt))
+		t.FailNow()
+		return
+	}
+}
+
 func TestAddItem(t *testing.T) {
 	bsInstance := GetInstance()
 	errPass := bsInstance.Unlock(dbPass)
