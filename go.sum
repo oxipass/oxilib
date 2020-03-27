@@ -1,5 +1,7 @@
 github.com/bykovme/bsencrypt v0.0.0-20200226202503-83c729bf736b h1:0q6sZAlwwm63FS7I0M3Fzx+NTPOUo2JsBxHh93c/R0w=
 github.com/bykovme/bsencrypt v0.0.0-20200226202503-83c729bf736b/go.mod h1:DjXOwlYtROyOauV5Qb1dMg1ZrUplpbzDrSL1hUiG0CE=
+github.com/bykovme/bsencrypt v1.0.0 h1:spxPvY2LCOnmckI/icuY01TlATC6Rp9WGjOCHDLAIdY=
+github.com/bykovme/bsencrypt v1.0.0/go.mod h1:DjXOwlYtROyOauV5Qb1dMg1ZrUplpbzDrSL1hUiG0CE=
 github.com/mattn/go-sqlite3 v1.13.0 h1:LnJI81JidiW9r7pS/hXe6cFeO5EXNq7KbfvoJLRI69c=
 github.com/mattn/go-sqlite3 v2.0.3+incompatible h1:gXHsfypPkaMZrKbD5209QV9jbUTJKjyR5WD3HYQSd+U=
 github.com/mattn/go-sqlite3 v2.0.3+incompatible/go.mod h1:FPy6KqzDD04eiIsT53CuJW3U88zkxoIYsOqkbpncsNc=
