@@ -128,7 +128,7 @@ func (sdb *storageDB) dbSelectAllItems(returnDeleted bool) (items []BSItem, err 
 			return items, err
 		}
 
-		if bsItem.Deleted == true && returnDeleted == false {
+		if bsItem.Deleted && returnDeleted == false {
 			continue
 		}
 

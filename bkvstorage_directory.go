@@ -43,13 +43,21 @@ func CheckValueType(vType string) bool {
 	return false
 }
 
+var cachedFA []string
+
 func GetFontAwesomeList() (faValues []string) {
-	return faCachedValues
+	if cachedFA != nil {
+		return cachedFA
+	}
+	for k := range faCachedValues {
+		cachedFA = append(cachedFA, k)
+	}
+	return cachedFA
 }
 
 func CheckIfExistsFontAwesome(faCheckValue string) bool {
-	for _, faFound := range faCachedValues {
-		if faFound == faCheckValue {
+	for faKey := range faCachedValues {
+		if faKey == faCheckValue {
 			return true
 		}
 	}
@@ -58,9 +66,9 @@ func CheckIfExistsFontAwesome(faCheckValue string) bool {
 
 func SearchFontAwesomeList(term string) (faValues []string) {
 	lowerTerm := strings.ToLower(term)
-	for _, faFound := range faCachedValues {
-		if strings.Contains(faFound, lowerTerm) {
-			faValues = append(faValues, faFound)
+	for faKey, faSearchTerms := range faCachedValues {
+		if strings.Contains(faKey, lowerTerm) || strings.Contains(faSearchTerms, lowerTerm) {
+			faValues = append(faValues, faKey)
 		}
 	}
 	return faValues
