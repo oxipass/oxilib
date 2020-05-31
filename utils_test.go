@@ -10,6 +10,13 @@ type testStruct struct {
 	CheckInt  int64  `json:"check_int"`
 }
 
+func TestEncodeEmptyJSON(t *testing.T) {
+	_, err := EncodeJSON(make(chan int))
+	if err == nil {
+		t.Errorf("Expected error, retrieved nil")
+	}
+}
+
 func TestEncodeJSON(t *testing.T) {
 	var wStr testStruct
 	wStr.CheckBool = true
