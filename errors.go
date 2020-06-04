@@ -110,3 +110,15 @@ const BSERR00021FieldsReadFailed = "BSERR00021_FIELDSREADFAILED"
 
 // BSERR00022ValidationFailed - fields read failure
 const BSERR00022ValidationFailed = "BSERR00022_VALIDATIONFAILED"
+
+// BSERR00023UpdateFieldsEmpty - there are no fields to update, all of them are empty
+const BSERR00023UpdateFieldsEmpty = "BSERR00023_UPDATE_FIELDS_EMPTY"
+
+// BSERR00024FontAwesomeIconNotFound - icon name is not found in font awesome
+const BSERR00024FontAwesomeIconNotFound = "BSERR00024_FA_ICON_NOT_FOUND"
+
+// BSERR00025ItemIdEmptyOrWrong - item id is not provided or is wrong
+const BSERR00025ItemIdEmptyOrWrong = "BSERR00025_ITEMID_EMPTY_OR_WRONG"
+
+// BSERR00026DbItemIconUpdateFailed - failed to update item icon
+const BSERR00026DbItemIconUpdateFailed = "BSERR00018_DB_ICON_UPDATE_FAILED"

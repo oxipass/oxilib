@@ -41,6 +41,74 @@ func (storage *StorageSingleton) DeleteItem(deleteItemParams UpdateItemForm) (re
 	return response, nil
 }
 
+func (storage *StorageSingleton) UpdateItem(updateItemParms UpdateItemForm) (response ItemUpdatedResponse, err error) {
+	var encryptedItemName, encryptedIconName string
+	err = storage.checkReadiness()
+	if err != nil {
+		return response, err
+	}
+
+	if updateItemParms.ID <= 0 {
+		return response, formError(BSERR00025ItemIdEmptyOrWrong)
+	}
+
+	if updateItemParms.Name == "" && updateItemParms.Icon == "" {
+		return response, formError(BSERR00023UpdateFieldsEmpty)
+	}
+
+	if updateItemParms.Icon != "" {
+		if !CheckIfExistsFontAwesome(updateItemParms.Icon) {
+			return response, formError(BSERR00024FontAwesomeIconNotFound)
+		}
+		encryptedIconName, err = storage.encObject.Encrypt(updateItemParms.Icon)
+		if err != nil {
+			return response, err
+		}
+	}
+	if updateItemParms.Name != "" {
+		encryptedItemName, err = storage.encObject.Encrypt(updateItemParms.Name)
+		if err != nil {
+			return response, err
+		}
+	}
+
+	err = storage.dbObject.StartTX()
+	if err != nil {
+		return response, err
+	}
+
+	if updateItemParms.Name != "" {
+		err = storage.dbObject.dbUpdateItemName(updateItemParms.ID, encryptedItemName)
+		if err != nil {
+			errEndTX := storage.dbObject.RollbackTX()
+			if errEndTX != nil {
+				return response, formError(BSERR00018DbItemNameUpdateFailed, err.Error(), errEndTX.Error())
+			}
+			return response, err
+		}
+	}
+
+	if updateItemParms.Icon != "" {
+		err = storage.dbObject.dbUpdateItemIcon(updateItemParms.ID, encryptedIconName)
+		if err != nil {
+			errEndTX := storage.dbObject.RollbackTX()
+			if errEndTX != nil {
+				return response, formError(BSERR00026DbItemIconUpdateFailed, err.Error(), errEndTX.Error())
+			}
+			return response, err
+		}
+	}
+
+	err = storage.dbObject.CommitTX()
+	if err != nil {
+		return response, err
+	}
+
+	response.Status = ConstSuccessResponse
+
+	return response, nil
+}
+
 // AddNewItem - adds new item
 func (storage *StorageSingleton) AddNewItem(addItemParms UpdateItemForm) (response ItemAddedResponse, err error) {
 
@@ -50,7 +118,7 @@ func (storage *StorageSingleton) AddNewItem(addItemParms UpdateItemForm) (respon
 	}
 
 	if !CheckIfExistsFontAwesome(addItemParms.Icon) {
-		return response, formError(BSERR00006DbInsertFailed)
+		return response, formError(BSERR00024FontAwesomeIconNotFound)
 	}
 
 	encryptedItemName, err := storage.encObject.Encrypt(addItemParms.Name)

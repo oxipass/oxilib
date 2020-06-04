@@ -139,7 +139,7 @@ func (sdb *storageDB) dbSelectAllItems(returnDeleted bool) (items []BSItem, err 
 
 const sqlUpdateItemName = `UPDATE items SET name=?, updated=? WHERE item_id=? `
 
-func (sdb *storageDB) dbUpdateItemName(itemID string, newName string) (err error) {
+func (sdb *storageDB) dbUpdateItemName(itemID int64, newName string) (err error) {
 	if sdb.sTX == nil {
 		return formError(BSERR00003DbTransactionFailed, "dbUpdateItemName")
 	}
@@ -205,4 +205,30 @@ func (sdb *storageDB) dbGetItemById(itemId int64) (item BSItem, err error) {
 		return bsItem, nil
 	}
 	return item, formError(BSERR00019ItemNotFound)
+}
+
+const sqlUpdateItemIcon = `UPDATE items SET icon=?, updated=? WHERE item_id=? `
+
+func (sdb *storageDB) dbUpdateItemIcon(itemID int64, newIcon string) (err error) {
+	if sdb.sTX == nil {
+		return formError(BSERR00003DbTransactionFailed, "dbUpdateItemIcon")
+	}
+
+	stmt, err := sdb.sTX.Prepare(sqlUpdateItemIcon)
+	if err != nil {
+		return err
+	}
+
+	updateTime := prepareTimeForDb(time.Now())
+
+	_, err = stmt.Exec(newIcon, updateTime, itemID)
+	if err != nil {
+		return err
+	}
+
+	errClose := stmt.Close()
+	if errClose != nil {
+		return formError(BSERR00026DbItemIconUpdateFailed, errClose.Error())
+	}
+	return nil
 }

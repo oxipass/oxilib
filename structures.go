@@ -66,6 +66,11 @@ type ItemAddedResponse struct {
 	ItemID int64 `json:"item_id"`
 }
 
+type ItemUpdatedResponse struct {
+	CommonResponse
+	UpdatedFields string `json:"updated_fields"`
+}
+
 // InitStorageForm - initializing the database
 type InitStorageForm struct {
 	FileName   string `json:"filename"`
