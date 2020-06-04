@@ -4,12 +4,13 @@ import "testing"
 
 const cError1Test = "error one"
 const cError2text = "error two"
+const cPrintExpectedVsRetrieved = "Expected '%s', retrieved '%s'"
 
 func TestFormError(t *testing.T) {
 	expectedString := BSERR00015UnknownError + ": " + cError1Test + ", " + cError2text
 	newErr := formError(BSERR00015UnknownError, cError1Test, cError2text)
 	if newErr.Error() != BSERR00015UnknownError+": "+cError1Test+", "+cError2text {
-		t.Errorf("Expected '%s', retrieved '%s'", expectedString, newErr.Error())
+		t.Errorf(cPrintExpectedVsRetrieved, expectedString, newErr.Error())
 		t.FailNow()
 		return
 	}
@@ -26,15 +27,15 @@ func TestFormErrorResponse(t *testing.T) {
 		return
 	}
 	if messageResponse.Status != CErrorResponse {
-		t.Errorf("Expected '%s', retrieved '%s'", CErrorResponse, messageResponse.Status)
+		t.Errorf(cPrintExpectedVsRetrieved, CErrorResponse, messageResponse.Status)
 		return
 	}
 	if messageResponse.MsgTxt != cError1Test+", "+cError2text {
-		t.Errorf("Expected '%s', retrieved '%s'", cError1Test+", "+cError2text, messageResponse.MsgTxt)
+		t.Errorf(cPrintExpectedVsRetrieved, cError1Test+", "+cError2text, messageResponse.MsgTxt)
 		return
 	}
 	if messageResponse.MsgNum != BSERR00015UnknownError {
-		t.Errorf("Expected '%s', retrieved '%s'", BSERR00015UnknownError, messageResponse.MsgNum)
+		t.Errorf(cPrintExpectedVsRetrieved, BSERR00015UnknownError, messageResponse.MsgNum)
 		return
 	}
 }
@@ -51,15 +52,15 @@ func TestFormErrorResponseShort(t *testing.T) {
 		return
 	}
 	if messageResponse.Status != CErrorResponse {
-		t.Errorf("Expected '%s', retrieved '%s'", CErrorResponse, messageResponse.Status)
+		t.Errorf(cPrintExpectedVsRetrieved, CErrorResponse, messageResponse.Status)
 		return
 	}
 	if messageResponse.MsgTxt != unknownError {
-		t.Errorf("Expected '%s', retrieved '%s'", unknownError, messageResponse.MsgTxt)
+		t.Errorf(cPrintExpectedVsRetrieved, unknownError, messageResponse.MsgTxt)
 		return
 	}
 	if messageResponse.MsgNum != BSERR00015UnknownError {
-		t.Errorf("Expected '%s', retrieved '%s'", BSERR00015UnknownError, messageResponse.MsgNum)
+		t.Errorf(cPrintExpectedVsRetrieved, BSERR00015UnknownError, messageResponse.MsgNum)
 		return
 	}
 }
