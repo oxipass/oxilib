@@ -5,52 +5,67 @@ import (
 	"testing"
 )
 
-func TestUpdateItemName(t *testing.T) {
+const cTestItemName01 = "hjb cwec78hduycbwj dbwne w"
+const cTestItemIcon01 = "fas fa-ambulance"
+
+const cTestItemName02 = "98jmwhj2ndycwbcjdwlmdk"
+const cTestItemIcon02 = "fab fa-linkedin"
+
+func testHelperCreateItem(t *testing.T) (itemId int64, testPassed bool) {
 	bsInstance := GetInstance()
+	errPass := bsInstance.Unlock(dbPass)
+	if errPass != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return 0, false
+	}
+	response, err := bsInstance.AddNewItem(
+		UpdateItemForm{
+			BSItem: BSItem{
+				Name: cTestItemName01,
+				Icon: cTestItemIcon01,
+			},
+		},
+	)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+		return 0, false
+	}
+	if response.Status != ConstSuccessResponse {
+		t.Error(errors.New("response is not successful"))
+		t.FailNow()
+		return 0, false
+	}
+	errLock := bsInstance.Lock()
+	if errLock != nil {
+		t.Error(errLock)
+		t.FailNow()
+		return 0, false
+	}
+	return response.ItemID, false
+}
+
+func TestUpdateItemName(t *testing.T) {
+	itemId, testPassed := testHelperCreateItem(t)
+
+	if !testPassed {
+		return
+	}
+	bsInstance := GetInstance()
+
 	errPass := bsInstance.Unlock(dbPass)
 	if errPass != nil {
 		t.Error(errPass)
 		t.FailNow()
 		return
 	}
-	itemName := generateRandomString(20)
-	response, err := bsInstance.AddNewItem(
-		UpdateItemForm{
-			BSItem: BSItem{
-				Name: itemName,
-				Icon: "fas fa-ambulance"},
-		},
-	)
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-		return
-	}
-	if response.Status != ConstSuccessResponse {
-		t.Error(errors.New("response is not successful"))
-		t.FailNow()
-		return
-	}
-	errLock := bsInstance.Lock()
-	if errLock != nil {
-		t.Error(errLock)
-		t.FailNow()
-		return
-	}
 
-	errPass = bsInstance.Unlock(dbPass)
-	if errPass != nil {
-		t.Error(errPass)
-		t.FailNow()
-		return
-	}
-
-	itemName2 := generateRandomString(20)
 	updateResponse, errUpdated := bsInstance.UpdateItem(
 		UpdateItemForm{
 			BSItem: BSItem{
-				ID:   response.ItemID,
-				Name: itemName2,
+				ID:   itemId,
+				Name: cTestItemName02,
 			},
 		},
 	)
@@ -65,67 +80,6 @@ func TestUpdateItemName(t *testing.T) {
 		return
 	}
 
-	errLock = bsInstance.Lock()
-	if errLock != nil {
-		t.Error(errLock)
-		t.FailNow()
-		return
-	}
-
-	errPass = bsInstance.Unlock(dbPass)
-	if errPass != nil {
-		t.Error(errPass)
-		t.FailNow()
-		return
-	}
-
-	item, respErr := bsInstance.ReadItemById(response.ItemID)
-	if respErr != nil {
-		t.Error(respErr)
-		t.FailNow()
-		return
-	}
-
-	if item.ID != response.ItemID {
-		t.Error(errors.New("response item is wrong"))
-		t.FailNow()
-		return
-	}
-
-	if item.Name != itemName2 {
-		t.Errorf("Expected '%s' after update, retrieved '%s'", itemName2, item.Name)
-		t.FailNow()
-		return
-	}
-
-}
-
-func TestDeleteItem(t *testing.T) {
-	bsInstance := GetInstance()
-	errPass := bsInstance.Unlock(dbPass)
-	if errPass != nil {
-		t.Error(errPass)
-		t.FailNow()
-		return
-	}
-	itemName := generateRandomString(20)
-	response, err := bsInstance.AddNewItem(
-		UpdateItemForm{
-			BSItem: BSItem{
-				Name: itemName,
-				Icon: "fas fa-ambulance"},
-		},
-	)
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-		return
-	}
-	if response.Status != ConstSuccessResponse {
-		t.Error(errors.New("response is not successful"))
-		t.FailNow()
-		return
-	}
 	errLock := bsInstance.Lock()
 	if errLock != nil {
 		t.Error(errLock)
@@ -140,10 +94,46 @@ func TestDeleteItem(t *testing.T) {
 		return
 	}
 
+	item, respErr := bsInstance.ReadItemById(itemId)
+	if respErr != nil {
+		t.Error(respErr)
+		t.FailNow()
+		return
+	}
+
+	if item.ID != itemId {
+		t.Error(errors.New("response item is wrong"))
+		t.FailNow()
+		return
+	}
+
+	if item.Name != cTestItemName02 {
+		t.Errorf("Expected '%s' after update, retrieved '%s'", cTestItemName02, item.Name)
+		t.FailNow()
+		return
+	}
+
+}
+
+func TestDeleteItem(t *testing.T) {
+	itemId, testPassed := testHelperCreateItem(t)
+
+	if !testPassed {
+		return
+	}
+	bsInstance := GetInstance()
+
+	errPass := bsInstance.Unlock(dbPass)
+	if errPass != nil {
+		t.Error(errPass)
+		t.FailNow()
+		return
+	}
+
 	delResponse, errDelete := bsInstance.DeleteItem(
 		UpdateItemForm{
 			BSItem: BSItem{
-				ID: response.ItemID,
+				ID: itemId,
 			},
 		},
 	)
@@ -158,7 +148,7 @@ func TestDeleteItem(t *testing.T) {
 		return
 	}
 
-	errLock = bsInstance.Lock()
+	errLock := bsInstance.Lock()
 	if errLock != nil {
 		t.Error(errLock)
 		t.FailNow()
@@ -180,7 +170,7 @@ func TestDeleteItem(t *testing.T) {
 	}
 
 	for _, item := range items {
-		if item.ID == response.ItemID && item.Deleted == false {
+		if item.ID == itemId && item.Deleted == false {
 			t.Error(errors.New("deleted item is found as not deleted"))
 			t.FailNow()
 			return
@@ -188,6 +178,8 @@ func TestDeleteItem(t *testing.T) {
 	}
 
 }
+
+const cTestNonExistingIcon = "djcndkcnkd"
 
 func TestAddItemWithNonExistingIcon(t *testing.T) {
 	bsInstance := GetInstance()
@@ -197,12 +189,12 @@ func TestAddItemWithNonExistingIcon(t *testing.T) {
 		t.FailNow()
 		return
 	}
-	itemName := generateRandomString(20)
+
 	response, err := bsInstance.AddNewItem(
 		UpdateItemForm{
 			BSItem: BSItem{
-				Name: itemName,
-				Icon: "ewfdwejfnerfkj",
+				Name: cTestItemName01,
+				Icon: cTestNonExistingIcon,
 			},
 		},
 	)
@@ -219,52 +211,26 @@ func TestAddItemWithNonExistingIcon(t *testing.T) {
 }
 
 func TestAddItem(t *testing.T) {
+	itemId, testPassed := testHelperCreateItem(t)
+
+	if !testPassed {
+		return
+	}
 	bsInstance := GetInstance()
+
 	errPass := bsInstance.Unlock(dbPass)
 	if errPass != nil {
 		t.Error(errPass)
 		t.FailNow()
 		return
 	}
-	itemName := generateRandomString(20)
-	response, err := bsInstance.AddNewItem(
-		UpdateItemForm{
-			BSItem: BSItem{
-				Name: itemName,
-				Icon: "fas fa-ambulance",
-			},
-		},
-	)
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-		return
-	}
-	if response.Status != ConstSuccessResponse {
-		t.Error(errors.New("response is not successfull"))
-		t.FailNow()
-		return
-	}
-	errLock := bsInstance.Lock()
-	if errLock != nil {
-		t.Error(errLock)
-		t.FailNow()
-		return
-	}
-
-	errPass = bsInstance.Unlock(dbPass)
-	if errPass != nil {
-		t.Error(errPass)
-		t.FailNow()
-		return
-	}
-	item, respErr := bsInstance.ReadItemById(response.ItemID)
+	item, respErr := bsInstance.ReadItemById(itemId)
 	if respErr != nil {
 		t.Error(respErr)
 		t.FailNow()
 		return
 	}
-	if item.ID == response.ItemID && item.Name == itemName {
+	if item.ID == itemId && item.Name == cTestItemName01 {
 		return
 	}
 
@@ -274,51 +240,25 @@ func TestAddItem(t *testing.T) {
 }
 
 func TestUpdateItemIcon(t *testing.T) {
+	itemId, testPassed := testHelperCreateItem(t)
+
+	if !testPassed {
+		return
+	}
 	bsInstance := GetInstance()
+
 	errPass := bsInstance.Unlock(dbPass)
 	if errPass != nil {
 		t.Error(errPass)
 		t.FailNow()
 		return
 	}
-	itemName := generateRandomString(20)
-	response, err := bsInstance.AddNewItem(
-		UpdateItemForm{
-			BSItem: BSItem{
-				Name: itemName,
-				Icon: "fas fa-ambulance"},
-		},
-	)
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-		return
-	}
-	if response.Status != ConstSuccessResponse {
-		t.Error(errors.New("response is not successful"))
-		t.FailNow()
-		return
-	}
-	errLock := bsInstance.Lock()
-	if errLock != nil {
-		t.Error(errLock)
-		t.FailNow()
-		return
-	}
 
-	errPass = bsInstance.Unlock(dbPass)
-	if errPass != nil {
-		t.Error(errPass)
-		t.FailNow()
-		return
-	}
-
-	itemIcon := "fab fa-linkedin"
 	updateResponse, errUpdated := bsInstance.UpdateItem(
 		UpdateItemForm{
 			BSItem: BSItem{
-				ID:   response.ItemID,
-				Icon: itemIcon,
+				ID:   itemId,
+				Icon: cTestItemIcon02,
 			},
 		},
 	)
@@ -333,7 +273,7 @@ func TestUpdateItemIcon(t *testing.T) {
 		return
 	}
 
-	errLock = bsInstance.Lock()
+	errLock := bsInstance.Lock()
 	if errLock != nil {
 		t.Error(errLock)
 		t.FailNow()
@@ -347,23 +287,22 @@ func TestUpdateItemIcon(t *testing.T) {
 		return
 	}
 
-	item, respErr := bsInstance.ReadItemById(response.ItemID)
+	item, respErr := bsInstance.ReadItemById(itemId)
 	if respErr != nil {
 		t.Error(respErr)
 		t.FailNow()
 		return
 	}
 
-	if item.ID != response.ItemID {
+	if item.ID != itemId {
 		t.Error(errors.New("response item is wrong"))
 		t.FailNow()
 		return
 	}
 
-	if item.Icon != itemIcon {
-		t.Errorf("Expected '%s' after update, retrieved '%s'", itemIcon, item.Icon)
+	if item.Icon != cTestItemIcon02 {
+		t.Errorf("Expected '%s' after update, retrieved '%s'", cTestItemIcon02, item.Icon)
 		t.FailNow()
 		return
 	}
-
 }
