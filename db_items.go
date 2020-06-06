@@ -101,9 +101,21 @@ const sqlListItems = `
 		WHERE deleted='0'
 `
 
+// List all non-deleted items
+const sqlListItemsWithDeleted = `
+	SELECT item_id, name, icon, created, updated, deleted
+		FROM items
+`
+
 func (sdb *storageDB) dbSelectAllItems(returnDeleted bool) (items []BSItem, err error) {
 	// FIXME: return also deleted items if requested
-	rows, err := sdb.sDB.Query(sqlListItems)
+	var sqlList string
+	if returnDeleted {
+		sqlList = sqlListItemsWithDeleted
+	} else {
+		sqlList = sqlListItems
+	}
+	rows, err := sdb.sDB.Query(sqlList)
 	if err != nil {
 		return items, formError(BSERR00014ItemsReadFailed, err.Error())
 	}
