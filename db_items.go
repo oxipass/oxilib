@@ -108,7 +108,6 @@ const sqlListItemsWithDeleted = `
 `
 
 func (sdb *storageDB) dbSelectAllItems(returnDeleted bool) (items []BSItem, err error) {
-	// FIXME: return also deleted items if requested
 	var sqlList string
 	if returnDeleted {
 		sqlList = sqlListItemsWithDeleted
