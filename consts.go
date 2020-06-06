@@ -17,7 +17,7 @@ const constDbFormat = "2006-01-02 15:04:05"
 // ConstSuccessResponse - default success response
 const ConstSuccessResponse = "success"
 
-// ConstErrorResponse - default error response
+// CErrorResponse - default error response
 const CErrorResponse = "error"
 
 const cTempDBFile = "test.sqlite"

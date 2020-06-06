@@ -15,3 +15,19 @@ func ValidateField(field BSField) error {
 
 	return nil
 }
+
+func ValidateItemBeforeUpdate(updateItemParams UpdateItemForm) error {
+	if updateItemParams.ID <= 0 {
+		return formError(BSERR00025ItemIdEmptyOrWrong)
+	}
+
+	if updateItemParams.Name == "" && updateItemParams.Icon == "" {
+		return formError(BSERR00023UpdateFieldsEmpty)
+	}
+	if updateItemParams.Icon != "" {
+		if !CheckIfExistsFontAwesome(updateItemParams.Icon) {
+			return formError(BSERR00024FontAwesomeIconNotFound)
+		}
+	}
+	return nil
+}

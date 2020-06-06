@@ -41,32 +41,26 @@ func (storage *StorageSingleton) DeleteItem(deleteItemParams UpdateItemForm) (re
 	return response, nil
 }
 
-func (storage *StorageSingleton) UpdateItem(updateItemParms UpdateItemForm) (response ItemUpdatedResponse, err error) {
+func (storage *StorageSingleton) UpdateItem(updateItemParams UpdateItemForm) (response ItemUpdatedResponse, err error) {
 	var encryptedItemName, encryptedIconName string
 	err = storage.checkReadiness()
 	if err != nil {
 		return response, err
 	}
 
-	if updateItemParms.ID <= 0 {
-		return response, formError(BSERR00025ItemIdEmptyOrWrong)
+	err = ValidateItemBeforeUpdate(updateItemParams)
+	if err != nil {
+		return response, err
 	}
 
-	if updateItemParms.Name == "" && updateItemParms.Icon == "" {
-		return response, formError(BSERR00023UpdateFieldsEmpty)
-	}
-
-	if updateItemParms.Icon != "" {
-		if !CheckIfExistsFontAwesome(updateItemParms.Icon) {
-			return response, formError(BSERR00024FontAwesomeIconNotFound)
-		}
-		encryptedIconName, err = storage.encObject.Encrypt(updateItemParms.Icon)
+	if updateItemParams.Icon != "" {
+		encryptedIconName, err = storage.encObject.Encrypt(updateItemParams.Icon)
 		if err != nil {
 			return response, err
 		}
 	}
-	if updateItemParms.Name != "" {
-		encryptedItemName, err = storage.encObject.Encrypt(updateItemParms.Name)
+	if updateItemParams.Name != "" {
+		encryptedItemName, err = storage.encObject.Encrypt(updateItemParams.Name)
 		if err != nil {
 			return response, err
 		}
@@ -77,8 +71,8 @@ func (storage *StorageSingleton) UpdateItem(updateItemParms UpdateItemForm) (res
 		return response, err
 	}
 
-	if updateItemParms.Name != "" {
-		err = storage.dbObject.dbUpdateItemName(updateItemParms.ID, encryptedItemName)
+	if updateItemParams.Name != "" {
+		err = storage.dbObject.dbUpdateItemName(updateItemParams.ID, encryptedItemName)
 		if err != nil {
 			errEndTX := storage.dbObject.RollbackTX()
 			if errEndTX != nil {
@@ -88,8 +82,8 @@ func (storage *StorageSingleton) UpdateItem(updateItemParms UpdateItemForm) (res
 		}
 	}
 
-	if updateItemParms.Icon != "" {
-		err = storage.dbObject.dbUpdateItemIcon(updateItemParms.ID, encryptedIconName)
+	if updateItemParams.Icon != "" {
+		err = storage.dbObject.dbUpdateItemIcon(updateItemParams.ID, encryptedIconName)
 		if err != nil {
 			errEndTX := storage.dbObject.RollbackTX()
 			if errEndTX != nil {
@@ -181,7 +175,7 @@ func (storage *StorageSingleton) ReadAllItems(readDeleted bool) (items []BSItem,
 	return items, nil
 }
 
-// ReadAllItems - read all not deleted items from the database and decrypt them
+// ReadItemById - read item by its Id
 func (storage *StorageSingleton) ReadItemById(itemId int64) (item BSItem, err error) {
 	err = storage.checkReadiness()
 	if err != nil {

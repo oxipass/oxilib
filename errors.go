@@ -103,6 +103,7 @@ const BSERR00018DbItemNameUpdateFailed = "BSERR00018_DB_NAME_UPDATE_FAILED"
 // BSERR00019ItemNotFound - item not found
 const BSERR00019ItemNotFound = "BSERR00019_ITEMNOTFOUND"
 
+// BSERR00020FunctionNotFound - library function requested by API is not found
 const BSERR00020FunctionNotFound = "BSERR00020_FUNCTION_NOT_FOUND"
 
 // BSERR00021FieldsReadFailed - fields read failure
