@@ -9,11 +9,15 @@ const cFieldName01 = "nwjkdq dwqjdnwqd dejwdjqkwdq"
 const cFieldValue01 = "iueruiefr efkernf erferfe"
 const cFieldIcon01 = "fab fa-fort-awesome"
 
-func testHelperCreateField(t *testing.T, itenId int64) (fieldId int64, testPassed bool) {
+func testHelperCreateField(itemId int64) (fieldId int64, err error) {
 	bsInstance := GetInstance()
+	err = bsInstance.Unlock(dbPass)
+	if err != nil {
+		return 0, err
+	}
 	fieldResult, errField := bsInstance.AddNewField(
 		UpdateFieldForm{
-			ItemID: itenId,
+			ItemID: itemId,
 			BSField: BSField{
 				Name:      cFieldName01,
 				Icon:      cFieldIcon01,
@@ -23,39 +27,35 @@ func testHelperCreateField(t *testing.T, itenId int64) (fieldId int64, testPasse
 		},
 	)
 	if errField != nil {
-		t.Error(errField)
-		t.FailNow()
-		return 0, false
+		return 0, errField
 	}
 	if fieldResult.Status != ConstSuccessResponse {
-		t.Error(errors.New("response is not successful: " + fieldResult.MsgTxt))
-		t.FailNow()
-		return 0, false
+		return 0, errors.New("response is not successful: " + fieldResult.MsgTxt)
 	}
 	errLock := bsInstance.Lock()
 	if errLock != nil {
-		t.Error(errLock)
-		t.FailNow()
-		return 0, false
+		return 0, errLock
 	}
-	return fieldResult.FieldID, true
+	return fieldResult.FieldID, nil
 }
 
-func testHelperCreateItemAndField(t *testing.T) (itemId int64, fieldId int64, testPassed bool) {
-	itemId, testPassed = testHelperCreateItem(t)
-	if !testPassed {
-		return 0, 0, false
+func testHelperCreateItemAndField() (itemId int64, fieldId int64, err error) {
+	itemId, err = testHelperCreateItem()
+	if err != nil {
+		return 0, 0, err
 	}
-	fieldId, testPassed = testHelperCreateField(t, itemId)
-	if !testPassed {
-		return 0, 0, false
+	fieldId, err = testHelperCreateField(itemId)
+	if err != nil {
+		return 0, 0, err
 	}
-	return itemId, fieldId, true
+	return itemId, fieldId, nil
 }
 
 func TestAddField(t *testing.T) {
-	itemId, fieldId, testPassed := testHelperCreateItemAndField(t)
-	if !testPassed {
+	itemId, fieldId, err := testHelperCreateItemAndField()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
 		return
 	}
 
@@ -91,8 +91,10 @@ func TestAddField(t *testing.T) {
 }
 
 func TestDeleteField(t *testing.T) {
-	_, fieldId, testPassed := testHelperCreateItemAndField(t)
-	if !testPassed {
+	_, fieldId, err := testHelperCreateItemAndField()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
 		return
 	}
 	bsInstance := GetInstance()

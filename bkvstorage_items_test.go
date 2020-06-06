@@ -11,13 +11,11 @@ const cTestItemIcon01 = "fas fa-ambulance"
 const cTestItemName02 = "98jmwhj2ndycwbcjdwlmdk"
 const cTestItemIcon02 = "fab fa-linkedin"
 
-func testHelperCreateItem(t *testing.T) (itemId int64, testPassed bool) {
+func testHelperCreateItem() (itemId int64, err error) {
 	bsInstance := GetInstance()
-	errPass := bsInstance.Unlock(dbPass)
-	if errPass != nil {
-		t.Error(errPass)
-		t.FailNow()
-		return 0, false
+	err = bsInstance.Unlock(dbPass)
+	if err != nil {
+		return 0, err
 	}
 	response, err := bsInstance.AddNewItem(
 		UpdateItemForm{
@@ -28,28 +26,24 @@ func testHelperCreateItem(t *testing.T) (itemId int64, testPassed bool) {
 		},
 	)
 	if err != nil {
-		t.Error(err)
-		t.FailNow()
-		return 0, false
+		return 0, err
 	}
 	if response.Status != ConstSuccessResponse {
-		t.Error(errors.New("response is not successful"))
-		t.FailNow()
-		return 0, false
+		return 0, errors.New("response is not successful")
 	}
 	errLock := bsInstance.Lock()
 	if errLock != nil {
-		t.Error(errLock)
-		t.FailNow()
-		return 0, false
+		return 0, errLock
 	}
-	return response.ItemID, false
+	return response.ItemID, nil
 }
 
 func TestUpdateItemName(t *testing.T) {
-	itemId, testPassed := testHelperCreateItem(t)
+	itemId, err := testHelperCreateItem()
 
-	if !testPassed {
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
 		return
 	}
 	bsInstance := GetInstance()
@@ -116,9 +110,11 @@ func TestUpdateItemName(t *testing.T) {
 }
 
 func TestDeleteItem(t *testing.T) {
-	itemId, testPassed := testHelperCreateItem(t)
+	itemId, err := testHelperCreateItem()
 
-	if !testPassed {
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
 		return
 	}
 	bsInstance := GetInstance()
@@ -211,9 +207,11 @@ func TestAddItemWithNonExistingIcon(t *testing.T) {
 }
 
 func TestAddItem(t *testing.T) {
-	itemId, testPassed := testHelperCreateItem(t)
+	itemId, err := testHelperCreateItem()
 
-	if !testPassed {
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
 		return
 	}
 	bsInstance := GetInstance()
@@ -240,9 +238,11 @@ func TestAddItem(t *testing.T) {
 }
 
 func TestUpdateItemIcon(t *testing.T) {
-	itemId, testPassed := testHelperCreateItem(t)
+	itemId, err := testHelperCreateItem()
 
-	if !testPassed {
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
 		return
 	}
 	bsInstance := GetInstance()
