@@ -254,7 +254,7 @@ func TestUpdateItemIcon(t *testing.T) {
 		return
 	}
 
-	updateResponse, errUpdated := bsInstance.UpdateItem(
+	updateIconResponse, errIconUpdated := bsInstance.UpdateItem(
 		UpdateItemForm{
 			BSItem: BSItem{
 				ID:   itemId,
@@ -262,13 +262,13 @@ func TestUpdateItemIcon(t *testing.T) {
 			},
 		},
 	)
-	if errUpdated != nil {
+	if errIconUpdated != nil {
 		t.Error(errPass)
 		t.FailNow()
 		return
 	}
-	if updateResponse.Status != ConstSuccessResponse {
-		t.Error(errors.New("update response is not successful"))
+	if updateIconResponse.Status != ConstSuccessResponse {
+		t.Error(errors.New("icon update response is not successful"))
 		t.FailNow()
 		return
 	}
@@ -287,21 +287,21 @@ func TestUpdateItemIcon(t *testing.T) {
 		return
 	}
 
-	item, respErr := bsInstance.ReadItemById(itemId)
+	iconUpdatedItem, respErr := bsInstance.ReadItemById(itemId)
 	if respErr != nil {
 		t.Error(respErr)
 		t.FailNow()
 		return
 	}
 
-	if item.ID != itemId {
+	if iconUpdatedItem.ID != itemId {
 		t.Error(errors.New("response item is wrong"))
 		t.FailNow()
 		return
 	}
 
-	if item.Icon != cTestItemIcon02 {
-		t.Errorf("Expected '%s' after update, retrieved '%s'", cTestItemIcon02, item.Icon)
+	if iconUpdatedItem.Icon != cTestItemIcon02 {
+		t.Errorf("Expected icon value '%s' after update, retrieved '%s'", cTestItemIcon02, iconUpdatedItem.Icon)
 		t.FailNow()
 		return
 	}
