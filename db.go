@@ -230,5 +230,15 @@ func (sdb *storageDB) initDb() (err error) {
 		return err
 	}
 
+	err = sdb.createTable(sqlCreateTableTags)
+	if err != nil {
+		return err
+	}
+
+	err = sdb.createTable(sqlCreateTableItemsTags)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
