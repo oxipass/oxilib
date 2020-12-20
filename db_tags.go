@@ -1,6 +1,9 @@
 package bslib
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 const sqlCreateTableTags = `
 	CREATE TABLE IF NOT EXISTS tags (
@@ -103,10 +106,22 @@ const sqlListItemTags = `
 		  AND it.item_id=?
 `
 
+// sqlListTags - List all available tags (excluding deleted)
+const sqlListTags = `
+	SELECT tag_id, name, created, updated, deleted
+		FROM tags 
+		WHERE tags.deleted='0' 
+`
+
 // dbSelectItemTags - select tags assigned to requested the item
 func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []BSTag, err error) {
+	var rows *sql.Rows
 
-	rows, err := sdb.sDB.Query(sqlListItemTags, itemId)
+	if itemId == -1 {
+		rows, err = sdb.sDB.Query(sqlListTags)
+	} else {
+		rows, err = sdb.sDB.Query(sqlListItemTags, itemId)
+	}
 	if err != nil {
 		return tags, formError(BSERR00021FieldsReadFailed, err.Error())
 	}
@@ -134,40 +149,7 @@ func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []BSTag, err error) {
 	return tags, nil
 }
 
-// sqlListTags - List all available tags (excluding deleted)
-const sqlListTags = `
-	SELECT tag_id, name, created, updated, deleted
-		FROM tags 
-		WHERE tags.deleted='0' 
-`
-
-// dbSelectItemTags - select tags assigned to requested the item
+// dbSelectTags - select all available tags
 func (sdb *storageDB) dbSelectTags() (tags []BSTag, err error) {
-
-	rows, err := sdb.sDB.Query(sqlListTags)
-	if err != nil {
-		return tags, formError(BSERR00021FieldsReadFailed, err.Error())
-	}
-	defer func() {
-		errClose := rows.Close()
-		if errClose != nil {
-			err = formError(BSERR00021FieldsReadFailed, err.Error(), errClose.Error())
-		}
-	}()
-
-	var bsTag BSTag
-
-	for rows.Next() {
-		err = rows.Scan(&bsTag.ID,
-			&bsTag.Name,
-			&bsTag.Created,
-			&bsTag.Updated,
-			&bsTag.Deleted)
-		if err != nil {
-			return tags, err
-		}
-
-		tags = append(tags, bsTag)
-	}
-	return tags, nil
+	return sdb.dbSelectItemTags(-1)
 }
