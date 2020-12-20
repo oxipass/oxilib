@@ -87,7 +87,7 @@ func (storage *StorageSingleton) AddNewField(addFieldForm UpdateFieldForm) (resp
 	return response, nil
 }
 
-// AddNewItem - adds new item
+// ReadFieldsByItemID - real all the fields by ItemId
 func (storage *StorageSingleton) ReadFieldsByItemID(itemId int64) (fields []BSField, err error) {
 	fieldsEncrypted, err := storage.dbObject.dbSelectAllItemFields(itemId)
 	if err != nil {

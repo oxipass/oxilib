@@ -15,8 +15,7 @@ go get github.com/bykovme/bslib
 **IMPORTANT!** This package is work in progress, do not use it 
 
 Check other related packages:  
-[Encryption library 'BSEncrypt'](https://github.com/bykovme/bsencrypt)  
-[Web interface 'BSWeb'](https://github.com/bykovme/bsweb)
+[Encryption library 'BSEncrypt'](https://github.com/bykovme/bsencrypt)
 
-**[Alex Bykov](https://bykovsoft.com) © 2015 - 2020**
+**[Alex Bykov](https://bykovsoft.com) © 2015 - 2021**
 

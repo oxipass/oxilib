@@ -2,7 +2,7 @@ package bslib
 
 func (storage *StorageSingleton) checkReadiness() error {
 	if storage.encObject == nil || !storage.encObject.IsReady() {
-		return formError("Encrypter is not initialized", "checkReadiness")
+		return formError("Encryptor is not initialized", "checkReadiness")
 	}
 
 	if storage.dbObject == nil {
@@ -104,23 +104,23 @@ func (storage *StorageSingleton) UpdateItem(updateItemParams UpdateItemForm) (re
 }
 
 // AddNewItem - adds new item
-func (storage *StorageSingleton) AddNewItem(addItemParms UpdateItemForm) (response ItemAddedResponse, err error) {
+func (storage *StorageSingleton) AddNewItem(addItemParams UpdateItemForm) (response ItemAddedResponse, err error) {
 
 	err = storage.checkReadiness()
 	if err != nil {
 		return response, err
 	}
 
-	if !CheckIfExistsFontAwesome(addItemParms.Icon) {
+	if !CheckIfExistsFontAwesome(addItemParams.Icon) {
 		return response, formError(BSERR00024FontAwesomeIconNotFound)
 	}
 
-	encryptedItemName, err := storage.encObject.Encrypt(addItemParms.Name)
+	encryptedItemName, err := storage.encObject.Encrypt(addItemParams.Name)
 	if err != nil {
 		return response, err
 	}
 
-	encryptedIconName, err := storage.encObject.Encrypt(addItemParms.Icon)
+	encryptedIconName, err := storage.encObject.Encrypt(addItemParams.Icon)
 	if err != nil {
 		return response, err
 	}
@@ -176,13 +176,13 @@ func (storage *StorageSingleton) ReadAllItems(readDeleted bool) (items []BSItem,
 }
 
 // ReadItemById - read item by its Id
-func (storage *StorageSingleton) ReadItemById(itemId int64) (item BSItem, err error) {
+func (storage *StorageSingleton) ReadItemById(itemId int64, withDeleted bool) (item BSItem, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
 		return item, err
 	}
 
-	item, err = storage.dbObject.dbGetItemById(itemId)
+	item, err = storage.dbObject.dbGetItemById(itemId, withDeleted)
 	if err != nil {
 		return item, err
 	}

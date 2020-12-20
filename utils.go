@@ -40,15 +40,15 @@ func prepareTimeForDb(timeIn time.Time) string {
 	return timeIn.Format(constDbFormat)
 }
 
-func timeFromDb(dtStr string) (time.Time, error) {
-	dbTime, errDbTime := time.Parse(constDbFormat, dtStr)
-	if errDbTime != nil {
-		return dbTime, formError(BSERR00005ParseTimeFailed, errDbTime.Error())
-	}
-	return dbTime, nil
-}
+//func timeFromDb(dtStr string) (time.Time, error) {
+//	dbTime, errDbTime := time.Parse(constDbFormat, dtStr)
+//	if errDbTime != nil {
+//		return dbTime, formError(BSERR00005ParseTimeFailed, errDbTime.Error())
+//	}
+//	return dbTime, nil
+//}
 
-// EncodeJSON - transforms any structure with JSON parm into JSON string
+// EncodeJSON - transforms any structure with JSON param into JSON string
 func EncodeJSON(preparedStruct interface{}) (string, error) {
 	b, err := json.Marshal(preparedStruct)
 	if err != nil {

@@ -88,7 +88,7 @@ func TestUpdateItemName(t *testing.T) {
 		return
 	}
 
-	item, respErr := bsInstance.ReadItemById(itemId)
+	item, respErr := bsInstance.ReadItemById(itemId, false)
 	if respErr != nil {
 		t.Error(respErr)
 		t.FailNow()
@@ -173,6 +173,28 @@ func TestDeleteItem(t *testing.T) {
 		}
 	}
 
+	itemsWithDeleted, respErr2 := bsInstance.ReadAllItems(true)
+	if respErr2 != nil {
+		t.Error(respErr2)
+		t.FailNow()
+		return
+	}
+
+	foundInDeleted := false
+	for _, item := range itemsWithDeleted {
+		if item.ID == itemId && item.Deleted {
+			foundInDeleted = true
+			break
+		}
+	}
+
+	if !foundInDeleted {
+		t.Error(errors.New("deleted item is not found in deleted items"))
+		t.FailNow()
+	}
+
+	// TODO: Check if fields of deleted items are deleted too
+
 }
 
 const cTestNonExistingIcon = "djcndkcnkd"
@@ -222,7 +244,7 @@ func TestAddItem(t *testing.T) {
 		t.FailNow()
 		return
 	}
-	item, respErr := bsInstance.ReadItemById(itemId)
+	item, respErr := bsInstance.ReadItemById(itemId, false)
 	if respErr != nil {
 		t.Error(respErr)
 		t.FailNow()
@@ -287,7 +309,7 @@ func TestUpdateItemIcon(t *testing.T) {
 		return
 	}
 
-	iconUpdatedItem, respErr := bsInstance.ReadItemById(itemId)
+	iconUpdatedItem, respErr := bsInstance.ReadItemById(itemId, false)
 	if respErr != nil {
 		t.Error(respErr)
 		t.FailNow()

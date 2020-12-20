@@ -174,15 +174,28 @@ func (sdb *storageDB) dbUpdateItemName(itemID int64, newName string) (err error)
 	return nil
 }
 
-// List all non-deleted items
+// Get item by id
 const sqlGetItemById = `
+	SELECT item_id, name, icon, created, updated, deleted
+		FROM items 
+		WHERE item_id=? and deleted=0
+`
+
+// Get item by id including deleted
+const sqlGetItemByIdWithDeleted = `
 	SELECT item_id, name, icon, created, updated, deleted
 		FROM items 
 		WHERE item_id=?
 `
 
-func (sdb *storageDB) dbGetItemById(itemId int64) (item BSItem, err error) {
-	stmt, err := sdb.sDB.Prepare(sqlGetItemById)
+func (sdb *storageDB) dbGetItemById(itemId int64, withDeleted bool) (item BSItem, err error) {
+	var sqlRequest string
+	if withDeleted {
+		sqlRequest = sqlGetItemByIdWithDeleted
+	} else {
+		sqlRequest = sqlGetItemById
+	}
+	stmt, err := sdb.sDB.Prepare(sqlRequest)
 	if err != nil {
 		return item, formError(BSERR00014ItemsReadFailed, err.Error())
 	}

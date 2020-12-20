@@ -42,6 +42,8 @@ func TestFontAwesomeSearch(t *testing.T) {
 	}
 }
 
+const cTestRandomIconName = "kjnfejkfnekwj"
+
 func TestCheckIfExistsFontAwesome(t *testing.T) {
 
 	if CheckIfExistsFontAwesome("fas fa-battery-empty") == false {
@@ -50,7 +52,7 @@ func TestCheckIfExistsFontAwesome(t *testing.T) {
 		return
 	}
 
-	if CheckIfExistsFontAwesome("kjnfejkfnekwj") == true {
+	if CheckIfExistsFontAwesome(cTestRandomIconName) == true {
 		t.Error(errors.New("non-existing value is found"))
 		t.FailNow()
 		return
