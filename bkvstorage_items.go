@@ -150,7 +150,7 @@ func (storage *StorageSingleton) AddNewItem(addItemParams UpdateItemForm) (respo
 }
 
 // ReadAllItems - read all not deleted items from the database and decrypt them
-func (storage *StorageSingleton) ReadAllItems(readDeleted bool) (items []BSItem, err error) {
+func (storage *StorageSingleton) ReadAllItems(readTags bool, readDeleted bool) (items []BSItem, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
 		return items, err
@@ -169,6 +169,12 @@ func (storage *StorageSingleton) ReadAllItems(readDeleted bool) (items []BSItem,
 		items[i].Icon, err = storage.encObject.Decrypt(items[i].Icon)
 		if err != nil {
 			return items, err
+		}
+		if readTags {
+			items[i].Tags, err = storage.ReadTagsByItemID(items[i].ID)
+			if err != nil {
+				return items, err
+			}
 		}
 	}
 

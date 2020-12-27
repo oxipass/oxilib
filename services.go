@@ -103,7 +103,7 @@ func ServiceReadAllItems(inputParams string) string {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
 	storage := GetInstance()
-	allItems, err := storage.ReadAllItems(false)
+	allItems, err := storage.ReadAllItems(true, false)
 	if err != nil {
 		return formErrorResponse(err)
 	}

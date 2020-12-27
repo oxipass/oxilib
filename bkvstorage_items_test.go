@@ -158,7 +158,7 @@ func TestDeleteItem(t *testing.T) {
 		return
 	}
 
-	items, respErr := bsInstance.ReadAllItems(false)
+	items, respErr := bsInstance.ReadAllItems(false, false)
 	if respErr != nil {
 		t.Error(respErr)
 		t.FailNow()
@@ -173,7 +173,7 @@ func TestDeleteItem(t *testing.T) {
 		}
 	}
 
-	itemsWithDeleted, respErr2 := bsInstance.ReadAllItems(true)
+	itemsWithDeleted, respErr2 := bsInstance.ReadAllItems(false, true)
 	if respErr2 != nil {
 		t.Error(respErr2)
 		t.FailNow()
