@@ -21,8 +21,8 @@ func ValidateItemBeforeUpdate(updateItemParams UpdateItemForm) error {
 		return formError(BSERR00025ItemIdEmptyOrWrong)
 	}
 
-	if updateItemParams.Name == "" && updateItemParams.Icon == "" {
-		return formError(BSERR00023UpdateFieldsEmpty)
+	if updateItemParams.Name == "" && updateItemParams.Icon == "" { // if both are empty then there is nothing to update
+		return formError(BSERR00027ItemValidationError)
 	}
 	if updateItemParams.Icon != "" {
 		if !CheckIfExistsFontAwesome(updateItemParams.Icon) {
