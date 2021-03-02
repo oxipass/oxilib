@@ -122,4 +122,7 @@ const BSERR00024FontAwesomeIconNotFound = "BSERR00024_FA_ICON_NOT_FOUND"
 const BSERR00025ItemIdEmptyOrWrong = "BSERR00025_ITEMID_EMPTY_OR_WRONG"
 
 // BSERR00026DbItemIconUpdateFailed - failed to update item icon
-const BSERR00026DbItemIconUpdateFailed = "BSERR00018_DB_ICON_UPDATE_FAILED"
+const BSERR00026DbItemIconUpdateFailed = "BSERR00016_DB_ICON_UPDATE_FAILED"
+
+// BSERR00027ItemValidationError - item data validation error
+const BSERR00027ItemValidationError = "BSERR00027_ITEM_VALIDATION_FAILED"
