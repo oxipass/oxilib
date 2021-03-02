@@ -39,6 +39,9 @@ func (enc bsEncryptor) getCryptIDbyName(cypherName string) (string, error) {
 }
 
 func (enc *bsEncryptor) Encrypt(plainText string) (string, error) {
+	if enc.cipher == nil {
+		return "", formError(BSERR00008EncEncryptionError, "encryptor is not initialized")
+	}
 	encString, err := enc.cipher.Encrypt(plainText)
 	if err != nil {
 		return "", formError(BSERR00008EncEncryptionError, err.Error(), enc.cipher.GetCipherName())
