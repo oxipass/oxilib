@@ -82,8 +82,8 @@ const BSERR00011EncCypherNotProvided = "BSERR00011_CYPHER_NOT_PROVIDED"
 // BSERR00012DbTxStartFailed - tx start failed
 const BSERR00012DbTxStartFailed = "BSERR00012_TXSTARTFAILED"
 
-// BSERR00013DbTxEndFaild - tx end failed
-const BSERR00013DbTxEndFaild = "BSERR00013_TXENDFAILED"
+// BSERR00013DbTxEndFailed - tx end failed
+const BSERR00013DbTxEndFailed = "BSERR00013_TXENDFAILED"
 
 // BSERR00014ItemsReadFailed - items read failure
 const BSERR00014ItemsReadFailed = "BSERR00014_ITEMSREADFAILED"
@@ -122,7 +122,7 @@ const BSERR00024FontAwesomeIconNotFound = "BSERR00024_FA_ICON_NOT_FOUND"
 const BSERR00025ItemIdEmptyOrWrong = "BSERR00025_ITEMID_EMPTY_OR_WRONG"
 
 // BSERR00026DbItemIconUpdateFailed - failed to update item icon
-const BSERR00026DbItemIconUpdateFailed = "BSERR00016_DB_ICON_UPDATE_FAILED"
+const BSERR00026DbItemIconUpdateFailed = "BSERR00026_DB_ICON_UPDATE_FAILED"
 
 // BSERR00027ItemValidationError - item data validation error
 const BSERR00027ItemValidationError = "BSERR00027_ITEM_VALIDATION_FAILED"
