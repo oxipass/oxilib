@@ -94,6 +94,7 @@ func (storage *StorageSingleton) Close() error {
 		if err != nil {
 			return err
 		}
+
 		storage.dbObject = nil
 		storage.encObject = nil
 		return nil
