@@ -47,7 +47,7 @@ func (sdb *storageDB) RollbackTX() (err error) {
 
 func (sdb *storageDB) EndTransaction(commit bool) (err error) {
 	if sdb.sTX == nil {
-		return formError(BSERR00013DbTxEndFaild)
+		return formError(BSERR00013DbTxEndFailed)
 	}
 	if commit {
 		err = sdb.sTX.Commit()

@@ -104,6 +104,7 @@ const sqlListItemTags = `
 		WHERE tags.deleted='0' 
 		  AND it.deleted='0'
 		  AND it.item_id=?
+		ORDER BY tags.name
 `
 
 // sqlListTags - List all available tags (excluding deleted)
@@ -111,6 +112,7 @@ const sqlListTags = `
 	SELECT tag_id, name, created, updated, deleted
 		FROM tags 
 		WHERE tags.deleted='0' 
+		ORDER BY name
 `
 
 // dbSelectItemTags - select tags assigned to requested the item
