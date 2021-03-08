@@ -1,5 +1,7 @@
 package bslib
 
+import "sort"
+
 func (storage *StorageSingleton) AssignTag(updateTagForm UpdateTagForm) (response TagAssignedResponse, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
@@ -99,6 +101,10 @@ func (storage *StorageSingleton) GetTags() (tags []BSTag, err error) {
 		}
 		tags = append(tags, tagReady)
 	}
+
+	sort.Slice(tags, func(i, j int) bool {
+		return tags[i].Name < tags[j].Name
+	}) // Sort by name before returning
 
 	return tags, nil
 }
