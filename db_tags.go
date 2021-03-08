@@ -2,7 +2,6 @@ package bslib
 
 import (
 	"database/sql"
-	"sort"
 	"time"
 )
 
@@ -147,9 +146,6 @@ func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []BSTag, err error) {
 
 		tags = append(tags, bsTag)
 	}
-	sort.Slice(tags, func(i, j int) bool {
-		return tags[i].Name < tags[j].Name
-	}) // Sort by name before returning
 
 	return tags, nil
 }
