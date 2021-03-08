@@ -2,6 +2,7 @@ package bslib
 
 import (
 	"database/sql"
+	"sort"
 	"time"
 )
 
@@ -104,7 +105,6 @@ const sqlListItemTags = `
 		WHERE tags.deleted='0' 
 		  AND it.deleted='0'
 		  AND it.item_id=?
-		ORDER BY tags.name
 `
 
 // sqlListTags - List all available tags (excluding deleted)
@@ -112,7 +112,6 @@ const sqlListTags = `
 	SELECT tag_id, name, created, updated, deleted
 		FROM tags 
 		WHERE tags.deleted='0' 
-		ORDER BY name
 `
 
 // dbSelectItemTags - select tags assigned to requested the item
@@ -148,6 +147,10 @@ func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []BSTag, err error) {
 
 		tags = append(tags, bsTag)
 	}
+	sort.Slice(tags, func(i, j int) bool {
+		return tags[i].Name < tags[j].Name
+	}) // Sort by name before returning
+
 	return tags, nil
 }
 
