@@ -2,6 +2,7 @@ package bslib
 
 import "sort"
 
+// AssignTag - assign a tag to item
 func (storage *StorageSingleton) AssignTag(updateTagForm UpdateTagForm) (response TagAssignedResponse, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
@@ -32,7 +33,7 @@ func (storage *StorageSingleton) AssignTag(updateTagForm UpdateTagForm) (respons
 	return response, nil
 }
 
-// AddNewItem - adds new item
+// AddNewTag - adds new tag
 func (storage *StorageSingleton) AddNewTag(addTagParam UpdateTagForm) (response TagAddedResponse, err error) {
 
 	err = storage.checkReadiness()
@@ -69,7 +70,7 @@ func (storage *StorageSingleton) AddNewTag(addTagParam UpdateTagForm) (response 
 	return response, nil
 }
 
-// ReadFieldsByItemID - real all the fields by ItemId
+// ReadTagsByItemID - real all the tags by ItemId
 func (storage *StorageSingleton) ReadTagsByItemID(itemId int64) (tags []BSTag, err error) {
 	fieldsEncrypted, err := storage.dbObject.dbSelectItemTags(itemId)
 	if err != nil {
@@ -87,7 +88,7 @@ func (storage *StorageSingleton) ReadTagsByItemID(itemId int64) (tags []BSTag, e
 	return tags, nil
 }
 
-// ReadFieldsByItemID - real all the fields by ItemId
+// GetTags - real all the available tags
 func (storage *StorageSingleton) GetTags() (tags []BSTag, err error) {
 	fieldsEncrypted, err := storage.dbObject.dbSelectTags()
 	if err != nil {
@@ -109,6 +110,7 @@ func (storage *StorageSingleton) GetTags() (tags []BSTag, err error) {
 	return tags, nil
 }
 
+// DecryptTag - decrypt the tag
 func (storage *StorageSingleton) DecryptTag(tag BSTag) (decryptedTag BSTag, err error) {
 	decryptedTag = tag
 	decryptedTag.Name, err = storage.encObject.Decrypt(tag.Name)
