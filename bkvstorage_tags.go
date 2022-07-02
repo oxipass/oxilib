@@ -1,4 +1,4 @@
-package bslib
+package oxilib
 
 func (storage *StorageSingleton) AssignTag(updateTagForm UpdateTagForm) (response TagAssignedResponse, err error) {
 	err = storage.checkReadiness()

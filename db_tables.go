@@ -1,4 +1,4 @@
-package bslib
+package oxilib
 
 func (sdb *storageDB) createTable(tableDefinition string) error {
 	_, err := sdb.sTX.Exec(tableDefinition)

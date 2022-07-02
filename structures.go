@@ -1,4 +1,4 @@
-package bslib
+package oxilib
 
 // BSItem - item structure
 type BSItem struct {

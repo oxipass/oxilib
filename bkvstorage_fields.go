@@ -1,4 +1,4 @@
-package bslib
+package oxilib
 
 // DeleteField - delete existing field
 func (storage *StorageSingleton) DeleteField(deleteFieldForm UpdateFieldForm) (response CommonResponse, err error) {

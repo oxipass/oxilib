@@ -3,19 +3,21 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/bykovme/bslib)](https://goreportcard.com/report/github.com/bykovme/bslib)
 [![codecov](https://codecov.io/gh/bykovme/bslib/branch/master/graph/badge.svg)](https://codecov.io/gh/bykovme/bslib)
 
-## BSLib
+## Oxi Lib
 
-bkv storage is a library to work with encrypted personal data stored as SQLite file keeping items/fields safe and secure.
+Oxi Lib is a library to work with encrypted personal data stored as SQLite file keeping 
+items/fields safe and secure. This library is a part of the OxiPass project https://oxipass.io
 
 *Use the following command to install it locally* 
 ```
-go get github.com/bykovme/bslib
+go get github.com/oxipass/oxilib
 ```
 
-**IMPORTANT!** This package is work in progress, do not use it 
+**IMPORTANT!** This package is still work in progress and is in active development phase, 
+use it at your own risk
 
 Check other related packages:  
 [Encryption library 'BSEncrypt'](https://github.com/bykovme/bsencrypt)
 
-**[Alex Bykov](https://bykovsoft.com) © 2015 - 2021**
+**[Alex Bykov](https://bykovsoft.com) © 2015 - 2022**
 

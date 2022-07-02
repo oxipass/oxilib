@@ -1,4 +1,4 @@
-package bslib
+package oxilib
 
 func (storage *StorageSingleton) checkReadiness() error {
 	if storage.encObject == nil || !storage.encObject.IsReady() {

@@ -1,24 +1,22 @@
-package bslib
+package oxilib
 
-import (
-	"github.com/bykovme/bsencrypt"
-)
+import "github.com/oxipass/oxicrypt"
 
 type bsEncryptor struct {
-	cipher  bsencrypt.BSCipher
+	cipher  oxicrypt.BSCipher
 	cryptID string
 }
 
 func (enc bsEncryptor) getCypherNames() []string {
 	var lCyphers []string
-	for _, cypher := range bsencrypt.Ciphers {
+	for _, cypher := range oxicrypt.Ciphers {
 		lCyphers = append(lCyphers, cypher.GetCipherName())
 	}
 	return lCyphers
 }
 
 func (enc *bsEncryptor) Init(cryptID string) error {
-	for _, cypher := range bsencrypt.Ciphers {
+	for _, cypher := range oxicrypt.Ciphers {
 		if cypher.GetCryptID() == cryptID {
 			enc.cipher = cypher
 			enc.cryptID = cryptID
@@ -30,7 +28,7 @@ func (enc *bsEncryptor) Init(cryptID string) error {
 }
 
 func (enc bsEncryptor) getCryptIDbyName(cypherName string) (string, error) {
-	for _, cypher := range bsencrypt.Ciphers {
+	for _, cypher := range oxicrypt.Ciphers {
 		if cypher.GetCipherName() == cypherName {
 			return cypher.GetCryptID(), nil
 		}

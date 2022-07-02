@@ -1,4 +1,4 @@
-package bslib
+package oxilib
 
 import "time"
 

@@ -1,4 +1,4 @@
-package bslib
+package oxilib
 
 var faCachedValues = map[string]string{
 	"fab fa-500px":                               "",

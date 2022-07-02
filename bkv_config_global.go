@@ -1,6 +1,7 @@
+//go:build !local
 // +build !local
 
-package bslib
+package oxilib
 
 const localTestFile = "" // create your own local db file for testing purposes
 const useLocalTestFile = false
