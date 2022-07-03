@@ -10,6 +10,7 @@ const sqlCreateTableTags = `
 	CREATE TABLE IF NOT EXISTS tags (
    		tag_id 		   	    INTEGER PRIMARY KEY AUTOINCREMENT,
 		name         		VARCHAR NOT NULL,
+		color        		VARCHAR NOT NULL,
 		created  			DATETIME NOT NULL,
    		updated    			DATETIME NOT NULL,
 		deleted				BOOLEAN NOT NULL CHECK (deleted IN (0,1)) default '0'
@@ -19,8 +20,9 @@ const sqlCreateTableTags = `
 const sqlCreateTableItemsTags = `
 	CREATE TABLE IF NOT EXISTS items_tags (
         it_id				INTEGER PRIMARY KEY AUTOINCREMENT,
-		item_id 		    INT NOT NULL,
-		tag_id				INT NOT NULL,
+		item_id 		    INTEGER NOT NULL,
+		tag_id				INTEGER NOT NULL,
+		created  			DATETIME NOT NULL,
    		updated    			DATETIME NOT NULL,
 		deleted				BOOLEAN NOT NULL CHECK (deleted IN (0,1)) default '0',
 		FOREIGN KEY (item_id) REFERENCES items(item_id),
@@ -29,11 +31,11 @@ const sqlCreateTableItemsTags = `
 `
 
 const sqlInsertTag = `
-	INSERT INTO tags (name,created,updated,deleted) 
-		VALUES (?,?,?,0)
+	INSERT INTO tags (name,color,created,updated,deleted) 
+		VALUES (?,?,?,?,0)
 `
 
-func (sdb *storageDB) dbInsertTag(tagName string) (tagId int64, err error) {
+func (sdb *storageDB) dbInsertTag(tagName string, color string) (tagId int64, err error) {
 	if sdb.sTX == nil {
 		return 0, formError(BSERR00003DbTransactionFailed, "dbInsertTag")
 	}
@@ -45,6 +47,7 @@ func (sdb *storageDB) dbInsertTag(tagName string) (tagId int64, err error) {
 		return 0, formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertTag")
 	}
 	res, errStmt := stmt.Exec(tagName,
+		color,
 		creationTime,
 		creationTime)
 
@@ -64,8 +67,8 @@ func (sdb *storageDB) dbInsertTag(tagName string) (tagId int64, err error) {
 }
 
 const sqlAssignTagToItem = `
-	INSERT INTO items_tags (item_id, tag_id, updated, deleted) 
-		VALUES (?,?,?,0)
+	INSERT INTO items_tags (item_id, tag_id, created, updated, deleted) 
+		VALUES (?,?,?,?,0)
 `
 
 func (sdb *storageDB) dbAssignTag(tagId int64, itemId int64) (itId int64, err error) {
@@ -80,7 +83,7 @@ func (sdb *storageDB) dbAssignTag(tagId int64, itemId int64) (itId int64, err er
 		return 0, formError(BSERR00006DbInsertFailed, err.Error(), "dbAssignTag")
 	}
 	res, errStmt := stmt.Exec(itemId, tagId,
-		creationTime)
+		creationTime, creationTime)
 
 	if errStmt != nil {
 		return 0, formError(BSERR00006DbInsertFailed, errStmt.Error(), "dbAssignTag")
@@ -99,7 +102,7 @@ func (sdb *storageDB) dbAssignTag(tagId int64, itemId int64) (itId int64, err er
 
 // sqlListItemTags - List all non-deleted items
 const sqlListItemTags = `
-	SELECT tags.tag_id, tags.name,  tags.created, tags.updated, tags.deleted
+	SELECT tags.tag_id, tags.name, tags.color, tags.created, tags.updated, tags.deleted
 		FROM tags 
 		INNER JOIN items_tags it on tags.tag_id = it.tag_id
 		WHERE tags.deleted='0' 
@@ -109,13 +112,13 @@ const sqlListItemTags = `
 
 // sqlListTags - List all available tags (excluding deleted)
 const sqlListTags = `
-	SELECT tag_id, name, created, updated, deleted
+	SELECT tag_id, name, color, created, updated, deleted
 		FROM tags 
 		WHERE tags.deleted='0' 
 `
 
 // dbSelectItemTags - select tags assigned to requested the item
-func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []BSTag, err error) {
+func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []OxiTag, err error) {
 	var rows *sql.Rows
 
 	if itemId == -1 {
@@ -133,19 +136,20 @@ func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []BSTag, err error) {
 		}
 	}()
 
-	var bsTag BSTag
+	var tag OxiTag
 
 	for rows.Next() {
-		err = rows.Scan(&bsTag.ID,
-			&bsTag.Name,
-			&bsTag.Created,
-			&bsTag.Updated,
-			&bsTag.Deleted)
+		err = rows.Scan(&tag.ID,
+			&tag.Name,
+			&tag.Color,
+			&tag.Created,
+			&tag.Updated,
+			&tag.Deleted)
 		if err != nil {
 			return tags, err
 		}
 
-		tags = append(tags, bsTag)
+		tags = append(tags, tag)
 	}
 	sort.Slice(tags, func(i, j int) bool {
 		return tags[i].Name < tags[j].Name
@@ -155,6 +159,6 @@ func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []BSTag, err error) {
 }
 
 // dbSelectTags - select all available tags
-func (sdb *storageDB) dbSelectTags() (tags []BSTag, err error) {
+func (sdb *storageDB) dbSelectTags() (tags []OxiTag, err error) {
 	return sdb.dbSelectItemTags(-1)
 }

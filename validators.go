@@ -2,7 +2,7 @@ package oxilib
 
 import "errors"
 
-func ValidateField(field BSField) error {
+func ValidateField(field OxiField) error {
 	if !CheckIfExistsFontAwesome(field.Icon) {
 		return errors.New(BSERR00022ValidationFailed + ": icon not found")
 	}

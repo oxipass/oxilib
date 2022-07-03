@@ -1,19 +1,19 @@
 package oxilib
 
-// BSItem - item structure
-type BSItem struct {
-	ID      int64     `json:"item_id"`
-	Name    string    `json:"item_name"`
-	Icon    string    `json:"item_icon"`
-	Created string    `json:"created"`
-	Updated string    `json:"updated"`
-	Deleted bool      `json:"deleted"`
-	Fields  []BSField `json:"fields"`
-	Tags    []BSTag   `json:"tags"`
+// OxiItem - item structure
+type OxiItem struct {
+	ID      int64      `json:"item_id"`
+	Name    string     `json:"item_name"`
+	Icon    string     `json:"item_icon"`
+	Created string     `json:"created"`
+	Updated string     `json:"updated"`
+	Deleted bool       `json:"deleted"`
+	Fields  []OxiField `json:"fields"`
+	Tags    []OxiTag   `json:"tags"`
 }
 
-// BSField - fields definitions
-type BSField struct {
+// OxiField - fields definitions
+type OxiField struct {
 	ID        int64  `json:"field_id"`
 	Name      string `json:"field_name"`
 	Icon      string `json:"field_icon"`
@@ -24,10 +24,11 @@ type BSField struct {
 	Deleted   bool   `json:"deleted"`
 }
 
-// BSTag - tags definitions
-type BSTag struct {
+// OxiTag - tags definitions
+type OxiTag struct {
 	ID      int64  `json:"tag_id"`
 	Name    string `json:"tag_name"`
+	Color   string `json:"color"`
 	Created string `json:"created"`
 	Updated string `json:"updated"`
 	Deleted bool   `json:"deleted"`
@@ -43,19 +44,19 @@ type CommonResponse struct {
 // ItemResponse - response returning one item
 type ItemResponse struct {
 	CommonResponse
-	BSItem
+	OxiItem
 }
 
 // ItemsResponse - response returning many items
 type ItemsResponse struct {
 	CommonResponse
-	Items []BSItem `json:"items"`
+	Items []OxiItem `json:"items"`
 }
 
 // UpdateFieldForm - input structure to add or update the field
 type UpdateFieldForm struct {
 	ItemID int64 `json:"item_id"`
-	BSField
+	OxiField
 }
 
 // FieldAddedResponse - response structure for adding field
@@ -66,7 +67,7 @@ type FieldAddedResponse struct {
 
 // UpdateItemForm - input structure to add the item
 type UpdateItemForm struct {
-	BSItem
+	OxiItem
 }
 
 // TagAddedResponse - response structure for adding item
@@ -77,7 +78,7 @@ type TagAddedResponse struct {
 
 type UpdateTagForm struct {
 	ItemID int64 `json:"item_id"`
-	BSTag
+	OxiTag
 }
 
 type TagAssignedResponse struct {

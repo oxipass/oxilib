@@ -34,7 +34,7 @@ const sqlInsertField = `
 		VALUES (?,?,?,?,?,?,?,0)
 `
 
-func (sdb *storageDB) dbInsertField(itemID int64, field BSField) (fieldId int64, err error) {
+func (sdb *storageDB) dbInsertField(itemID int64, field OxiField) (fieldId int64, err error) {
 
 	if sdb.sTX == nil {
 		return 0, formError(BSERR00003DbTransactionFailed, "dbInsertField")
@@ -72,7 +72,7 @@ const sqlListItemFields = `
 		WHERE deleted='0' and item_id=?
 `
 
-func (sdb *storageDB) dbSelectAllItemFields(itemId int64) (fields []BSField, err error) {
+func (sdb *storageDB) dbSelectAllItemFields(itemId int64) (fields []OxiField, err error) {
 
 	rows, err := sdb.sDB.Query(sqlListItemFields, itemId)
 	if err != nil {
@@ -85,22 +85,22 @@ func (sdb *storageDB) dbSelectAllItemFields(itemId int64) (fields []BSField, err
 		}
 	}()
 
-	var bsField BSField
+	var field OxiField
 
 	for rows.Next() {
-		err = rows.Scan(&bsField.ID,
-			&bsField.Name,
-			&bsField.Icon,
-			&bsField.Value,
-			&bsField.ValueType,
-			&bsField.Created,
-			&bsField.Updated,
-			&bsField.Deleted)
+		err = rows.Scan(&field.ID,
+			&field.Name,
+			&field.Icon,
+			&field.Value,
+			&field.ValueType,
+			&field.Created,
+			&field.Updated,
+			&field.Deleted)
 		if err != nil {
 			return fields, err
 		}
 
-		fields = append(fields, bsField)
+		fields = append(fields, field)
 	}
 	return fields, nil
 }
@@ -138,7 +138,7 @@ const sqlGetField = `
 		WHERE  field_id=?
 `
 
-func (sdb *storageDB) dbGetFieldById(fieldId int64) (field BSField, err error) {
+func (sdb *storageDB) dbGetFieldById(fieldId int64) (field OxiField, err error) {
 
 	rows, err := sdb.sDB.Query(sqlGetField, fieldId)
 	if err != nil {
@@ -151,18 +151,16 @@ func (sdb *storageDB) dbGetFieldById(fieldId int64) (field BSField, err error) {
 		}
 	}()
 
-	var bsField BSField
-
 	if rows.Next() {
-		err = rows.Scan(&bsField.ID,
-			&bsField.Name,
-			&bsField.Icon,
-			&bsField.Value,
-			&bsField.ValueType,
-			&bsField.Created,
-			&bsField.Updated,
-			&bsField.Deleted)
-		return bsField, err
+		err = rows.Scan(&field.ID,
+			&field.Name,
+			&field.Icon,
+			&field.Value,
+			&field.ValueType,
+			&field.Created,
+			&field.Updated,
+			&field.Deleted)
+		return field, err
 	}
 	return field, errors.New(BSERR00021FieldsReadFailed)
 }

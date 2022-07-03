@@ -18,7 +18,7 @@ func testHelperCreateField(itemId int64) (fieldId int64, err error) {
 	fieldResult, errField := bsInstance.AddNewField(
 		UpdateFieldForm{
 			ItemID: itemId,
-			BSField: BSField{
+			OxiField: OxiField{
 				Name:      cFieldName01,
 				Icon:      cFieldIcon01,
 				ValueType: VTText,
@@ -106,7 +106,7 @@ func TestDeleteField(t *testing.T) {
 	}
 
 	respDel, errDel := bsInstance.DeleteField(UpdateFieldForm{
-		BSField: BSField{
+		OxiField: OxiField{
 			ID: fieldId,
 		},
 	})

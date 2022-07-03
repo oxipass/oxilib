@@ -43,12 +43,17 @@ func (storage *StorageSingleton) AddNewTag(addTagParam UpdateTagForm) (response 
 		return response, formError(BSERR00006DbInsertFailed, err.Error())
 	}
 
-	encryptedTag, errEnc := storage.encObject.Encrypt(addTagParam.Name)
-	if errEnc != nil {
-		return response, formError(BSERR00006DbInsertFailed, errEnc.Error())
+	encryptedTag, errEncT := storage.encObject.Encrypt(addTagParam.Name)
+	if errEncT != nil {
+		return response, formError(BSERR00006DbInsertFailed, errEncT.Error())
 	}
 
-	response.TagId, err = storage.dbObject.dbInsertTag(encryptedTag)
+	encryptedColor, errEncC := storage.encObject.Encrypt(addTagParam.Color)
+	if errEncC != nil {
+		return response, formError(BSERR00006DbInsertFailed, errEncC.Error())
+	}
+
+	response.TagId, err = storage.dbObject.dbInsertTag(encryptedTag, encryptedColor)
 	if err != nil {
 		errEndTX := storage.dbObject.RollbackTX()
 		if errEndTX != nil {
@@ -68,7 +73,7 @@ func (storage *StorageSingleton) AddNewTag(addTagParam UpdateTagForm) (response 
 }
 
 // ReadFieldsByItemID - real all the fields by ItemId
-func (storage *StorageSingleton) ReadTagsByItemID(itemId int64) (tags []BSTag, err error) {
+func (storage *StorageSingleton) ReadTagsByItemID(itemId int64) (tags []OxiTag, err error) {
 	fieldsEncrypted, err := storage.dbObject.dbSelectItemTags(itemId)
 	if err != nil {
 		return tags, err
@@ -86,7 +91,7 @@ func (storage *StorageSingleton) ReadTagsByItemID(itemId int64) (tags []BSTag, e
 }
 
 // ReadFieldsByItemID - real all the fields by ItemId
-func (storage *StorageSingleton) GetTags() (tags []BSTag, err error) {
+func (storage *StorageSingleton) GetTags() (tags []OxiTag, err error) {
 	fieldsEncrypted, err := storage.dbObject.dbSelectTags()
 	if err != nil {
 		return tags, err
@@ -103,9 +108,10 @@ func (storage *StorageSingleton) GetTags() (tags []BSTag, err error) {
 	return tags, nil
 }
 
-func (storage *StorageSingleton) DecryptTag(tag BSTag) (decryptedTag BSTag, err error) {
+func (storage *StorageSingleton) DecryptTag(tag OxiTag) (decryptedTag OxiTag, err error) {
 	decryptedTag = tag
 	decryptedTag.Name, err = storage.encObject.Decrypt(tag.Name)
+	decryptedTag.Color, err = storage.encObject.Decrypt(tag.Color)
 	if err != nil {
 		return decryptedTag, err
 	}

@@ -31,13 +31,13 @@ func (storage *StorageSingleton) DeleteField(deleteFieldForm UpdateFieldForm) (r
 
 // AddNewItem - adds new item
 func (storage *StorageSingleton) AddNewField(addFieldForm UpdateFieldForm) (response FieldAddedResponse, err error) {
-	var field BSField
+	var field OxiField
 
 	err = storage.checkReadiness()
 	if err != nil {
 		return response, err
 	}
-	if err := ValidateField(addFieldForm.BSField); err != nil {
+	if err := ValidateField(addFieldForm.OxiField); err != nil {
 		return response, formError(BSERR00006DbInsertFailed, err.Error())
 
 	}
@@ -88,7 +88,7 @@ func (storage *StorageSingleton) AddNewField(addFieldForm UpdateFieldForm) (resp
 }
 
 // ReadFieldsByItemID - real all the fields by ItemId
-func (storage *StorageSingleton) ReadFieldsByItemID(itemId int64) (fields []BSField, err error) {
+func (storage *StorageSingleton) ReadFieldsByItemID(itemId int64) (fields []OxiField, err error) {
 	fieldsEncrypted, err := storage.dbObject.dbSelectAllItemFields(itemId)
 	if err != nil {
 		return fields, err
@@ -106,7 +106,7 @@ func (storage *StorageSingleton) ReadFieldsByItemID(itemId int64) (fields []BSFi
 }
 
 // AddNewItem - adds new item
-func (storage *StorageSingleton) ReadFieldsByFieldID(fieldId int64) (field BSField, err error) {
+func (storage *StorageSingleton) ReadFieldsByFieldID(fieldId int64) (field OxiField, err error) {
 	fieldEncrypted, err := storage.dbObject.dbGetFieldById(fieldId)
 	if err != nil {
 		return field, err
@@ -119,7 +119,7 @@ func (storage *StorageSingleton) ReadFieldsByFieldID(fieldId int64) (field BSFie
 	return fieldReady, nil
 }
 
-func (storage *StorageSingleton) DecryptField(fieldEncrypted BSField) (field BSField, err error) {
+func (storage *StorageSingleton) DecryptField(fieldEncrypted OxiField) (field OxiField, err error) {
 	field.Value, err = storage.encObject.Decrypt(fieldEncrypted.Value)
 	if err != nil {
 		return field, err

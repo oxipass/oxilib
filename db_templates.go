@@ -77,7 +77,7 @@ const sqlInsertFieldTemplate = `
 		VALUES (?,?,?,?,?,?,0)
 `
 
-func (sdb *storageDB) dbInsertFieldTemplate(itemID int64, field BSField) (fieldId int64, err error) {
+func (sdb *storageDB) dbInsertFieldTemplate(itemID int64, field OxiField) (fieldId int64, err error) {
 
 	if sdb.sTX == nil {
 		return 0, formError(BSERR00003DbTransactionFailed, "dbInsertFieldTemplate")

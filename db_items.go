@@ -107,7 +107,7 @@ const sqlListItemsWithDeleted = `
 		FROM items
 `
 
-func (sdb *storageDB) dbSelectAllItems(returnDeleted bool) (items []BSItem, err error) {
+func (sdb *storageDB) dbSelectAllItems(returnDeleted bool) (items []OxiItem, err error) {
 	var sqlList string
 	if returnDeleted {
 		sqlList = sqlListItemsWithDeleted
@@ -126,24 +126,24 @@ func (sdb *storageDB) dbSelectAllItems(returnDeleted bool) (items []BSItem, err 
 
 	}()
 
-	var bsItem BSItem
+	var item OxiItem
 
 	for rows.Next() {
-		err = rows.Scan(&bsItem.ID,
-			&bsItem.Name,
-			&bsItem.Icon,
-			&bsItem.Created,
-			&bsItem.Updated,
-			&bsItem.Deleted)
+		err = rows.Scan(&item.ID,
+			&item.Name,
+			&item.Icon,
+			&item.Created,
+			&item.Updated,
+			&item.Deleted)
 		if err != nil {
 			return items, err
 		}
 
-		if bsItem.Deleted && !returnDeleted {
+		if item.Deleted && !returnDeleted {
 			continue
 		}
 
-		items = append(items, bsItem)
+		items = append(items, item)
 	}
 	return items, nil
 }
@@ -188,7 +188,7 @@ const sqlGetItemByIdWithDeleted = `
 		WHERE item_id=?
 `
 
-func (sdb *storageDB) dbGetItemById(itemId int64, withDeleted bool) (item BSItem, err error) {
+func (sdb *storageDB) dbGetItemById(itemId int64, withDeleted bool) (item OxiItem, err error) {
 	var sqlRequest string
 	if withDeleted {
 		sqlRequest = sqlGetItemByIdWithDeleted
@@ -216,17 +216,17 @@ func (sdb *storageDB) dbGetItemById(itemId int64, withDeleted bool) (item BSItem
 	}()
 
 	if rows.Next() {
-		var bsItem BSItem
-		err = rows.Scan(&bsItem.ID,
-			&bsItem.Name,
-			&bsItem.Icon,
-			&bsItem.Created,
-			&bsItem.Updated,
-			&bsItem.Deleted)
+
+		err = rows.Scan(&item.ID,
+			&item.Name,
+			&item.Icon,
+			&item.Created,
+			&item.Updated,
+			&item.Deleted)
 		if err != nil {
 			return item, err
 		}
-		return bsItem, nil
+		return item, nil
 	}
 	return item, formError(BSERR00019ItemNotFound)
 }

@@ -66,7 +66,7 @@ func (sdb *storageDB) Open(filePath string) error {
 	sdb.dbOpen = false
 
 	if _, err = os.Stat(filePath); err == nil {
-		// File exists, open and check integrity
+		// File exists, open and check the integrity
 		sdb.sDB, err = sql.Open("sqlite3", "file:"+filePath+cDBOpenParms)
 		if err != nil {
 			return err
@@ -79,7 +79,7 @@ func (sdb *storageDB) Open(filePath string) error {
 		return nil
 	}
 
-	// File does not exists
+	// File does not exist, create it
 	sdb.sDB, err = sql.Open("sqlite3", "file:"+filePath+cDBOpenParms)
 	if err != nil {
 		return err

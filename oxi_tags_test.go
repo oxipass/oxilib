@@ -6,9 +6,11 @@ import (
 )
 
 const cTestTag1 = "test_tag1"
+const cTestTagColor1 = "#ffff00"
 const cTestTag2 = "test_tag2"
+const cTesttagColor2 = "#ff0000"
 
-func testHelperCreateItemAndTag(testTag string) (itemId int64, tagId int64, err error) {
+func testHelperCreateItemAndTag(testTag string, testColor string) (itemId int64, tagId int64, err error) {
 	bsInstance := GetInstance()
 	err = bsInstance.Unlock(dbPass)
 	if err != nil {
@@ -16,7 +18,7 @@ func testHelperCreateItemAndTag(testTag string) (itemId int64, tagId int64, err 
 	}
 	response, err := bsInstance.AddNewItem(
 		UpdateItemForm{
-			BSItem: BSItem{
+			OxiItem: OxiItem{
 				Name: cTestItemName01,
 				Icon: cTestItemIcon01,
 			},
@@ -32,8 +34,9 @@ func testHelperCreateItemAndTag(testTag string) (itemId int64, tagId int64, err 
 	responseTag, err := bsInstance.AddNewTag(
 		UpdateTagForm{
 			0,
-			BSTag{
-				Name: testTag,
+			OxiTag{
+				Name:  testTag,
+				Color: testColor,
 			},
 		},
 	)
@@ -53,7 +56,7 @@ func testHelperCreateItemAndTag(testTag string) (itemId int64, tagId int64, err 
 }
 
 func TestCreateItemAndTag(t *testing.T) {
-	_, tagId, err := testHelperCreateItemAndTag(cTestTag1)
+	_, tagId, err := testHelperCreateItemAndTag(cTestTag1, cTestTagColor1)
 
 	if err != nil {
 		t.Error(err)
@@ -78,7 +81,8 @@ func TestCreateItemAndTag(t *testing.T) {
 
 	found := false
 	for _, tag := range availableTags {
-		if tag.ID == tagId && tag.Name == cTestTag1 && tag.Deleted == false {
+		if tag.ID == tagId && tag.Name == cTestTag1 &&
+			tag.Color == cTestTagColor1 && tag.Deleted == false {
 			found = true
 			break
 		}
@@ -91,8 +95,8 @@ func TestCreateItemAndTag(t *testing.T) {
 }
 
 func TestAssignTagToItems(t *testing.T) {
-	itemId1, tagId1, err := testHelperCreateItemAndTag(cTestTag1)
-	_, tagId2, err := testHelperCreateItemAndTag(cTestTag2)
+	itemId1, tagId1, err := testHelperCreateItemAndTag(cTestTag1, cTestTagColor1)
+	_, tagId2, err := testHelperCreateItemAndTag(cTestTag2, cTesttagColor2)
 
 	if err != nil {
 		t.Error(err)
@@ -111,7 +115,7 @@ func TestAssignTagToItems(t *testing.T) {
 	responseTA, errTA := bsInstance.AssignTag(
 		UpdateTagForm{
 			ItemID: itemId1,
-			BSTag: BSTag{
+			OxiTag: OxiTag{
 				ID: tagId1,
 			},
 		},
@@ -131,7 +135,7 @@ func TestAssignTagToItems(t *testing.T) {
 	responseTA2, errTA2 := bsInstance.AssignTag(
 		UpdateTagForm{
 			ItemID: itemId1,
-			BSTag: BSTag{
+			OxiTag: OxiTag{
 				ID: tagId2,
 			},
 		},
@@ -156,10 +160,10 @@ func TestAssignTagToItems(t *testing.T) {
 		return
 	}
 	for _, tag := range tags {
-		if tag.ID == tagId1 && tag.Name == cTestTag1 {
+		if tag.ID == tagId1 && tag.Name == cTestTag1 && tag.Color == cTestTagColor1 && tag.Deleted == false {
 			foundTags++
 		}
-		if tag.ID == tagId2 && tag.Name == cTestTag2 {
+		if tag.ID == tagId2 && tag.Name == cTestTag2 && tag.Color == cTesttagColor2 && tag.Deleted == false {
 			foundTags++
 		}
 	}

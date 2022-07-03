@@ -19,7 +19,7 @@ func testHelperCreateItem() (itemId int64, err error) {
 	}
 	response, err := bsInstance.AddNewItem(
 		UpdateItemForm{
-			BSItem: BSItem{
+			OxiItem: OxiItem{
 				Name: cTestItemName01,
 				Icon: cTestItemIcon01,
 			},
@@ -57,7 +57,7 @@ func TestUpdateItemName(t *testing.T) {
 
 	updateResponse, errUpdated := bsInstance.UpdateItem(
 		UpdateItemForm{
-			BSItem: BSItem{
+			OxiItem: OxiItem{
 				ID:   itemId,
 				Name: cTestItemName02,
 			},
@@ -128,7 +128,7 @@ func TestDeleteItem(t *testing.T) {
 
 	delResponse, errDelete := bsInstance.DeleteItem(
 		UpdateItemForm{
-			BSItem: BSItem{
+			OxiItem: OxiItem{
 				ID: itemId,
 			},
 		},
@@ -210,7 +210,7 @@ func TestAddItemWithNonExistingIcon(t *testing.T) {
 
 	response, err := bsInstance.AddNewItem(
 		UpdateItemForm{
-			BSItem: BSItem{
+			OxiItem: OxiItem{
 				Name: cTestItemName01,
 				Icon: cTestNonExistingIcon,
 			},
@@ -278,7 +278,7 @@ func TestUpdateItemIcon(t *testing.T) {
 
 	updateIconResponse, errIconUpdated := bsInstance.UpdateItem(
 		UpdateItemForm{
-			BSItem: BSItem{
+			OxiItem: OxiItem{
 				ID:   itemId,
 				Icon: cTestItemIcon02,
 			},

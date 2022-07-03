@@ -11,10 +11,10 @@ type SettingInfo struct {
 
 const sqlCreateTableSettings = `
 	CREATE TABLE IF NOT EXISTS settings (
-   		database_id 		CHAR PRIMARY KEY NOT NULL,
-   		keyword 			CHAR NOT NULL,
-		crypt_id            CHAR NOT NULL,
-		database_version 	INT NOT NULL,
+   		database_id 		VARCHAR PRIMARY KEY NOT NULL,
+   		keyword 			VARCHAR NOT NULL,
+		crypt_id            VARCHAR NOT NULL,
+		database_version 	INTEGER NOT NULL,
    		update_timestamp    DATETIME NOT NULL,
 		sync_timestamp		DATETIME NOT NULL
 	)
