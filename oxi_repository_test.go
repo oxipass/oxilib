@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+const cValueTypesCount = 13
+
 func TestValueTypes(t *testing.T) {
 	vTypes := GetValueTypes()
 	if vTypes == nil {
@@ -13,7 +15,7 @@ func TestValueTypes(t *testing.T) {
 		t.FailNow()
 		return
 	}
-	if len(vTypes) != 12 {
+	if len(vTypes) != cValueTypesCount {
 		t.Error(errors.New("wrong value types count or unhandled value type is added"))
 		t.FailNow()
 		return

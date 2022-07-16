@@ -9,17 +9,6 @@ type SettingInfo struct {
 	DatabaseId string `json:"database_id"`
 }
 
-const sqlCreateTableSettings = `
-	CREATE TABLE IF NOT EXISTS settings (
-   		database_id 		VARCHAR PRIMARY KEY NOT NULL,
-   		keyword 			VARCHAR NOT NULL,
-		crypt_id            VARCHAR NOT NULL,
-		database_version 	INTEGER NOT NULL,
-   		update_timestamp    DATETIME NOT NULL,
-		sync_timestamp		DATETIME NOT NULL
-	)
-`
-
 const sqlInsertInitialSettings = `
 	INSERT INTO settings (database_id,keyword,crypt_id,database_version,update_timestamp,sync_timestamp)
 		VALUES ('%s','%s','%s','%d','%s','%s')

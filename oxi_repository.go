@@ -15,6 +15,7 @@ const (
 	VTTime             = "time"
 	VTOneTimePassword  = "otp"
 	VTPreviousPassword = "prevpass"
+	VTRecoveryPhrase   = "recovery"
 )
 
 func GetValueTypes() (vTypes []string) {
@@ -31,6 +32,7 @@ func GetValueTypes() (vTypes []string) {
 		VTTime,
 		VTOneTimePassword,
 		VTPreviousPassword,
+		VTRecoveryPhrase,
 	}
 }
 

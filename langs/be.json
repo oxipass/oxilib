@@ -1,0 +1,17 @@
+{
+  "code": "be",
+  "locales": ["be_BY"],
+  "name": "Belarusian",
+  "native": "Беларуская",
+  "translations": {
+    "username": "Імя карыстальніка",
+    "password": "Пароль",
+    "email": "Электронная пошта",
+    "creaditcard": "Крэдытная картка",
+    "note": "Цыдулка",
+    "recoverypharase": "Фраза аднаўлення",
+    "otp": "Аднаразовы пароль",
+    "link": "Спасылка",
+    "phone": "Тэлефон"
+  }
+}

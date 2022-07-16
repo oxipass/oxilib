@@ -21,3 +21,5 @@ const ConstSuccessResponse = "success"
 const CErrorResponse = "error"
 
 const cTempDBFile = "test.sqlite"
+
+const cLangsFolder = "langs"

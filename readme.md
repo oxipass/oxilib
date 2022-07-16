@@ -1,6 +1,5 @@
-[![Build Status](https://travis-ci.com/bykovme/bslib.svg?branch=master)](https://travis-ci.com/bykovme/bslib)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bykovme_bslib&metric=alert_status)](https://sonarcloud.io/dashboard?id=bykovme_bslib)
-[![Go Report Card](https://goreportcard.com/badge/github.com/bykovme/bslib)](https://goreportcard.com/report/github.com/bykovme/bslib)
+[![Go Report Card](https://goreportcard.com/badge/github.com/oxipass/oxilib)](https://goreportcard.com/report/github.com/oxipass/oxilib)
 [![codecov](https://codecov.io/gh/bykovme/bslib/branch/master/graph/badge.svg)](https://codecov.io/gh/bykovme/bslib)
 
 ## Oxi Lib
@@ -17,7 +16,9 @@ go get github.com/oxipass/oxilib
 use it at your own risk
 
 Check other related packages:  
-[Encryption library 'BSEncrypt'](https://github.com/bykovme/bsencrypt)
+[Encryption library 'OxiCrypt'](https://github.com/oxipass/oxicrypt)
+[Mobile/Desktop App 'OxiPass'](https://github.com/oxipass/oxipass)
+[OxiPass Homepage](https://oxipass.io)
 
-**[Alex Bykov](https://bykovsoft.com) © 2015 - 2022**
+**[Alex Bykov](https://profile.codersrank.io/user/bykovme) © 2015 - 2022**
 

@@ -1,0 +1,17 @@
+{
+  "code": "en",
+  "locales": ["en_US","en_GB","en_AU","en_CA","en_NZ","en_IE"],
+  "name": "English",
+  "native": "English",
+  "translations": {
+    "field_username": "Username",
+    "field_password": "Password",
+    "field_email": "Email",
+    "field_creaditcard": "Credit Card",
+    "field_note": "Note",
+    "field_recoverypharase": "Recovery Phrase",
+    "field_otp": "One Time Password",
+    "field_link": "Link",
+    "field_phone": "Phone"
+  }
+}

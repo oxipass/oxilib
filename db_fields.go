@@ -5,21 +5,6 @@ import (
 	"time"
 )
 
-const sqlCreateTableFields = `
-	CREATE TABLE IF NOT EXISTS fields (
-   		field_id 		    INTEGER PRIMARY KEY AUTOINCREMENT,
-		item_id             INTEGER NOT NULL,
-		field_icon          VARCHAR NOT NULL,
-   		field_name 			VARCHAR NOT NULL,
-		value_type          VARCHAR NOT NULL,
-		field_value         VARCHAR NOT NULL,
-		created  			DATETIME NOT NULL,
-   		updated    			DATETIME NOT NULL,
-		deleted				BOOLEAN NOT NULL CHECK (deleted IN (0,1)) default '0',
-		FOREIGN KEY (item_id) REFERENCES items(item_id)
-	)
-`
-
 const sqlInsertField = `
 	INSERT
 		INTO fields (

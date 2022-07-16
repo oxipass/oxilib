@@ -1,0 +1,17 @@
+{
+  "code": "ru",
+  "locales": ["ru_RU","ru_KG","ru_KZ","ru_MD","ru_UA","ru_UZ","ru_RU","ru_BY"],
+  "name": "Russian",
+  "native": "Русский",
+  "translations": {
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "email": "Электронная почта",
+    "creaditcard": "Кредитная карта",
+    "note": "Записка",
+    "recoverypharase": "Фраза восстановления",
+    "otp": "Одноразовый пароль",
+    "link": "Ссылка",
+    "phone": "Телефон"
+  }
+}

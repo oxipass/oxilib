@@ -1,0 +1,56 @@
+{
+  "updated": "2022-06-30T15:00:00.000Z",
+  "fields": [
+    {
+      "id": "field_user",
+      "type": "text",
+      "icon": "fas fa-user"
+    },
+    {
+        "id": "field_password",
+        "type": "password",
+        "icon": "fas fa-lock"
+    },
+    {
+      "id": "field_pin",
+      "type": "password",
+      "icon": "fas fa-lock"
+    },
+    {
+        "id": "field_email",
+        "type": "email",
+        "icon": "fas fa-envelope"
+    },
+    {
+      "id": "field_creditcard",
+      "type": "card",
+      "icon": "fas fa-credit-card"
+    },
+    {
+      "id": "field_note",
+      "type": "longtext",
+      "icon": "fas fa-sticky-note"
+    },
+    {
+      "id": "field_recoverypharase",
+      "type": "recovery",
+      "icon": "fas fa-key"
+    },
+    {
+      "id": "field_otp",
+      "type": "otp",
+      "icon": "fas fa-key"
+    },
+    {
+      "id": "field_link",
+      "type": "link",
+      "icon": "fas fa-link"
+    },
+    {
+      "id": "field_phone",
+      "type": "phone",
+      "icon": "fas fa-phone"
+    }
+  ]
+
+}

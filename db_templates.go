@@ -2,31 +2,6 @@ package oxilib
 
 import "time"
 
-const sqlCreateTableTemplateItems = `
-	CREATE TABLE IF NOT EXISTS template_items (
-   		item_id 		    INTEGER PRIMARY KEY AUTOINCREMENT,
-   		name 			    VARCHAR NOT NULL,
-		icon             	VARCHAR NOT NULL,
-		created  			DATETIME NOT NULL,
-   		updated    			DATETIME NOT NULL,
-		deleted				BOOLEAN NOT NULL CHECK (deleted IN (0,1)) default '0'
-	)
-`
-
-const sqlCreateTableTemplateFields = `
-	CREATE TABLE IF NOT EXISTS template_fields (
-   		field_id 		    INTEGER PRIMARY KEY AUTOINCREMENT,
-		item_id             INTEGER NOT NULL,
-		field_icon          VARCHAR NOT NULL,
-   		field_name 			VARCHAR NOT NULL,
-		value_type          VARCHAR NOT NULL,
-		created  			DATETIME NOT NULL,
-   		updated    			DATETIME NOT NULL,
-		deleted				BOOLEAN NOT NULL CHECK (deleted IN (0,1)) default '0',
-		FOREIGN KEY (item_id) REFERENCES templates_items(item_id)
-	)
-`
-
 const sqlInsertItemTemplate = `
 	INSERT 
 		INTO template_items (name,icon,created,updated,deleted) 

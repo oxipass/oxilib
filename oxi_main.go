@@ -11,6 +11,7 @@ type StorageSingleton struct {
 	dbObject   *storageDB
 	encObject  *bsEncryptor
 	lastAccess time.Time
+	language   string
 }
 
 var instance *StorageSingleton
@@ -101,4 +102,8 @@ func (storage *StorageSingleton) Close() error {
 	}
 	storage.encObject = nil
 	return nil
+}
+
+func (storage *StorageSingleton) SupportedLangs() []Lang {
+	return getLangs()
 }

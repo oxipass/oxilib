@@ -4,17 +4,6 @@ import (
 	"time"
 )
 
-const sqlCreateTableItems = `
-	CREATE TABLE IF NOT EXISTS items (
-   		item_id 		    INTEGER PRIMARY KEY AUTOINCREMENT,
-   		name 			    VARCHAR NOT NULL,
-		icon             	VARCHAR NOT NULL,
-		created  			DATETIME NOT NULL,
-   		updated    			DATETIME NOT NULL,
-		deleted				BOOLEAN NOT NULL CHECK (deleted IN (0,1)) default '0'
-	)
-`
-
 const sqlDeleteItem = `UPDATE items SET deleted=1, updated=? WHERE item_id=? `
 const sqlDeleteItemField = `UPDATE fields SET deleted=1, updated=? WHERE item_id=? `
 
