@@ -34,6 +34,7 @@ const sqlCreateTableSettings = `
    		database_id 		VARCHAR PRIMARY KEY NOT NULL,
    		keyword 			VARCHAR NOT NULL,
 		crypt_id            VARCHAR NOT NULL,
+		language            VARCHAR NOT NULL,
 		database_version 	INTEGER NOT NULL,
    		update_timestamp    DATETIME NOT NULL,
 		sync_timestamp		DATETIME NOT NULL
@@ -55,7 +56,7 @@ const sqlCreateTableTags = `
 // sqlCreateTableTemplateItems is the SQL query to create a table 'template_items'.
 const sqlCreateTableTemplateItems = `
 	CREATE TABLE IF NOT EXISTS template_items (
-   		item_id 		    INTEGER PRIMARY KEY AUTOINCREMENT,
+   		item_id 		    VARCHAR NOT NULL PRIMARY KEY,
    		name 			    VARCHAR NOT NULL,
 		icon             	VARCHAR NOT NULL,
 		created  			DATETIME NOT NULL,
@@ -67,8 +68,8 @@ const sqlCreateTableTemplateItems = `
 // sqlCreateTableTemplateFields is the SQL query to create a table 'template_fields'.
 const sqlCreateTableTemplateFields = `
 	CREATE TABLE IF NOT EXISTS template_fields (
-   		field_id 		    INTEGER PRIMARY KEY AUTOINCREMENT,
-		item_id             INTEGER NOT NULL,
+   		field_id 		    VARCHAR NOT NULL PRIMARY KEY,
+		item_id             VARCHAR NOT NULL,
 		field_icon          VARCHAR NOT NULL,
    		field_name 			VARCHAR NOT NULL,
 		value_type          VARCHAR NOT NULL,

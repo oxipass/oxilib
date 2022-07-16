@@ -19,6 +19,7 @@ type storageDB struct {
 	dbID      string
 	cryptID   string
 	keyWord   string
+	dbLang    string
 }
 
 func (sdb *storageDB) StartTX() (err error) {
@@ -168,7 +169,7 @@ func (sdb *storageDB) checkIntegrity() (bool, error) {
 }
 
 const constSelectVersion = `
-	SELECT database_version, database_id, crypt_id, keyword
+	SELECT database_version, database_id, crypt_id, language, keyword
 		FROM settings LIMIT 1
 `
 
@@ -187,7 +188,7 @@ func (sdb *storageDB) getSettings() error {
 		return formError(BSERR00001DbIntegrityCheckFailed, errSet.Error())
 	}
 	if rowsSet.Next() {
-		errSet = rowsSet.Scan(&sdb.dbVersion, &sdb.dbID, &sdb.cryptID, &sdb.keyWord)
+		errSet = rowsSet.Scan(&sdb.dbVersion, &sdb.dbID, &sdb.cryptID, &sdb.dbLang, &sdb.keyWord)
 		if errSet != nil {
 			errSetClose := rowsSet.Close()
 			if errSetClose != nil {

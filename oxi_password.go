@@ -11,7 +11,7 @@ func (storage *StorageSingleton) SetNewPassword(newPassword string, encMethod st
 		if len(encMethod) == 0 {
 			return formError(BSERR00011EncCypherNotProvided)
 		}
-		return storage.initStorage(newPassword, encMethod)
+		return storage.initStorage(newPassword, encMethod, storage.language)
 	}
 	return storage.changePassword(newPassword)
 }
@@ -50,7 +50,7 @@ func (storage *StorageSingleton) Unlock(password string) error {
 	return nil
 }
 
-func (storage *StorageSingleton) initStorage(newPassword string, encMethod string) error {
+func (storage *StorageSingleton) initStorage(newPassword string, encMethod string, lang string) error {
 
 	storage.encObject = new(bsEncryptor)
 	cryptID, err := storage.encObject.getCryptIDbyName(encMethod)
@@ -79,7 +79,7 @@ func (storage *StorageSingleton) initStorage(newPassword string, encMethod strin
 		return err
 	}
 
-	err = storage.dbObject.initSettings(dbID, keyWord, storage.encObject.cryptID)
+	err = storage.dbObject.initSettings(dbID, keyWord, storage.encObject.cryptID, lang)
 	if err != nil {
 		errRollback := storage.dbObject.RollbackTX()
 		if errRollback != nil {

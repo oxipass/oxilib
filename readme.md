@@ -15,6 +15,22 @@ go get github.com/oxipass/oxilib
 **IMPORTANT!** This package is still work in progress and is in active development phase, 
 use it at your own risk
 
+You can use local sqlite db to test the package. Create the file config_local.go 
+with the following content:
+```go
+//go:build local
+// +build local
+
+package oxilib
+
+const localTestFile = "/Users/bkv/.oxipass/oxipass.sqlite" // create your own local db file for testing purposes
+const useLocalTestFile = true
+```
+and add the tag 'local' to build process 
+```
+go test -tags local
+```
+
 Check other related packages:  
 [Encryption library 'OxiCrypt'](https://github.com/oxipass/oxicrypt)
 [Mobile/Desktop App 'OxiPass'](https://github.com/oxipass/oxipass)

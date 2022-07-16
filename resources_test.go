@@ -6,6 +6,78 @@ import (
 	"testing"
 )
 
+func TestWrongLanguage(t *testing.T) {
+	lang, err := initLang("wrong")
+	if err == nil && lang != "en" {
+		t.Error("English should be loaded instead of wrong language")
+		t.FailNow()
+	}
+}
+
+func TestSetWrongLanguage(t *testing.T) {
+	err := setLang("wrong")
+	if err != nil {
+		t.Error("English should be loaded instead of wrong language, no error expected")
+		t.FailNow()
+	}
+}
+
+func TestInitLang(t *testing.T) {
+	langs := getLangs()
+	for _, lang := range langs {
+		setLang, errLang := initLang(lang.Code)
+		if errLang != nil || setLang != lang.Code {
+			if errLang == nil {
+				t.Error(errLang)
+			} else {
+				t.Error("error while init lang: " + lang.Code)
+			}
+		}
+	}
+}
+
+func TestSetLang(t *testing.T) {
+	langs := getLangs()
+	for _, lang := range langs {
+		errLang := setLang(lang.Code)
+		if errLang != nil {
+			t.Error(errLang)
+		}
+	}
+}
+
+func TestGetLangs(t *testing.T) {
+	langs := getLangs()
+
+	errHappened := false
+	for _, lang := range langs {
+
+		if lang.Code == "" {
+			t.Error("lang code is empty for " + lang.Name)
+			errHappened = true
+			continue
+		}
+		if lang.Name == "" {
+			t.Error("lang name is empty for " + lang.Code)
+			errHappened = true
+			continue
+		}
+		if lang.NativeName == "" {
+			t.Error("lang native name is empty for " + lang.Code)
+			errHappened = true
+			continue
+		}
+		if lang.Locales == nil {
+			t.Error("lang locales is empty for " + lang.Code)
+			errHappened = true
+			continue
+		}
+	}
+	if errHappened {
+		t.FailNow()
+	}
+}
+
 func TestLangsContent(t *testing.T) {
 	files, errDir := getLangsFiles()
 	if errDir != nil {

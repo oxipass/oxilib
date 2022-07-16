@@ -23,6 +23,9 @@ func GetInstance() *StorageSingleton {
 		log.Println("Get Instance initiated (should be once per session)")
 		instance = &StorageSingleton{}
 	})
+	if instance != nil {
+		instance.language = "en" // Initiate by default with English, can be changed later with SetLang
+	}
 	return instance
 }
 
@@ -89,6 +92,7 @@ func (storage *StorageSingleton) Open(filePath string) error {
 
 }
 
+// Close - closes the storage, cypher and database
 func (storage *StorageSingleton) Close() error {
 	if storage.dbObject != nil && storage.dbObject.IsOpen() {
 		err := storage.dbObject.Close()
@@ -104,6 +108,21 @@ func (storage *StorageSingleton) Close() error {
 	return nil
 }
 
+// SupportedLangs - returns list of supported languages
 func (storage *StorageSingleton) SupportedLangs() []Lang {
 	return getLangs()
+}
+
+// SetLang - sets language for the storage
+func (storage *StorageSingleton) SetLang(lang string) {
+	err := setLang(lang)
+	if err != nil {
+		log.Println(err)
+	}
+	storage.language = lang
+}
+
+// T Returning translation for a specific key
+func (storage *StorageSingleton) T(key string) string {
+	return t(key)
 }

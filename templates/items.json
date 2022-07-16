@@ -2,7 +2,8 @@
   "updated": "2022-06-30T15:00:00.000Z",
   "items": [
     {
-      "id": "bank-account",
+      "id": "item_bank-account",
+      "icon": "fas fa-money-bill-alt",
       "fields": [
         "user",
         "password",
@@ -10,7 +11,27 @@
       ]
     },
     {
-      "id": "web-login",
+      "id": "item_debit-card-visa",
+      "icon": "fab fa-cc-visa",
+      "fields": [
+        "field_creditcard",
+        "field_name",
+        "field_pin",
+        "field_expdate"
+      ]
+    },
+    {
+      "id": "item_web-login",
+      "icon": "fas fa-globe",
+      "fields": [
+        "user",
+        "password",
+        "link"
+      ]
+    },
+    {
+      "id": "item_crypto-wallet",
+      "icon": "fab fa-bitcoin",
       "fields": [
         "user",
         "password",

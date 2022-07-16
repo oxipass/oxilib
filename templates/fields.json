@@ -2,6 +2,11 @@
   "updated": "2022-06-30T15:00:00.000Z",
   "fields": [
     {
+      "id": "field_name",
+      "type": "text",
+      "icon": "fas fa-user"
+    },
+    {
       "id": "field_user",
       "type": "text",
       "icon": "fas fa-user"
@@ -50,6 +55,11 @@
       "id": "field_phone",
       "type": "phone",
       "icon": "fas fa-phone"
+    },
+    {
+      "id": "field_expdate",
+      "type": "expdate",
+      "icon": "fas fa-calendar"
     }
   ]
 

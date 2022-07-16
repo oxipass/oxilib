@@ -96,7 +96,7 @@ func teardown() error {
 	}
 	if _, err := os.Stat(getTestDbFileName()); err == nil {
 		// Do not delete if local file is used (use build tag 'local' to configure)
-		// Check bkv_config_global.go for default configuration
+		// Check config_global.go for default configuration
 		if !isLocalFileUsed() {
 			err = os.Remove(getTestDbFileName())
 			if err != nil {
@@ -115,6 +115,7 @@ func getTestDbFileName() string {
 	if globalDBFile != "" {
 		return globalDBFile
 	}
+
 	if useLocalTestFile {
 		globalDBFile = localTestFile
 		return globalDBFile

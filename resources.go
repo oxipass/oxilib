@@ -16,49 +16,51 @@ var (
 )
 
 var tr map[string]string
+var currentLanguage string
 
 func getLangsFiles() ([]fs.DirEntry, error) {
 	return langsResources.ReadDir(cLangsFolder)
 }
 
-func initLang(langCode string) error {
+func initLang(langCode string) (string, error) {
 	files, err := getLangsFiles()
 	if err != nil {
-		return err
+		return "", err
 	}
 	for _, file := range files {
 		var lang Lang
 		fileBytes, errFile := langsResources.ReadFile(cLangsFolder + "/" + file.Name())
 		if errFile != nil {
-			return errFile
+			return "", errFile
 		}
 		errUnmarshal := json.Unmarshal(fileBytes, &lang)
 		if errUnmarshal != nil {
-			return errUnmarshal
+			return "", errUnmarshal
 		}
 		if lang.Code == langCode {
 			var translations Translations
 			transBytes, errTrans := langsResources.ReadFile(cLangsFolder + "/" + file.Name())
 			if errTrans != nil {
-				return errTrans
+				return "", errTrans
 			}
 			errUnmarshalTrans := json.Unmarshal(transBytes, &translations)
 			if errUnmarshalTrans != nil {
-				return errUnmarshalTrans
+				return "", errUnmarshalTrans
 			}
 			tr = translations.Translations
-			return nil
+			return langCode, nil
 		}
 	}
 	if langCode != "en" {
 		return initLang("en")
 	}
-	return errors.New("language not loaded")
+	return "", errors.New("language not loaded")
 }
 
-func TR(key string) string {
+func t(key string) string {
+	var err error
 	if tr == nil {
-		err := initLang("en")
+		currentLanguage, err = initLang("en")
 		if err != nil {
 			return key
 		}
@@ -67,7 +69,8 @@ func TR(key string) string {
 }
 
 func setLang(langCode string) error {
-	err := initLang(langCode)
+	var err error
+	currentLanguage, err = initLang(langCode)
 	if err != nil {
 		return err
 	}

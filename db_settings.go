@@ -10,17 +10,17 @@ type SettingInfo struct {
 }
 
 const sqlInsertInitialSettings = `
-	INSERT INTO settings (database_id,keyword,crypt_id,database_version,update_timestamp,sync_timestamp)
-		VALUES ('%s','%s','%s','%d','%s','%s')
+	INSERT INTO settings (database_id,keyword,crypt_id,language,database_version,update_timestamp,sync_timestamp)
+		VALUES ('%s','%s','%s','%s','%d','%s','%s')
 `
 
-func (sdb *storageDB) initSettings(dbID, keyWord, cryptID string) error {
+func (sdb *storageDB) initSettings(dbID, keyWord, cryptID, lang string) error {
 	if sdb.sTX == nil {
 		return formError(BSERR00003DbTransactionFailed, "initSettings")
 	}
 
 	lastUpdate := prepareTimeForDb(time.Now())
-	sqlQuery := fmt.Sprintf(sqlInsertInitialSettings, dbID, keyWord, cryptID,
+	sqlQuery := fmt.Sprintf(sqlInsertInitialSettings, dbID, keyWord, cryptID, lang,
 		defaultDbVersion, lastUpdate, constZeroTime)
 
 	_, err := sdb.sTX.Exec(sqlQuery)
