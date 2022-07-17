@@ -23,3 +23,5 @@ const CErrorResponse = "error"
 const cTempDBFile = "test.sqlite"
 
 const cLangsFolder = "langs"
+
+const cIconDefaultItem = "solid/file"

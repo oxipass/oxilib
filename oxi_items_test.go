@@ -6,10 +6,10 @@ import (
 )
 
 const cTestItemName01 = "hjb cwec78hduycbwj dbwne w"
-const cTestItemIcon01 = "fas fa-ambulance"
+const cTestItemIcon01 = "solid/baby"
 
 const cTestItemName02 = "98jmwhj2ndycwbcjdwlmdk"
-const cTestItemIcon02 = "fab fa-linkedin"
+const cTestItemIcon02 = "brands/linkedin"
 
 func testHelperCreateItem() (itemId int64, err error) {
 	bsInstance := GetInstance()

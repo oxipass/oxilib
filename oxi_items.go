@@ -111,7 +111,7 @@ func (storage *StorageSingleton) AddNewItem(addItemParams UpdateItemForm) (respo
 		return response, err
 	}
 
-	if !CheckIfExistsFontAwesome(addItemParams.Icon) {
+	if !CheckIfExistsInFontAwesome(addItemParams.Icon) {
 		return response, formError(BSERR00024FontAwesomeIconNotFound)
 	}
 

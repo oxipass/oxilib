@@ -23,9 +23,11 @@ _testmain.go
 *.test
 *.prof
 
-.DB_Store
+
 *.sublime-project
 *.subime-workspace
+.DS_Store
+fa/.DS_Store
 
 .vscode/
 .idea/

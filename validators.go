@@ -3,7 +3,7 @@ package oxilib
 import "errors"
 
 func ValidateField(field OxiField) error {
-	if !CheckIfExistsFontAwesome(field.Icon) {
+	if !CheckIfExistsInFontAwesome(field.Icon) {
 		return errors.New(BSERR00022ValidationFailed + ": icon not found")
 	}
 	if !CheckValueType(field.ValueType) {
@@ -25,7 +25,7 @@ func ValidateItemBeforeUpdate(updateItemParams UpdateItemForm) error {
 		return formError(BSERR00027ItemValidationError)
 	}
 	if updateItemParams.Icon != "" {
-		if !CheckIfExistsFontAwesome(updateItemParams.Icon) {
+		if !CheckIfExistsInFontAwesome(updateItemParams.Icon) {
 			return formError(BSERR00024FontAwesomeIconNotFound)
 		}
 	}

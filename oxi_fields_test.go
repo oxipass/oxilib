@@ -7,7 +7,7 @@ import (
 
 const cFieldName01 = "nwjkdq dwqjdnwqd dejwdjqkwdq"
 const cFieldValue01 = "iueruiefr efkernf erferfe"
-const cFieldIcon01 = "fab fa-fort-awesome"
+const cFieldIcon01 = "brands/font-awesome"
 
 func testHelperCreateField(itemId int64) (fieldId int64, err error) {
 	bsInstance := GetInstance()

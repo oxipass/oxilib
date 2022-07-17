@@ -8,6 +8,10 @@
         "user",
         "password",
         "link"
+      ],
+      "tags": [
+        "tag_internet",
+        "tag_banking"
       ]
     },
     {
@@ -18,6 +22,10 @@
         "field_name",
         "field_pin",
         "field_expdate"
+      ],
+      "tags": [
+        "tag_internet",
+        "tag_banking"
       ]
     },
     {

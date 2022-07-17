@@ -1,0 +1,5 @@
+{
+  "envelope":"mail,email,e-mail,почта,мыло,ящик",
+  "key":"pass,password,pin,secret,пароль,секрет,пин,код,ключ",
+  "lock":"pass,password,pin,secret,пароль,секрет,пин,код,замок"
+}

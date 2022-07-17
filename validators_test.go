@@ -2,8 +2,8 @@ package oxilib
 
 import "testing"
 
-const cValidateFieldIcon01 = "fab fa-android"
-const cValidateFieldIcon02wrong = "fab ekjdnwdednkjwndkjw"
+const cValidateFieldIcon01 = "brands/android"
+const cValidateFieldIcon02wrong = "ekjdnwdednkjwndkjw"
 const cValidateFieldName01 = "my new field"
 const cValidateFieldType01wrong = "kjenwjdnwkjdnwk"
 
@@ -11,7 +11,7 @@ func TestFieldValidator(t *testing.T) {
 	field := OxiField{Name: cValidateFieldName01, ValueType: VTText, Icon: cValidateFieldIcon01}
 	err := ValidateField(field)
 	if err != nil {
-		t.Errorf("Expected no error, retrived: %s", err.Error())
+		t.Errorf("Expected no error, retrived: %s, field icon: %s", err.Error(), cValidateFieldIcon01)
 	}
 }
 

@@ -1,21 +1,19 @@
 package oxilib
 
-import "strings"
-
 const (
-	VTText             = "text"
-	VTLongText         = "longtext"
-	VTCard             = "card"
-	VTPassword         = "password"
-	VTLink             = "link"
-	VTEmail            = "email"
-	VTPhone            = "phone"
-	VTDate             = "date"
-	VTExpirationDate   = "expdate"
-	VTTime             = "time"
-	VTOneTimePassword  = "otp"
-	VTPreviousPassword = "prevpass"
-	VTRecoveryPhrase   = "recovery"
+	VTText             = "text"     // simple test
+	VTLongText         = "longtext" // long text (scroll when viewing)
+	VTCard             = "card"     // any kind of 16 digits card to show it like 1111 2222 3333 4444
+	VTPassword         = "password" // any hidden field, password, pin etc. It will be masked with asterisks
+	VTLink             = "link"     // link to any internet page, speciall logic for http/https
+	VTEmail            = "email"    // email address
+	VTPhone            = "phone"    // phone number (show country code separately
+	VTDate             = "date"     // any date, show calendar as input
+	VTExpirationDate   = "expdate"  // the same as date, but with expiration date
+	VTTime             = "time"     // time, show clock as input
+	VTOneTimePassword  = "otp"      // one time password, show input with 6 digits changing every 30 seconds
+	VTPreviousPassword = "prevpass" // previous password, the password backed up before here changing it
+	VTRecoveryPhrase   = "recovery" // recovery phrase, show words with numbers separated by spaces
 )
 
 func GetValueTypes() (vTypes []string) {
@@ -43,35 +41,4 @@ func CheckValueType(vType string) bool {
 		}
 	}
 	return false
-}
-
-var cachedFA []string
-
-func GetFontAwesomeList() (faValues []string) {
-	if cachedFA != nil {
-		return cachedFA
-	}
-	for k := range faCachedValues {
-		cachedFA = append(cachedFA, k)
-	}
-	return cachedFA
-}
-
-func CheckIfExistsFontAwesome(faCheckValue string) bool {
-	for faKey := range faCachedValues {
-		if faKey == faCheckValue {
-			return true
-		}
-	}
-	return false
-}
-
-func SearchFontAwesomeList(term string) (faValues []string) {
-	lowerTerm := strings.ToLower(term)
-	for faKey, faSearchTerms := range faCachedValues {
-		if strings.Contains(faKey, lowerTerm) || strings.Contains(faSearchTerms, lowerTerm) {
-			faValues = append(faValues, faKey)
-		}
-	}
-	return faValues
 }
