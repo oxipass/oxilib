@@ -24,4 +24,8 @@ const cTempDBFile = "test.sqlite"
 
 const cLangsFolder = "langs"
 
+const cTemplatesFolder = "templates"
+
+const cTagsTemplates = "tags.json"
+
 const cIconDefaultItem = "solid/file"

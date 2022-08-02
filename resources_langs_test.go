@@ -134,5 +134,108 @@ func TestLangsAvailability(t *testing.T) {
 
 }
 
-// TODO: check if languages have the same lang_keys as English
-// TODO: chack if templates ids all exist in English language keys
+// TestLangsHaveEngKeys tests that all langs have keys as en.json
+func TestLangsHaveEngKeys(t *testing.T) {
+	files, errDir := getLangsFiles()
+	if errDir != nil {
+		t.Error(errDir)
+		t.FailNow()
+		return
+	}
+
+	var engTranslations Translations
+	engBytes, errEngFile := langsResources.ReadFile(cLangsFolder + "/" + "en.json")
+	if errEngFile != nil {
+		t.Error(errEngFile)
+		t.FailNow()
+		return
+	}
+	errUnmarshalEng := json.Unmarshal(engBytes, &engTranslations)
+	if errUnmarshalEng != nil {
+		t.Error(errUnmarshalEng, "for file:en.json and lang "+engTranslations.Name)
+		t.FailNow()
+		return
+	}
+
+	errHappened := false
+	for _, file := range files {
+		var translations Translations
+		fileBytes, errFile := langsResources.ReadFile(cLangsFolder + "/" + file.Name())
+		if errFile != nil {
+			t.Error(errFile)
+			errHappened = true
+			continue
+		}
+		errUnmarshal := json.Unmarshal(fileBytes, &translations)
+		if errUnmarshal != nil {
+			t.Error(errUnmarshal, "for file: "+file.Name()+" and lang "+translations.Name)
+			errHappened = true
+			continue
+		}
+		for tagKey, _ := range engTranslations.Translations {
+			if transValue, ok := translations.Translations[tagKey]; !ok {
+				t.Error("key " + tagKey + " is missing in " + file.Name())
+				errHappened = true
+				continue
+			} else if transValue == "" {
+				t.Error("key " + tagKey + " is empty in " + file.Name())
+				errHappened = true
+				continue
+			}
+		}
+	}
+	if errHappened {
+		t.FailNow()
+	}
+}
+
+// TestLangsKeysHaveEngKeys tests that all keys in langs have keys in en.json
+func TestLangsKeysHaveEngKey(t *testing.T) {
+	files, errDir := getLangsFiles()
+	if errDir != nil {
+		t.Error(errDir)
+		t.FailNow()
+		return
+	}
+
+	var engTranslations Translations
+	engBytes, errEngFile := langsResources.ReadFile(cLangsFolder + "/" + "en.json")
+	if errEngFile != nil {
+		t.Error(errEngFile)
+		t.FailNow()
+		return
+	}
+	errUnmarshalEng := json.Unmarshal(engBytes, &engTranslations)
+	if errUnmarshalEng != nil {
+		t.Error(errUnmarshalEng, "for file:en.json and lang "+engTranslations.Name)
+		t.FailNow()
+		return
+	}
+
+	errHappened := false
+	for _, file := range files {
+		var translations Translations
+		fileBytes, errFile := langsResources.ReadFile(cLangsFolder + "/" + file.Name())
+		if errFile != nil {
+			t.Error(errFile)
+			errHappened = true
+			continue
+		}
+		errUnmarshal := json.Unmarshal(fileBytes, &translations)
+		if errUnmarshal != nil {
+			t.Error(errUnmarshal, "for file: "+file.Name()+" and lang "+translations.Name)
+			errHappened = true
+			continue
+		}
+		for tagKey, _ := range translations.Translations {
+			if _, ok := engTranslations.Translations[tagKey]; !ok {
+				t.Error("key '" + tagKey + "' in file '" + file.Name() + "' is missing in en.json")
+				errHappened = true
+				continue
+			}
+		}
+	}
+	if errHappened {
+		t.FailNow()
+	}
+}

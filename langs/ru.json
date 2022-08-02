@@ -4,14 +4,18 @@
   "name": "Russian",
   "native": "Русский",
   "translations": {
-    "username": "Имя пользователя",
-    "password": "Пароль",
-    "email": "Электронная почта",
-    "creaditcard": "Кредитная карта",
-    "note": "Записка",
-    "recoverypharase": "Фраза восстановления",
-    "otp": "Одноразовый пароль",
-    "link": "Ссылка",
-    "phone": "Телефон"
+    "field_username": "Имя пользователя",
+    "field_password": "Пароль",
+    "field_email": "Электронная почта",
+    "field_creaditcard": "Кредитная карта",
+    "field_note": "Записка",
+    "field_recoverypharase": "Фраза восстановления",
+    "field_otp": "Одноразовый пароль",
+    "field_link": "Ссылка",
+    "field_phone": "Телефон",
+    "tag_internet": "Интернет",
+    "tag_banking": "Банкинг",
+    "tag_crypto": "Криптовалюта"
+
   }
 }

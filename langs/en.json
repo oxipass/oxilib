@@ -12,6 +12,9 @@
     "field_recoverypharase": "Recovery Phrase",
     "field_otp": "One Time Password",
     "field_link": "Link",
-    "field_phone": "Phone"
+    "field_phone": "Phone",
+    "tag_internet": "Internet",
+    "tag_banking": "Banking",
+    "tag_crypto": "Crypto"
   }
 }

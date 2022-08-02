@@ -4,14 +4,17 @@
   "name": "Belarusian",
   "native": "Беларуская",
   "translations": {
-    "username": "Імя карыстальніка",
-    "password": "Пароль",
-    "email": "Электронная пошта",
-    "creaditcard": "Крэдытная картка",
-    "note": "Цыдулка",
-    "recoverypharase": "Фраза аднаўлення",
-    "otp": "Аднаразовы пароль",
-    "link": "Спасылка",
-    "phone": "Тэлефон"
+    "field_username": "Імя карыстальніка",
+    "field_password": "Пароль",
+    "field_email": "Электронная пошта",
+    "field_creaditcard": "Крэдытная картка",
+    "field_note": "Цыдулка",
+    "field_recoverypharase": "Фраза аднаўлення",
+    "field_otp": "Аднаразовы пароль",
+    "field_link": "Спасылка",
+    "field_phone": "Тэлефон",
+    "tag_internet": "Інтэрнэт",
+    "tag_banking": "Банкінг",
+    "tag_crypto": "Крыптавалюта"
   }
 }

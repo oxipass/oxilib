@@ -5,9 +5,9 @@
       "id": "item_bank-account",
       "icon": "fas fa-money-bill-alt",
       "fields": [
-        "user",
-        "password",
-        "link"
+        "field_user",
+        "field_password",
+        "field_link"
       ],
       "tags": [
         "tag_internet",
@@ -32,18 +32,18 @@
       "id": "item_web-login",
       "icon": "fas fa-globe",
       "fields": [
-        "user",
-        "password",
-        "link"
+        "field_user",
+        "field_password",
+        "field_link"
       ]
     },
     {
       "id": "item_crypto-wallet",
       "icon": "fab fa-bitcoin",
       "fields": [
-        "user",
-        "password",
-        "link"
+        "field_user",
+        "field_password",
+        "field_link"
       ]
     }
   ]

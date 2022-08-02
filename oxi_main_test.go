@@ -49,9 +49,9 @@ func setup() error {
 
 	bsInstance := GetInstance()
 	if bsInstance == nil {
-		return errors.New("cannot retrieve BSLib instance")
+		return errors.New("cannot retrieve oxilib instance")
 	}
-	log.Println("BSLib instance successfully retrieved")
+	log.Println("oxilib instance successfully retrieved")
 
 	dbFile := getTestDbFileName()
 	log.Println("Full path to database file: " + dbFile)
@@ -67,7 +67,7 @@ func setup() error {
 	if errOpen != nil {
 		return errOpen
 	}
-	log.Println("BSLib is initiated successfully")
+	log.Println("oxilib is initiated successfully")
 
 	// Generating random password for the database
 	dbPass = generateRandomString(12)

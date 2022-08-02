@@ -126,3 +126,5 @@ func (storage *StorageSingleton) SetLang(lang string) {
 func (storage *StorageSingleton) T(key string) string {
 	return t(key)
 }
+
+// TODO: QR code generation support
