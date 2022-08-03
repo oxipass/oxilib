@@ -120,12 +120,23 @@ type Translations struct {
 	Translations map[string]string `json:"translations"`
 }
 
-type Tag struct {
+type TagTemplate struct {
 	ID    string `json:"id"`
 	Color string `json:"color"`
 }
 
 type TagsTemplate struct {
-	Updated string `json:"updated"`
-	Tags    []Tag  `json:"tags"`
+	Updated string        `json:"updated"`
+	Tags    []TagTemplate `json:"tags"`
+}
+
+type FieldTemplate struct {
+	ID        string `json:"id"`
+	FieldType string `json:"type"`
+	Icon      string `json:"icon"`
+}
+
+type FieldsTemplate struct {
+	Updated string          `json:"updated"`
+	Fields  []FieldTemplate `json:"fields"`
 }

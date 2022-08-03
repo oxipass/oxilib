@@ -1,6 +1,8 @@
 package oxilib
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestTagsTemplates(t *testing.T) {
 	tagsTemplate, err := GetTagsTemplate()
@@ -52,4 +54,81 @@ func TestTagsTemplatesTranslations(tst *testing.T) {
 
 }
 
+func TestFieldsTemplates(t *testing.T) {
+	fieldsTemplate, err := GetFieldsTemplate()
+	if err != nil {
+		t.Error(err)
+	}
+	if fieldsTemplate.Updated == "" {
+		t.Error("fields template update is empty")
+	}
+	if fieldsTemplate.Fields == nil {
+		t.Error("fields template array is nil")
+	}
+	if len(fieldsTemplate.Fields) == 0 {
+		t.Error("fields template fields is empty")
+	}
+	for _, field := range fieldsTemplate.Fields {
+		if field.ID == "" {
+			t.Error("field id is empty")
+		}
+		if field.FieldType == "" {
+			t.Error("field type is empty for field " + field.ID)
+		}
+		if field.Icon == "" {
+			t.Error("field icon is empty for field " + field.ID)
+		}
 
+	}
+}
+
+func TestFieldsTemplatesTranslations(tst *testing.T) {
+	fieldsTemplate, err := GetFieldsTemplate()
+	if err != nil {
+		tst.Error(err)
+	}
+	_, err = initLang("en")
+	if err != nil {
+		tst.Error(err)
+	}
+	for _, field := range fieldsTemplate.Fields {
+		transl := t(field.ID)
+		if transl == "" {
+			tst.Error("field translation is empty for field id: " + field.ID)
+		}
+		if transl == field.ID {
+			tst.Error("field translation is equal to field id for field id(meaning no translations): " + field.ID)
+		}
+	}
+
+}
+
+func TestFieldsTemplatesTypes(tst *testing.T) {
+	fieldsTemplate, err := GetFieldsTemplate()
+	if err != nil {
+		tst.Error(err)
+	}
+	for _, field := range fieldsTemplate.Fields {
+
+		if CheckValueType(field.FieldType) == false {
+			tst.Error("field type is not valid for field " + field.ID)
+		}
+	}
+}
+
+func TestFieldsTemplatesIcon(tst *testing.T) {
+	fieldsTemplate, err := GetFieldsTemplate()
+	if err != nil {
+		tst.Error(err)
+	}
+	for _, field := range fieldsTemplate.Fields {
+		if field.Icon == "" {
+			tst.Error("field icon is empty for the field " + field.ID)
+		}
+
+		if !CheckIfExistsInFontAwesome(field.Icon) {
+			tst.Error("field icon '" + field.Icon + "' does not exist in icons for the field " + field.ID)
+		}
+	}
+
+}

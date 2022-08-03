@@ -4,62 +4,62 @@
     {
       "id": "field_name",
       "type": "text",
-      "icon": "fas fa-user"
+      "icon": "solid/user"
     },
     {
-      "id": "field_user",
+      "id": "field_username",
       "type": "text",
-      "icon": "fas fa-user"
+      "icon": "solid/user"
     },
     {
         "id": "field_password",
         "type": "password",
-        "icon": "fas fa-lock"
+        "icon": "solid/key"
     },
     {
       "id": "field_pin",
       "type": "password",
-      "icon": "fas fa-lock"
+      "icon": "solid/key"
     },
     {
         "id": "field_email",
         "type": "email",
-        "icon": "fas fa-envelope"
+        "icon": "solid/envelope"
     },
     {
       "id": "field_creditcard",
       "type": "card",
-      "icon": "fas fa-credit-card"
+      "icon": "solid/credit-card"
     },
     {
       "id": "field_note",
       "type": "longtext",
-      "icon": "fas fa-sticky-note"
+      "icon": "solid/note-sticky"
     },
     {
       "id": "field_recoverypharase",
       "type": "recovery",
-      "icon": "fas fa-key"
+      "icon": "solid/key"
     },
     {
       "id": "field_otp",
       "type": "otp",
-      "icon": "fas fa-key"
+      "icon": "solid/key"
     },
     {
       "id": "field_link",
       "type": "link",
-      "icon": "fas fa-link"
+      "icon": "solid/link"
     },
     {
       "id": "field_phone",
       "type": "phone",
-      "icon": "fas fa-phone"
+      "icon": "solid/phone"
     },
     {
       "id": "field_expdate",
       "type": "expdate",
-      "icon": "fas fa-calendar"
+      "icon": "solid/calendar"
     }
   ]
 
