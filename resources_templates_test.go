@@ -132,3 +132,117 @@ func TestFieldsTemplatesIcon(tst *testing.T) {
 	}
 
 }
+
+func TestItemsTemplatesTranslations(tst *testing.T) {
+	itemsTemplate, err := GetItemsTemplate()
+	if err != nil {
+		tst.Error(err)
+	}
+	_, err = initLang("en")
+	if err != nil {
+		tst.Error(err)
+	}
+	for _, item := range itemsTemplate.Items {
+		transl := t(item.ID)
+		if transl == "" {
+			tst.Error("item translation is empty for item id: " + item.ID)
+		}
+		if transl == item.ID {
+			tst.Error("item translation is equal to item id for item id(meaning no translations): " + item.ID)
+		}
+	}
+
+}
+
+func TestItemsTemplatesIcon(tst *testing.T) {
+	itemsTemplate, err := GetItemsTemplate()
+	if err != nil {
+		tst.Error(err)
+	}
+	for _, item := range itemsTemplate.Items {
+		if item.Icon == "" {
+			tst.Error("item icon is empty for the item " + item.ID)
+		}
+
+		if !CheckIfExistsInFontAwesome(item.Icon) {
+			tst.Error("item icon '" + item.Icon + "' does not exist in icons for the item " + item.ID)
+		}
+	}
+
+}
+
+func TestItemsTemplatesFields(tst *testing.T) {
+	itemsTemplate, err := GetItemsTemplate()
+	if err != nil {
+		tst.Error(err)
+	}
+	fieldsTemplate, err := GetFieldsTemplate()
+	if err != nil {
+		tst.Error(err)
+	}
+
+	for _, item := range itemsTemplate.Items {
+		if item.FieldsIds == nil {
+			tst.Error("item fields is nil for item " + item.ID)
+			continue
+		}
+		if len(item.FieldsIds) == 0 {
+			tst.Error("item fields is empty for item " + item.ID)
+			continue
+		}
+		for _, field := range item.FieldsIds {
+			if field == "" {
+				tst.Error("field id is empty for item " + item.ID)
+				continue
+			}
+			foundTemplate := false
+			for _, fTemplate := range fieldsTemplate.Fields {
+				if fTemplate.ID == field {
+					foundTemplate = true
+					break
+				}
+			}
+			if foundTemplate == false {
+				tst.Error("field id '" + field + "' does not exist in fields template for item " + item.ID)
+			}
+		}
+	}
+}
+
+func TestItemsTemplatesTags(tst *testing.T) {
+	itemsTemplate, err := GetItemsTemplate()
+	if err != nil {
+		tst.Error(err)
+	}
+	tagsTemplate, err := GetTagsTemplate()
+	if err != nil {
+		tst.Error(err)
+	}
+
+	for _, item := range itemsTemplate.Items {
+		if item.TagsIds == nil {
+			tst.Error("item tags is nil for item " + item.ID)
+			continue
+		}
+		if len(item.TagsIds) == 0 {
+			tst.Error("item tags is empty for item " + item.ID)
+			continue
+		}
+		for _, tag := range item.TagsIds {
+			if tag == "" {
+				tst.Error("tag id is empty for item " + item.ID)
+				continue
+			}
+			foundTemplate := false
+			for _, tTemplate := range tagsTemplate.Tags {
+				if tTemplate.ID == tag {
+					foundTemplate = true
+					break
+				}
+			}
+			if foundTemplate == false {
+				tst.Error("tag id '" + tag + "' does not exist in tags template for item " + item.ID)
+			}
+		}
+	}
+}

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-const cValueTypesCount = 15
+const cValueTypesCount = 16
 
 func TestValueTypes(t *testing.T) {
 	vTypes := GetValueTypes()

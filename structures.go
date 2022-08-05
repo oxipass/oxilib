@@ -29,6 +29,7 @@ type OxiTag struct {
 	ID      int64  `json:"tag_id"`
 	Name    string `json:"tag_name"`
 	Color   string `json:"color"`
+	ExtId   string `json:"extid"`
 	Created string `json:"created"`
 	Updated string `json:"updated"`
 	Deleted bool   `json:"deleted"`
@@ -139,4 +140,16 @@ type FieldTemplate struct {
 type FieldsTemplate struct {
 	Updated string          `json:"updated"`
 	Fields  []FieldTemplate `json:"fields"`
+}
+
+type ItemTemplate struct {
+	ID        string   `json:"id"`
+	Icon      string   `json:"icon"`
+	FieldsIds []string `json:"fields"`
+	TagsIds   []string `json:"tags"`
+}
+
+type ItemsTemplate struct {
+	Updated string         `json:"updated"`
+	Items   []ItemTemplate `json:"items"`
 }

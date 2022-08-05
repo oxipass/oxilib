@@ -3,9 +3,9 @@
   "items": [
     {
       "id": "item_bank-account",
-      "icon": "fas fa-money-bill-alt",
+      "icon": "solid/money-bill",
       "fields": [
-        "field_user",
+        "field_username",
         "field_password",
         "field_link"
       ],
@@ -16,34 +16,39 @@
     },
     {
       "id": "item_debit-card-visa",
-      "icon": "fab fa-cc-visa",
+      "icon": "brands/cc-visa",
       "fields": [
         "field_creditcard",
         "field_name",
         "field_pin",
-        "field_expdate"
+        "field_expdate",
+        "field_cvv"
       ],
       "tags": [
-        "tag_internet",
         "tag_banking"
       ]
     },
     {
       "id": "item_web-login",
-      "icon": "fas fa-globe",
+      "icon": "solid/globe",
       "fields": [
-        "field_user",
+        "field_username",
         "field_password",
         "field_link"
+      ],
+      "tags": [
+        "tag_internet"
       ]
     },
     {
       "id": "item_crypto-wallet",
-      "icon": "fab fa-bitcoin",
+      "icon": "brands/bitcoin",
       "fields": [
-        "field_user",
-        "field_password",
-        "field_link"
+        "field_name",
+        "field_recoverypharase"
+      ],
+      "tags": [
+        "tag_crypto"
       ]
     }
   ]

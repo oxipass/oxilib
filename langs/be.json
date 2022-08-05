@@ -15,9 +15,15 @@
     "field_phone": "Тэлефон",
     "field_name": "Iмя",
     "field_pin": "PIN код",
+    "field_cvv": "Значэнне пацверджання карты (CVV)",
     "field_expdate": "Дата заканчэння тэрміну",
     "tag_internet": "Інтэрнэт",
     "tag_banking": "Банкінг",
-    "tag_crypto": "Крыптавалюта"
+    "tag_crypto": "Крыптавалюта",
+    "item_bank-account": "Банкаўскі рахунак",
+    "item_debit-card-visa": "Дэбетавая карта (Visa)",
+    "item_debit-card-mastercard": "Дэбетавая карта (MasterCard)",
+    "item_web-login": "Уваход на вэбсайт",
+    "item_crypto-wallet": "Крыптакашалёк"
   }
 }

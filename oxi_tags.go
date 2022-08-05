@@ -53,7 +53,12 @@ func (storage *StorageSingleton) AddNewTag(addTagParam UpdateTagForm) (response 
 		return response, formError(BSERR00006DbInsertFailed, errEncC.Error())
 	}
 
-	response.TagId, err = storage.dbObject.dbInsertTag(encryptedTag, encryptedColor)
+	encryptedExtId, errEncE := storage.encObject.Encrypt(addTagParam.ExtId)
+	if errEncE != nil {
+		return response, formError(BSERR00006DbInsertFailed, errEncE.Error())
+	}
+
+	response.TagId, err = storage.dbObject.dbInsertTag(encryptedTag, encryptedColor, encryptedExtId)
 	if err != nil {
 		errEndTX := storage.dbObject.RollbackTX()
 		if errEndTX != nil {
@@ -111,7 +116,14 @@ func (storage *StorageSingleton) GetTags() (tags []OxiTag, err error) {
 func (storage *StorageSingleton) DecryptTag(tag OxiTag) (decryptedTag OxiTag, err error) {
 	decryptedTag = tag
 	decryptedTag.Name, err = storage.encObject.Decrypt(tag.Name)
+	if err != nil {
+		return decryptedTag, err
+	}
 	decryptedTag.Color, err = storage.encObject.Decrypt(tag.Color)
+	if err != nil {
+		return decryptedTag, err
+	}
+	decryptedTag.ExtId, err = storage.encObject.Decrypt(tag.ExtId)
 	if err != nil {
 		return decryptedTag, err
 	}

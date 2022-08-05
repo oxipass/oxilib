@@ -15,9 +15,15 @@
     "field_phone": "Phone",
     "field_name": "Name",
     "field_pin": "PIN code",
+    "field_cvv": "Card Verification Value (CVV)",
     "field_expdate": "Expiration Date",
     "tag_internet": "Internet",
     "tag_banking": "Banking",
-    "tag_crypto": "Crypto"
+    "tag_crypto": "Crypto",
+    "item_bank-account": "Bank Account",
+    "item_debit-card-visa": "Debit Card (Visa)",
+    "item_debit-card-mastercard": "Debit Card (MasterCard)",
+    "item_web-login": "Website Login",
+    "item_crypto-wallet": "Crypto Wallet"
   }
 }

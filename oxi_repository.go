@@ -16,6 +16,7 @@ const (
 	VTRecoveryPhrase   = "recovery" // recovery phrase, show words with numbers separated by spaces
 	VTQRCode           = "qrcode"   // QR code, show QR code
 	VTAddress          = "address"  // address, show address
+	VTPin              = "pin"      // Pin code, password with digits only
 )
 
 func GetValueTypes() (vTypes []string) {
@@ -35,6 +36,7 @@ func GetValueTypes() (vTypes []string) {
 		VTRecoveryPhrase,
 		VTQRCode,
 		VTAddress,
+		VTPin,
 	}
 }
 

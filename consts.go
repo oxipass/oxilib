@@ -30,4 +30,6 @@ const cTagsTemplates = "tags.json"
 
 const cFieldsTemplates = "fields.json"
 
+const cItemsTemplates = "items.json"
+
 const cIconDefaultItem = "solid/file"

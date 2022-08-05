@@ -15,10 +15,15 @@
     "field_phone": "Телефон",
     "field_name": "Имя",
     "field_pin": "PIN код",
+    "field_cvv": "Значение подтверждения карты (CVV)",
     "field_expdate": "Дата истечения срока",
     "tag_internet": "Интернет",
     "tag_banking": "Банкинг",
-    "tag_crypto": "Криптовалюта"
-
+    "tag_crypto": "Криптовалюта",
+    "item_bank-account": "Банковский счет",
+    "item_debit-card-visa": "Дебетовая карта(Visa)",
+    "item_debit-card-mastercard": "Дебетовая карта (MasterCard)",
+    "item_web-login": "Вход на вебсайт",
+    "item_crypto-wallet": "Криптокошелёк"
   }
 }

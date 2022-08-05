@@ -45,6 +45,7 @@ const sqlCreateTableSettings = `
 const sqlCreateTableTags = `
 	CREATE TABLE IF NOT EXISTS tags (
    		tag_id 		   	    INTEGER PRIMARY KEY AUTOINCREMENT,
+		extid 				VARCHAR NOT NULL,
 		name         		VARCHAR NOT NULL,
 		color        		VARCHAR NOT NULL,
 		created  			DATETIME NOT NULL,

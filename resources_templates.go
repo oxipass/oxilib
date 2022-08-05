@@ -36,14 +36,20 @@ func GetFieldsTemplate() (fieldsTemplate FieldsTemplate, err error) {
 	return fieldsTemplate, nil
 }
 
+func GetItemsTemplate() (itemsTemplate ItemsTemplate, err error) {
+	fileBytes, errFile := templatesResources.ReadFile(cTemplatesFolder + "/" + cItemsTemplates)
+	if errFile != nil {
+		return itemsTemplate, errFile
+	}
+	errUnmarshal := json.Unmarshal(fileBytes, &itemsTemplate)
+	if errUnmarshal != nil {
+		return itemsTemplate, errUnmarshal
+	}
+	return itemsTemplate, nil
+}
+
 // TODO: Store/update tags templates in database
 
 // TODO: Store/update fields templates in database
-
-// TODO: GetItemsTemplate - returns embedded template data for items
-// TODO: Test items translations
-// TODO: Test items icons
-// TODO: Test fields templates availability
-// TODO: Test tags templates availability
 
 // TODO: Store/update items templates in database

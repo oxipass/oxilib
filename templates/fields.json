@@ -18,7 +18,7 @@
     },
     {
       "id": "field_pin",
-      "type": "password",
+      "type": "pin",
       "icon": "solid/key"
     },
     {
@@ -60,6 +60,11 @@
       "id": "field_expdate",
       "type": "expdate",
       "icon": "solid/calendar"
+    },
+    {
+      "id": "field_cvv",
+      "type": "pin",
+      "icon": "solid/key"
     }
   ]
 

@@ -7,11 +7,11 @@ import (
 )
 
 const sqlInsertTag = `
-	INSERT INTO tags (name,color,created,updated,deleted) 
-		VALUES (?,?,?,?,0)
+	INSERT INTO tags (extid, name,color,created,updated,deleted) 
+		VALUES (?, ?,?,?,?,0)
 `
 
-func (sdb *storageDB) dbInsertTag(tagName string, color string) (tagId int64, err error) {
+func (sdb *storageDB) dbInsertTag(tagName string, color string, extid string) (tagId int64, err error) {
 	if sdb.sTX == nil {
 		return 0, formError(BSERR00003DbTransactionFailed, "dbInsertTag")
 	}
@@ -22,7 +22,8 @@ func (sdb *storageDB) dbInsertTag(tagName string, color string) (tagId int64, er
 	if err != nil {
 		return 0, formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertTag")
 	}
-	res, errStmt := stmt.Exec(tagName,
+	res, errStmt := stmt.Exec(extid,
+		tagName,
 		color,
 		creationTime,
 		creationTime)
@@ -78,7 +79,7 @@ func (sdb *storageDB) dbAssignTag(tagId int64, itemId int64) (itId int64, err er
 
 // sqlListItemTags - List all non-deleted items
 const sqlListItemTags = `
-	SELECT tags.tag_id, tags.name, tags.color, tags.created, tags.updated, tags.deleted
+	SELECT tags.tag_id, tags.name, tags.color, tags.extid, tags.created, tags.updated, tags.deleted
 		FROM tags 
 		INNER JOIN items_tags it on tags.tag_id = it.tag_id
 		WHERE tags.deleted='0' 
@@ -88,7 +89,7 @@ const sqlListItemTags = `
 
 // sqlListTags - List all available tags (excluding deleted)
 const sqlListTags = `
-	SELECT tag_id, name, color, created, updated, deleted
+	SELECT tag_id, name, color, extid, created, updated, deleted
 		FROM tags 
 		WHERE tags.deleted='0' 
 `
@@ -118,6 +119,7 @@ func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []OxiTag, err error) 
 		err = rows.Scan(&tag.ID,
 			&tag.Name,
 			&tag.Color,
+			&tag.ExtId,
 			&tag.Created,
 			&tag.Updated,
 			&tag.Deleted)
