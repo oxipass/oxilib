@@ -1,7 +1,9 @@
-package oxilib
+package database
 
 import (
 	"errors"
+	"github.com/oxipass/oxilib"
+	"github.com/oxipass/oxilib/models"
 	"time"
 )
 
@@ -19,17 +21,17 @@ const sqlInsertField = `
 		VALUES (?,?,?,?,?,?,?,0)
 `
 
-func (sdb *storageDB) dbInsertField(itemID int64, field OxiField) (fieldId int64, err error) {
+func (sdb *storageDB) dbInsertField(itemID int64, field models.OxiField) (fieldId int64, err error) {
 
 	if sdb.sTX == nil {
-		return 0, formError(BSERR00003DbTransactionFailed, "dbInsertField")
+		return 0, oxilib.formError(oxilib.BSERR00003DbTransactionFailed, "dbInsertField")
 	}
 
-	creationTime := prepareTimeForDb(time.Now())
+	creationTime := oxilib.prepareTimeForDb(time.Now())
 
 	stmt, err := sdb.sTX.Prepare(sqlInsertField)
 	if err != nil {
-		return 0, formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertField")
+		return 0, oxilib.formError(oxilib.BSERR00006DbInsertFailed, err.Error(), "dbInsertField")
 	}
 	res, errStmt := stmt.Exec(itemID,
 		field.Icon,
@@ -40,11 +42,11 @@ func (sdb *storageDB) dbInsertField(itemID int64, field OxiField) (fieldId int64
 		creationTime)
 
 	if errStmt != nil {
-		return 0, formError(BSERR00006DbInsertFailed, errStmt.Error(), "dbInsertField")
+		return 0, oxilib.formError(oxilib.BSERR00006DbInsertFailed, errStmt.Error(), "dbInsertField")
 	}
 	errClose := stmt.Close()
 	if errClose != nil {
-		return 0, formError(BSERR00006DbInsertFailed, errClose.Error(), "dbInsertField")
+		return 0, oxilib.formError(oxilib.BSERR00006DbInsertFailed, errClose.Error(), "dbInsertField")
 	}
 
 	return res.LastInsertId()
@@ -57,20 +59,20 @@ const sqlListItemFields = `
 		WHERE deleted='0' and item_id=?
 `
 
-func (sdb *storageDB) dbSelectAllItemFields(itemId int64) (fields []OxiField, err error) {
+func (sdb *storageDB) dbSelectAllItemFields(itemId int64) (fields []models.OxiField, err error) {
 
 	rows, err := sdb.sDB.Query(sqlListItemFields, itemId)
 	if err != nil {
-		return fields, formError(BSERR00021FieldsReadFailed, err.Error())
+		return fields, oxilib.formError(oxilib.BSERR00021FieldsReadFailed, err.Error())
 	}
 	defer func() {
 		errClose := rows.Close()
 		if errClose != nil {
-			err = formError(BSERR00021FieldsReadFailed, err.Error(), errClose.Error())
+			err = oxilib.formError(oxilib.BSERR00021FieldsReadFailed, err.Error(), errClose.Error())
 		}
 	}()
 
-	var field OxiField
+	var field models.OxiField
 
 	for rows.Next() {
 		err = rows.Scan(&field.ID,
@@ -94,7 +96,7 @@ const sqlDeleteField = `UPDATE fields SET deleted=1, updated=? WHERE field_id=? 
 
 func (sdb *storageDB) dbDeleteField(fieldID int64) (err error) {
 	if sdb.sTX == nil {
-		return formError(BSERR00003DbTransactionFailed, "dbDeleteField")
+		return oxilib.formError(oxilib.BSERR00003DbTransactionFailed, "dbDeleteField")
 	}
 
 	stmt, err := sdb.sTX.Prepare(sqlDeleteField)
@@ -102,7 +104,7 @@ func (sdb *storageDB) dbDeleteField(fieldID int64) (err error) {
 		return err
 	}
 
-	updateTime := prepareTimeForDb(time.Now())
+	updateTime := oxilib.prepareTimeForDb(time.Now())
 
 	_, err = stmt.Exec(updateTime, fieldID)
 	if err != nil {
@@ -111,7 +113,7 @@ func (sdb *storageDB) dbDeleteField(fieldID int64) (err error) {
 
 	errClose := stmt.Close()
 	if errClose != nil {
-		return formError(BSERR00016DbDeleteFailed, errClose.Error())
+		return oxilib.formError(oxilib.BSERR00016DbDeleteFailed, errClose.Error())
 	}
 	return nil
 }
@@ -123,16 +125,16 @@ const sqlGetField = `
 		WHERE  field_id=?
 `
 
-func (sdb *storageDB) dbGetFieldById(fieldId int64) (field OxiField, err error) {
+func (sdb *storageDB) dbGetFieldById(fieldId int64) (field models.OxiField, err error) {
 
 	rows, err := sdb.sDB.Query(sqlGetField, fieldId)
 	if err != nil {
-		return field, formError(BSERR00021FieldsReadFailed, err.Error())
+		return field, oxilib.formError(oxilib.BSERR00021FieldsReadFailed, err.Error())
 	}
 	defer func() {
 		errClose := rows.Close()
 		if errClose != nil {
-			err = formError(BSERR00021FieldsReadFailed, err.Error(), errClose.Error())
+			err = oxilib.formError(oxilib.BSERR00021FieldsReadFailed, err.Error(), errClose.Error())
 		}
 	}()
 
@@ -147,5 +149,5 @@ func (sdb *storageDB) dbGetFieldById(fieldId int64) (field OxiField, err error) 
 			&field.Deleted)
 		return field, err
 	}
-	return field, errors.New(BSERR00021FieldsReadFailed)
+	return field, errors.New(oxilib.BSERR00021FieldsReadFailed)
 }

@@ -3,16 +3,17 @@ package oxilib
 import (
 	"embed"
 	"encoding/json"
+	"github.com/oxipass/oxilib/models"
 )
 
 var (
 
-	//go:embed templates/*.json
+	//go:embed assets/templates/*.json
 	templatesResources embed.FS
 )
 
 // GetTagsTemplate - returns embedded template data for tags
-func GetTagsTemplate() (tagsTemplate TagsTemplate, err error) {
+func GetTagsTemplate() (tagsTemplate models.TagsTemplateJSON, err error) {
 	fileBytes, errFile := templatesResources.ReadFile(cTemplatesFolder + "/" + cTagsTemplates)
 	if errFile != nil {
 		return tagsTemplate, errFile
@@ -24,7 +25,7 @@ func GetTagsTemplate() (tagsTemplate TagsTemplate, err error) {
 	return tagsTemplate, nil
 }
 
-func GetFieldsTemplate() (fieldsTemplate FieldsTemplate, err error) {
+func GetFieldsTemplate() (fieldsTemplate models.FieldsTemplateJSON, err error) {
 	fileBytes, errFile := templatesResources.ReadFile(cTemplatesFolder + "/" + cFieldsTemplates)
 	if errFile != nil {
 		return fieldsTemplate, errFile
@@ -36,7 +37,7 @@ func GetFieldsTemplate() (fieldsTemplate FieldsTemplate, err error) {
 	return fieldsTemplate, nil
 }
 
-func GetItemsTemplate() (itemsTemplate ItemsTemplate, err error) {
+func GetItemsTemplate() (itemsTemplate models.ItemsTemplateJSON, err error) {
 	fileBytes, errFile := templatesResources.ReadFile(cTemplatesFolder + "/" + cItemsTemplates)
 	if errFile != nil {
 		return itemsTemplate, errFile

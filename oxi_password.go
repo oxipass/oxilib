@@ -101,6 +101,14 @@ func (storage *StorageSingleton) initStorage(newPassword string, encMethod strin
 	return nil
 }
 
+func (storage *StorageSingleton) FillEmptyStorage() error {
+	errTags := storage.AddDefaultTags()
+	if errTags != nil {
+		return errTags
+	}
+	return nil
+}
+
 func (storage *StorageSingleton) changePassword(newPassword string) error {
 	return nil
 }

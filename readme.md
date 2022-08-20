@@ -5,7 +5,7 @@
 ## Oxi Lib
 
 Oxi Lib is a library to work with encrypted personal data stored as SQLite file keeping 
-items/fields safe and secure. This library is a part of the OxiPass project https://oxipass.io
+items/fields safe and secure. This library is a part of the [OxiPass](https://oxipass.io) project 
 
 *Use the following command to install it locally* 
 ```
@@ -26,15 +26,15 @@ package oxilib
 const localTestFile = "/Users/bkv/.oxipass/oxipass.sqlite" // create your own local db file for testing purposes
 const useLocalTestFile = true
 ```
-and add the tag 'local' to build process 
+and add the tag 'local' when you run the tests for the package 
 ```
 go test -tags local
 ```
 
-Check other related packages:  
-[Encryption library 'OxiCrypt'](https://github.com/oxipass/oxicrypt)
-[Mobile/Desktop App 'OxiPass'](https://github.com/oxipass/oxipass)
-[OxiPass Homepage](https://oxipass.io)
+Check other related packages:    
+[Encryption library 'OxiCrypt'](https://github.com/oxipass/oxicrypt)  
+[Mobile/Desktop App 'OxiPass'](https://github.com/oxipass/oxipass)   
+[OxiPass Homepage](https://oxipass.io)   
 
 **[Alex Bykov](https://profile.codersrank.io/user/bykovme) © 2015 - 2022**
 

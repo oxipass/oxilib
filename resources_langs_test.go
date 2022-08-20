@@ -2,6 +2,7 @@ package oxilib
 
 import (
 	"encoding/json"
+	"github.com/oxipass/oxilib/models"
 	"strings"
 	"testing"
 )
@@ -88,7 +89,7 @@ func TestLangsContent(t *testing.T) {
 
 	errHappened := false
 	for _, file := range files {
-		var translations Translations
+		var translations models.Translations
 		fileBytes, errFile := langsResources.ReadFile(cLangsFolder + "/" + file.Name())
 		if errFile != nil {
 			t.Error(errFile)
@@ -143,7 +144,7 @@ func TestLangsHaveEngKeys(t *testing.T) {
 		return
 	}
 
-	var engTranslations Translations
+	var engTranslations models.Translations
 	engBytes, errEngFile := langsResources.ReadFile(cLangsFolder + "/" + "en.json")
 	if errEngFile != nil {
 		t.Error(errEngFile)
@@ -159,7 +160,7 @@ func TestLangsHaveEngKeys(t *testing.T) {
 
 	errHappened := false
 	for _, file := range files {
-		var translations Translations
+		var translations models.Translations
 		fileBytes, errFile := langsResources.ReadFile(cLangsFolder + "/" + file.Name())
 		if errFile != nil {
 			t.Error(errFile)
@@ -198,7 +199,7 @@ func TestLangsKeysHaveEngKey(t *testing.T) {
 		return
 	}
 
-	var engTranslations Translations
+	var engTranslations models.Translations
 	engBytes, errEngFile := langsResources.ReadFile(cLangsFolder + "/" + "en.json")
 	if errEngFile != nil {
 		t.Error(errEngFile)
@@ -214,7 +215,7 @@ func TestLangsKeysHaveEngKey(t *testing.T) {
 
 	errHappened := false
 	for _, file := range files {
-		var translations Translations
+		var translations models.Translations
 		fileBytes, errFile := langsResources.ReadFile(cLangsFolder + "/" + file.Name())
 		if errFile != nil {
 			t.Error(errFile)

@@ -2,6 +2,7 @@ package oxilib
 
 import (
 	"errors"
+	"github.com/oxipass/oxilib/models"
 	"strings"
 )
 
@@ -21,7 +22,7 @@ func formError(errorID string, errorText ...string) error {
 }
 
 func formErrorResponse(err error) string {
-	var errorResponse CommonResponse
+	var errorResponse models.CommonResponse
 	strItems := strings.Split(err.Error(), ": ")
 	if len(strItems) > 0 && len(strItems[0]) > 11 && strings.Contains(strItems[0], "BSERR") {
 		errorResponse.Status = CErrorResponse
@@ -126,3 +127,6 @@ const BSERR00026DbItemIconUpdateFailed = "BSERR00026_DB_ICON_UPDATE_FAILED"
 
 // BSERR00027ItemValidationError - item data validation error
 const BSERR00027ItemValidationError = "BSERR00027_ITEM_VALIDATION_FAILED"
+
+// BSERR00028DbSelectFailed - failed to select item
+const BSERR00028DbSelectFailed = "BSERR00028_DB_SELECT_FAILED"

@@ -2,6 +2,7 @@ package oxilib
 
 import (
 	"errors"
+	"github.com/oxipass/oxilib/models"
 	"testing"
 )
 
@@ -16,9 +17,9 @@ func testHelperCreateField(itemId int64) (fieldId int64, err error) {
 		return 0, err
 	}
 	fieldResult, errField := bsInstance.AddNewField(
-		UpdateFieldForm{
+		models.UpdateFieldForm{
 			ItemID: itemId,
-			OxiField: OxiField{
+			OxiField: models.OxiField{
 				Name:      cFieldName01,
 				Icon:      cFieldIcon01,
 				ValueType: VTText,
@@ -105,8 +106,8 @@ func TestDeleteField(t *testing.T) {
 		return
 	}
 
-	respDel, errDel := bsInstance.DeleteField(UpdateFieldForm{
-		OxiField: OxiField{
+	respDel, errDel := bsInstance.DeleteField(models.UpdateFieldForm{
+		OxiField: models.OxiField{
 			ID: fieldId,
 		},
 	})

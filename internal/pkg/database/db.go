@@ -1,44 +1,30 @@
-package oxilib
+package database
 
 import (
 	"database/sql"
+	"github.com/oxipass/oxilib"
 	"os"
 
 	_ "github.com/mattn/go-sqlite3" // Needed to work correctly with database/sql
 )
 
-// StorageDB is a class to access all storage functionality
-type storageDB struct {
-	// instance & status
-	sDB    *sql.DB
-	dbOpen bool
-	sTX    *sql.Tx
-
-	// db settings
-	dbVersion int
-	dbID      string
-	cryptID   string
-	keyWord   string
-	dbLang    string
-}
-
-func (sdb *storageDB) StartTX() (err error) {
+func (sdb *models.StorageDB) StartTX() (err error) {
 
 	if sdb.sDB == nil {
-		return formError(BSERR00012DbTxStartFailed, "Database is not open")
+		return oxilib.formError(oxilib.BSERR00012DbTxStartFailed, "Database is not open")
 	}
 	if sdb.sTX != nil {
-		return formError(BSERR00012DbTxStartFailed, "Active transaction is already open, cannot open it twice, close  previous first")
+		return oxilib.formError(oxilib.BSERR00012DbTxStartFailed, "Active transaction is already open, cannot open it twice, close  previous first")
 	}
 	sdb.sTX, err = sdb.sDB.Begin()
 	if err != nil {
-		return formError(BSERR00012DbTxStartFailed, err.Error())
+		return oxilib.formError(oxilib.BSERR00012DbTxStartFailed, err.Error())
 	}
 
 	return nil
 }
 
-func (sdb *storageDB) CommitTX() (err error) {
+func (sdb *models.StorageDB) CommitTX() (err error) {
 	return sdb.EndTransaction(true)
 }
 
@@ -48,7 +34,7 @@ func (sdb *storageDB) RollbackTX() (err error) {
 
 func (sdb *storageDB) EndTransaction(commit bool) (err error) {
 	if sdb.sTX == nil {
-		return formError(BSERR00013DbTxEndFailed)
+		return oxilib.formError(oxilib.BSERR00013DbTxEndFailed)
 	}
 	if commit {
 		err = sdb.sTX.Commit()
@@ -140,7 +126,7 @@ const constSelectTables = `
 func (sdb *storageDB) checkIntegrity() (bool, error) {
 	rows, err := sdb.sDB.Query(constSelectTables)
 	if err != nil {
-		return false, formError(BSERR00001DbIntegrityCheckFailed, err.Error())
+		return false, oxilib.formError(oxilib.BSERR00001DbIntegrityCheckFailed, err.Error())
 	}
 
 	foundSettings := false
@@ -151,9 +137,9 @@ func (sdb *storageDB) checkIntegrity() (bool, error) {
 		if err != nil {
 			errRowsClose := rows.Close()
 			if errRowsClose != nil {
-				return false, formError(BSERR00001DbIntegrityCheckFailed, err.Error(), errRowsClose.Error())
+				return false, oxilib.formError(oxilib.BSERR00001DbIntegrityCheckFailed, err.Error(), errRowsClose.Error())
 			}
-			return false, formError(BSERR00001DbIntegrityCheckFailed, err.Error())
+			return false, oxilib.formError(oxilib.BSERR00001DbIntegrityCheckFailed, err.Error())
 		}
 
 		if tableName == "settings" {
@@ -163,7 +149,7 @@ func (sdb *storageDB) checkIntegrity() (bool, error) {
 	}
 	err = rows.Close()
 	if err != nil {
-		return false, formError(BSERR00001DbIntegrityCheckFailed, err.Error())
+		return false, oxilib.formError(oxilib.BSERR00001DbIntegrityCheckFailed, err.Error())
 	}
 	return foundSettings, nil
 }
@@ -176,25 +162,25 @@ const constSelectVersion = `
 func (sdb *storageDB) getSettings() error {
 	foundSettings, err := sdb.checkIntegrity()
 	if err != nil {
-		return formError(BSERR00001DbIntegrityCheckFailed, err.Error())
+		return oxilib.formError(oxilib.BSERR00001DbIntegrityCheckFailed, err.Error())
 	}
 
 	if !foundSettings {
-		return formError(BSERR00001DbIntegrityCheckFailed, "settings table is not found")
+		return oxilib.formError(oxilib.BSERR00001DbIntegrityCheckFailed, "settings table is not found")
 	}
 
 	rowsSet, errSet := sdb.sDB.Query(constSelectVersion)
 	if errSet != nil {
-		return formError(BSERR00001DbIntegrityCheckFailed, errSet.Error())
+		return oxilib.formError(oxilib.BSERR00001DbIntegrityCheckFailed, errSet.Error())
 	}
 	if rowsSet.Next() {
 		errSet = rowsSet.Scan(&sdb.dbVersion, &sdb.dbID, &sdb.cryptID, &sdb.dbLang, &sdb.keyWord)
 		if errSet != nil {
 			errSetClose := rowsSet.Close()
 			if errSetClose != nil {
-				return formError(BSERR00001DbIntegrityCheckFailed, errSet.Error(), errSetClose.Error())
+				return oxilib.formError(oxilib.BSERR00001DbIntegrityCheckFailed, errSet.Error(), errSetClose.Error())
 			}
-			return formError(BSERR00001DbIntegrityCheckFailed, errSet.Error())
+			return oxilib.formError(oxilib.BSERR00001DbIntegrityCheckFailed, errSet.Error())
 		}
 	}
 	return rowsSet.Close()
@@ -203,7 +189,7 @@ func (sdb *storageDB) getSettings() error {
 func (sdb *storageDB) initDb() (err error) {
 
 	if sdb.sTX == nil {
-		return formError(BSERR00003DbTransactionFailed)
+		return oxilib.formError(oxilib.BSERR00003DbTransactionFailed)
 	}
 
 	err = sdb.createTable(sqlCreateTableSettings)

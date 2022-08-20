@@ -1,6 +1,7 @@
 package oxilib
 
 import (
+	"github.com/oxipass/oxilib/models"
 	"log"
 	"sync"
 	"time"
@@ -8,8 +9,8 @@ import (
 
 // StorageSingleton is an entry point to work with the storage
 type StorageSingleton struct {
-	dbObject   *storageDB
-	encObject  *bsEncryptor
+	dbObject   *models.StorageDB
+	encObject  *models.OxiEncryptor
 	lastAccess time.Time
 	language   string
 }
@@ -46,7 +47,7 @@ func (storage *StorageSingleton) IsActive() bool {
 	return false
 }
 
-//IsLocked - checks if the storage is locked
+// IsLocked - checks if the storage is locked
 func (storage *StorageSingleton) IsLocked() bool {
 	if storage.IsActive() && storage.encObject != nil && storage.encObject.IsReady() {
 		return false
@@ -109,7 +110,7 @@ func (storage *StorageSingleton) Close() error {
 }
 
 // SupportedLangs - returns list of supported languages
-func (storage *StorageSingleton) SupportedLangs() []Lang {
+func (storage *StorageSingleton) SupportedLangs() []models.Lang {
 	return getLangs()
 }
 

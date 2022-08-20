@@ -1,4 +1,4 @@
-package oxilib
+package database
 
 import "database/sql"
 

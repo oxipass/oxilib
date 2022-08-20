@@ -79,6 +79,11 @@ func setup() error {
 	}
 	log.Println("Password is successfully set")
 
+	errFillEmpty := bsInstance.FillEmptyStorage()
+	if errFillEmpty != nil {
+		return errFillEmpty
+	}
+
 	errLock := bsInstance.Lock()
 	if errLock != nil {
 		return errLock

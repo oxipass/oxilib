@@ -27,7 +27,7 @@ _testmain.go
 *.sublime-project
 *.subime-workspace
 .DS_Store
-fa/.DS_Store
+assets/fa/.DS_Store
 
 .vscode/
 .idea/

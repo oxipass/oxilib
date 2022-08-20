@@ -1,6 +1,9 @@
 package oxilib
 
-import "testing"
+import (
+	"github.com/oxipass/oxilib/models"
+	"testing"
+)
 
 const cValidateFieldIcon01 = "brands/android"
 const cValidateFieldIcon02wrong = "ekjdnwdednkjwndkjw"
@@ -8,7 +11,7 @@ const cValidateFieldName01 = "my new field"
 const cValidateFieldType01wrong = "kjenwjdnwkjdnwk"
 
 func TestFieldValidator(t *testing.T) {
-	field := OxiField{Name: cValidateFieldName01, ValueType: VTText, Icon: cValidateFieldIcon01}
+	field := models.OxiField{Name: cValidateFieldName01, ValueType: VTText, Icon: cValidateFieldIcon01}
 	err := ValidateField(field)
 	if err != nil {
 		t.Errorf("Expected no error, retrived: %s, field icon: %s", err.Error(), cValidateFieldIcon01)
@@ -16,7 +19,7 @@ func TestFieldValidator(t *testing.T) {
 }
 
 func TestFieldValidatorEmptyName(t *testing.T) {
-	field := OxiField{ValueType: VTText, Icon: cValidateFieldIcon01}
+	field := models.OxiField{ValueType: VTText, Icon: cValidateFieldIcon01}
 	err := ValidateField(field)
 	if err == nil {
 		t.Errorf("Expected validation error because of empty field name")
@@ -24,7 +27,7 @@ func TestFieldValidatorEmptyName(t *testing.T) {
 }
 
 func TestFieldValidatorWrongValueType(t *testing.T) {
-	field := OxiField{Name: cValidateFieldName01, ValueType: cValidateFieldType01wrong, Icon: cValidateFieldIcon01}
+	field := models.OxiField{Name: cValidateFieldName01, ValueType: cValidateFieldType01wrong, Icon: cValidateFieldIcon01}
 	err := ValidateField(field)
 	if err == nil {
 		t.Errorf("Expected validation error because of not supported value type")
@@ -32,7 +35,7 @@ func TestFieldValidatorWrongValueType(t *testing.T) {
 }
 
 func TestFieldValidatorNotExistingIcon(t *testing.T) {
-	field := OxiField{Name: cValidateFieldName01, ValueType: VTText, Icon: cValidateFieldIcon02wrong}
+	field := models.OxiField{Name: cValidateFieldName01, ValueType: VTText, Icon: cValidateFieldIcon02wrong}
 	err := ValidateField(field)
 	if err == nil {
 		t.Errorf("Expected error because of non existing icon name ")
@@ -40,7 +43,7 @@ func TestFieldValidatorNotExistingIcon(t *testing.T) {
 }
 
 func TestValidateItemId(t *testing.T) {
-	var itemForm UpdateItemForm
+	var itemForm models.UpdateItemForm
 	itemForm.ID = 0
 	err := ValidateItemBeforeUpdate(itemForm)
 	if err == nil {
@@ -54,7 +57,7 @@ func TestValidateItemId(t *testing.T) {
 }
 
 func TestValidateItemName(t *testing.T) {
-	var itemForm UpdateItemForm
+	var itemForm models.UpdateItemForm
 	itemForm.ID = 1
 	itemForm.Name = ""
 	err := ValidateItemBeforeUpdate(itemForm)
@@ -66,7 +69,7 @@ func TestValidateItemName(t *testing.T) {
 const cFontAwesomeWrongSample = "fas fa-blah-blah"
 
 func TestValidateItemIcon(t *testing.T) {
-	var itemForm UpdateItemForm
+	var itemForm models.UpdateItemForm
 	itemForm.ID = 1
 	itemForm.Icon = ""
 	err := ValidateItemBeforeUpdate(itemForm)

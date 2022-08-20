@@ -22,9 +22,11 @@ const CErrorResponse = "error"
 
 const cTempDBFile = "test.sqlite"
 
-const cLangsFolder = "langs"
+// cLangsFolder - folder with translated language files
+const cLangsFolder = "assets/langs"
 
-const cTemplatesFolder = "templates"
+// cTemplatesFolder - items and fields templates folder
+const cTemplatesFolder = "assets/templates"
 
 const cTagsTemplates = "tags.json"
 

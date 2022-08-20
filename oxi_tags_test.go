@@ -2,6 +2,7 @@ package oxilib
 
 import (
 	"errors"
+	"github.com/oxipass/oxilib/models"
 	"testing"
 )
 
@@ -17,8 +18,8 @@ func testHelperCreateItemAndTag(testTag string, testColor string) (itemId int64,
 		return 0, 0, err
 	}
 	response, err := bsInstance.AddNewItem(
-		UpdateItemForm{
-			OxiItem: OxiItem{
+		models.UpdateItemForm{
+			OxiItem: models.OxiItem{
 				Name: cTestItemName01,
 				Icon: cTestItemIcon01,
 			},
@@ -32,9 +33,9 @@ func testHelperCreateItemAndTag(testTag string, testColor string) (itemId int64,
 	}
 
 	responseTag, err := bsInstance.AddNewTag(
-		UpdateTagForm{
+		models.UpdateTagForm{
 			0,
-			OxiTag{
+			models.OxiTag{
 				Name:  testTag,
 				Color: testColor,
 			},
@@ -113,9 +114,9 @@ func TestAssignTagToItems(t *testing.T) {
 	}
 
 	responseTA, errTA := bsInstance.AssignTag(
-		UpdateTagForm{
+		models.UpdateTagForm{
 			ItemID: itemId1,
-			OxiTag: OxiTag{
+			OxiTag: models.OxiTag{
 				ID: tagId1,
 			},
 		},
@@ -133,9 +134,9 @@ func TestAssignTagToItems(t *testing.T) {
 	}
 
 	responseTA2, errTA2 := bsInstance.AssignTag(
-		UpdateTagForm{
+		models.UpdateTagForm{
 			ItemID: itemId1,
-			OxiTag: OxiTag{
+			OxiTag: models.OxiTag{
 				ID: tagId2,
 			},
 		},

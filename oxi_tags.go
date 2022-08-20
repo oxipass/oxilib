@@ -1,6 +1,8 @@
 package oxilib
 
-func (storage *StorageSingleton) AssignTag(updateTagForm UpdateTagForm) (response TagAssignedResponse, err error) {
+import "github.com/oxipass/oxilib/models"
+
+func (storage *StorageSingleton) AssignTag(updateTagForm models.UpdateTagForm) (response models.TagAssignedResponse, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
 		return response, err
@@ -31,7 +33,7 @@ func (storage *StorageSingleton) AssignTag(updateTagForm UpdateTagForm) (respons
 }
 
 // AddNewItem - adds new item
-func (storage *StorageSingleton) AddNewTag(addTagParam UpdateTagForm) (response TagAddedResponse, err error) {
+func (storage *StorageSingleton) AddNewTag(addTagParam models.UpdateTagForm) (response models.TagAddedResponse, err error) {
 
 	err = storage.checkReadiness()
 	if err != nil {
@@ -78,7 +80,7 @@ func (storage *StorageSingleton) AddNewTag(addTagParam UpdateTagForm) (response 
 }
 
 // ReadFieldsByItemID - real all the fields by ItemId
-func (storage *StorageSingleton) ReadTagsByItemID(itemId int64) (tags []OxiTag, err error) {
+func (storage *StorageSingleton) ReadTagsByItemID(itemId int64) (tags []models.OxiTag, err error) {
 	fieldsEncrypted, err := storage.dbObject.dbSelectItemTags(itemId)
 	if err != nil {
 		return tags, err
@@ -96,7 +98,7 @@ func (storage *StorageSingleton) ReadTagsByItemID(itemId int64) (tags []OxiTag, 
 }
 
 // ReadFieldsByItemID - real all the fields by ItemId
-func (storage *StorageSingleton) GetTags() (tags []OxiTag, err error) {
+func (storage *StorageSingleton) GetTags() (tags []models.OxiTag, err error) {
 	fieldsEncrypted, err := storage.dbObject.dbSelectTags()
 	if err != nil {
 		return tags, err
@@ -113,7 +115,7 @@ func (storage *StorageSingleton) GetTags() (tags []OxiTag, err error) {
 	return tags, nil
 }
 
-func (storage *StorageSingleton) DecryptTag(tag OxiTag) (decryptedTag OxiTag, err error) {
+func (storage *StorageSingleton) DecryptTag(tag models.OxiTag) (decryptedTag models.OxiTag, err error) {
 	decryptedTag = tag
 	decryptedTag.Name, err = storage.encObject.Decrypt(tag.Name)
 	if err != nil {
@@ -128,4 +130,24 @@ func (storage *StorageSingleton) DecryptTag(tag OxiTag) (decryptedTag OxiTag, er
 		return decryptedTag, err
 	}
 	return decryptedTag, err
+}
+
+func (storage *StorageSingleton) AddDefaultTags() error {
+	tags, err := GetTagsTemplate()
+	if err != nil {
+		return err
+	}
+
+	for _, templateTag := range tags.Tags {
+		var tag models.UpdateTagForm
+		tag.Name = storage.T(templateTag.ID)
+		tag.Color = templateTag.Color
+		tag.ExtId = templateTag.ID
+
+		_, err := storage.AddNewTag(tag)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

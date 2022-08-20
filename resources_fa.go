@@ -7,19 +7,19 @@ import (
 )
 
 var (
-	//go:embed fa/brands/*.svg
+	//go:embed assets/fa/brands/*.svg
 	iconsBrandsFS embed.FS
-	//go:embed fa/regular/*.svg
+	//go:embed assets/fa/regular/*.svg
 	iconsRegularFS embed.FS
-	//go:embed fa/solid/*.svg
+	//go:embed assets/fa/solid/*.svg
 	iconsSolidFS embed.FS
-	//go:embed fa/search.json
+	//go:embed assets/fa/search.json
 	searchResBin []byte
 
 	searchRes map[string]string
 )
 
-const cFAprefix = "fa/"
+const cFAprefix = "assets/fa/"
 const cRegularPrefix = "regular/"
 const cSolidPrefix = "solid/"
 const cBrandsPrefix = "brands/"

@@ -1,8 +1,11 @@
 package oxilib
 
-import "errors"
+import (
+	"errors"
+	"github.com/oxipass/oxilib/models"
+)
 
-func ValidateField(field OxiField) error {
+func ValidateField(field models.OxiField) error {
 	if !CheckIfExistsInFontAwesome(field.Icon) {
 		return errors.New(BSERR00022ValidationFailed + ": icon not found")
 	}
@@ -16,7 +19,7 @@ func ValidateField(field OxiField) error {
 	return nil
 }
 
-func ValidateItemBeforeUpdate(updateItemParams UpdateItemForm) error {
+func ValidateItemBeforeUpdate(updateItemParams models.UpdateItemForm) error {
 	if updateItemParams.ID <= 0 {
 		return formError(BSERR00025ItemIdEmptyOrWrong)
 	}

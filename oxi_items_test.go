@@ -2,6 +2,7 @@ package oxilib
 
 import (
 	"errors"
+	"github.com/oxipass/oxilib/models"
 	"testing"
 )
 
@@ -18,8 +19,8 @@ func testHelperCreateItem() (itemId int64, err error) {
 		return 0, err
 	}
 	response, err := bsInstance.AddNewItem(
-		UpdateItemForm{
-			OxiItem: OxiItem{
+		models.UpdateItemForm{
+			OxiItem: models.OxiItem{
 				Name: cTestItemName01,
 				Icon: cTestItemIcon01,
 			},
@@ -56,8 +57,8 @@ func TestUpdateItemName(t *testing.T) {
 	}
 
 	updateResponse, errUpdated := bsInstance.UpdateItem(
-		UpdateItemForm{
-			OxiItem: OxiItem{
+		models.UpdateItemForm{
+			OxiItem: models.OxiItem{
 				ID:   itemId,
 				Name: cTestItemName02,
 			},
@@ -127,8 +128,8 @@ func TestDeleteItem(t *testing.T) {
 	}
 
 	delResponse, errDelete := bsInstance.DeleteItem(
-		UpdateItemForm{
-			OxiItem: OxiItem{
+		models.UpdateItemForm{
+			OxiItem: models.OxiItem{
 				ID: itemId,
 			},
 		},
@@ -209,8 +210,8 @@ func TestAddItemWithNonExistingIcon(t *testing.T) {
 	}
 
 	response, err := bsInstance.AddNewItem(
-		UpdateItemForm{
-			OxiItem: OxiItem{
+		models.UpdateItemForm{
+			OxiItem: models.OxiItem{
 				Name: cTestItemName01,
 				Icon: cTestNonExistingIcon,
 			},
@@ -277,8 +278,8 @@ func TestUpdateItemIcon(t *testing.T) {
 	}
 
 	updateIconResponse, errIconUpdated := bsInstance.UpdateItem(
-		UpdateItemForm{
-			OxiItem: OxiItem{
+		models.UpdateItemForm{
+			OxiItem: models.OxiItem{
 				ID:   itemId,
 				Icon: cTestItemIcon02,
 			},

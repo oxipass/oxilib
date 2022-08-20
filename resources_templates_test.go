@@ -54,6 +54,32 @@ func TestTagsTemplatesTranslations(tst *testing.T) {
 
 }
 
+func TestDefaultTagsAvailable(t *testing.T) {
+	storage := GetInstance()
+	tags, err := storage.GetTags()
+	if err != nil {
+		t.Error(err)
+	}
+	tagsTemplate, errTempl := GetTagsTemplate()
+	if errTempl != nil {
+		t.Error(errTempl)
+	}
+
+	for _, tagTemplate := range tagsTemplate.Tags {
+		found := false
+		for _, tag := range tags {
+			if tag.ExtId == tagTemplate.ID {
+				found = true
+				break
+			}
+		}
+		if !found {
+			t.Error("tag " + tagTemplate.ID + " is not found as default tag in tags")
+		}
+
+	}
+}
+
 func TestFieldsTemplates(t *testing.T) {
 	fieldsTemplate, err := GetFieldsTemplate()
 	if err != nil {
@@ -204,44 +230,6 @@ func TestItemsTemplatesFields(tst *testing.T) {
 			}
 			if foundTemplate == false {
 				tst.Error("field id '" + field + "' does not exist in fields template for item " + item.ID)
-			}
-		}
-	}
-}
-
-func TestItemsTemplatesTags(tst *testing.T) {
-	itemsTemplate, err := GetItemsTemplate()
-	if err != nil {
-		tst.Error(err)
-	}
-	tagsTemplate, err := GetTagsTemplate()
-	if err != nil {
-		tst.Error(err)
-	}
-
-	for _, item := range itemsTemplate.Items {
-		if item.TagsIds == nil {
-			tst.Error("item tags is nil for item " + item.ID)
-			continue
-		}
-		if len(item.TagsIds) == 0 {
-			tst.Error("item tags is empty for item " + item.ID)
-			continue
-		}
-		for _, tag := range item.TagsIds {
-			if tag == "" {
-				tst.Error("tag id is empty for item " + item.ID)
-				continue
-			}
-			foundTemplate := false
-			for _, tTemplate := range tagsTemplate.Tags {
-				if tTemplate.ID == tag {
-					foundTemplate = true
-					break
-				}
-			}
-			if foundTemplate == false {
-				tst.Error("tag id '" + tag + "' does not exist in tags template for item " + item.ID)
 			}
 		}
 	}

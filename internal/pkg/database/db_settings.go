@@ -1,7 +1,8 @@
-package oxilib
+package database
 
 import (
 	"fmt"
+	"github.com/oxipass/oxilib"
 	"time"
 )
 
@@ -16,17 +17,17 @@ const sqlInsertInitialSettings = `
 
 func (sdb *storageDB) initSettings(dbID, keyWord, cryptID, lang string) error {
 	if sdb.sTX == nil {
-		return formError(BSERR00003DbTransactionFailed, "initSettings")
+		return oxilib.formError(oxilib.BSERR00003DbTransactionFailed, "initSettings")
 	}
 
-	lastUpdate := prepareTimeForDb(time.Now())
+	lastUpdate := oxilib.prepareTimeForDb(time.Now())
 	sqlQuery := fmt.Sprintf(sqlInsertInitialSettings, dbID, keyWord, cryptID, lang,
-		defaultDbVersion, lastUpdate, constZeroTime)
+		oxilib.defaultDbVersion, lastUpdate, oxilib.constZeroTime)
 
 	_, err := sdb.sTX.Exec(sqlQuery)
 
 	if err != nil {
-		return formError(BSERR00006DbInsertFailed, err.Error(), "initSettings")
+		return oxilib.formError(oxilib.BSERR00006DbInsertFailed, err.Error(), "initSettings")
 	}
 
 	return nil

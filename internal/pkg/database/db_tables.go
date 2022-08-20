@@ -1,4 +1,6 @@
-package oxilib
+package database
+
+import "github.com/oxipass/oxilib"
 
 // sqlCreateTableFields is the SQL query to create a table 'fields'.
 const sqlCreateTableFields = `
@@ -98,7 +100,7 @@ const sqlCreateTableItemsTags = `
 func (sdb *storageDB) createTable(tableDefinition string) error {
 	_, err := sdb.sTX.Exec(tableDefinition)
 	if err != nil {
-		return formError(BSERR00002DbTableCreationFailed, tableDefinition, err.Error())
+		return oxilib.formError(oxilib.BSERR00002DbTableCreationFailed, tableDefinition, err.Error())
 	}
 	return nil
 }

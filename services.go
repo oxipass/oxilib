@@ -1,6 +1,9 @@
 package oxilib
 
-import "errors"
+import (
+	"errors"
+	"github.com/oxipass/oxilib/models"
+)
 
 // All public services to be used by mobile or web app are here
 
@@ -27,7 +30,7 @@ func ServiceLockStorage() string {
 	if err != nil {
 		return formErrorResponse(err)
 	}
-	jsonResponse, err := EncodeJSON(CommonResponse{Status: ConstSuccessResponse})
+	jsonResponse, err := EncodeJSON(models.CommonResponse{Status: ConstSuccessResponse})
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
@@ -35,7 +38,7 @@ func ServiceLockStorage() string {
 }
 
 func ServiceInitStorage(jsonInputParams string) string {
-	var isForm InitStorageForm
+	var isForm models.InitStorageForm
 	err := DecodeJSON(jsonInputParams, isForm)
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
@@ -45,7 +48,7 @@ func ServiceInitStorage(jsonInputParams string) string {
 	if err != nil {
 		return formErrorResponse(err)
 	}
-	jsonResponse, err := EncodeJSON(CommonResponse{Status: ConstSuccessResponse})
+	jsonResponse, err := EncodeJSON(models.CommonResponse{Status: ConstSuccessResponse})
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
@@ -53,7 +56,7 @@ func ServiceInitStorage(jsonInputParams string) string {
 }
 
 func ServiceInitNewStorage(jsonInputParms string) string {
-	var isForm InitStorageForm
+	var isForm models.InitStorageForm
 	err := DecodeJSON(jsonInputParms, isForm)
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
@@ -69,7 +72,7 @@ func ServiceInitNewStorage(jsonInputParms string) string {
 		return formErrorResponse(errSetPassword)
 	}
 
-	jsonResponse, err := EncodeJSON(CommonResponse{Status: ConstSuccessResponse})
+	jsonResponse, err := EncodeJSON(models.CommonResponse{Status: ConstSuccessResponse})
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
 	}
@@ -78,7 +81,7 @@ func ServiceInitNewStorage(jsonInputParms string) string {
 
 // ServiceAddNewItem - wrapper for adding item with JSON for using it with mobile
 func ServiceAddNewItem(jsonInputParms string) string {
-	var addItemForm UpdateItemForm
+	var addItemForm models.UpdateItemForm
 	err := DecodeJSON(jsonInputParms, addItemForm)
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))
@@ -97,7 +100,7 @@ func ServiceAddNewItem(jsonInputParms string) string {
 
 // ServiceReadAllItems - wrapper for reading all the items
 func ServiceReadAllItems(inputParams string) string {
-	var jsonAddItem ReadAllForm
+	var jsonAddItem models.ReadAllForm
 	err := DecodeJSON(inputParams, jsonAddItem)
 	if err != nil {
 		return formErrorResponse(formError(BSERR00017JSONFailed, err.Error()))

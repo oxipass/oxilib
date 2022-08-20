@@ -4,11 +4,12 @@ import (
 	"embed"
 	"encoding/json"
 	"errors"
+	"github.com/oxipass/oxilib/models"
 	"io/fs"
 )
 
 var (
-	//go:embed langs/*.json
+	//go:embed assets/langs/*.json
 	langsResources embed.FS
 )
 
@@ -25,7 +26,7 @@ func initLang(langCode string) (string, error) {
 		return "", err
 	}
 	for _, file := range files {
-		var lang Lang
+		var lang models.Lang
 		fileBytes, errFile := langsResources.ReadFile(cLangsFolder + "/" + file.Name())
 		if errFile != nil {
 			return "", errFile
@@ -35,7 +36,7 @@ func initLang(langCode string) (string, error) {
 			return "", errUnmarshal
 		}
 		if lang.Code == langCode {
-			var translations Translations
+			var translations models.Translations
 			transBytes, errTrans := langsResources.ReadFile(cLangsFolder + "/" + file.Name())
 			if errTrans != nil {
 				return "", errTrans
@@ -74,14 +75,14 @@ func setLang(langCode string) error {
 	return nil
 }
 
-func getLangs() []Lang {
+func getLangs() []models.Lang {
 	files, err := getLangsFiles()
 	if err != nil {
 		return nil
 	}
-	langs := make([]Lang, len(files))
+	langs := make([]models.Lang, len(files))
 	for i, file := range files {
-		var lang Lang
+		var lang models.Lang
 		fileBytes, errFile := langsResources.ReadFile(cLangsFolder + "/" + file.Name())
 		if errFile != nil {
 			return nil

@@ -1,7 +1,9 @@
 package oxilib
 
+import "github.com/oxipass/oxilib/models"
+
 // DeleteField - delete existing field
-func (storage *StorageSingleton) DeleteField(deleteFieldForm UpdateFieldForm) (response CommonResponse, err error) {
+func (storage *StorageSingleton) DeleteField(deleteFieldForm models.UpdateFieldForm) (response models.CommonResponse, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
 		return response, err
@@ -30,8 +32,8 @@ func (storage *StorageSingleton) DeleteField(deleteFieldForm UpdateFieldForm) (r
 }
 
 // AddNewItem - adds new item
-func (storage *StorageSingleton) AddNewField(addFieldForm UpdateFieldForm) (response FieldAddedResponse, err error) {
-	var field OxiField
+func (storage *StorageSingleton) AddNewField(addFieldForm models.UpdateFieldForm) (response models.FieldAddedResponse, err error) {
+	var field models.OxiField
 
 	err = storage.checkReadiness()
 	if err != nil {
@@ -88,7 +90,7 @@ func (storage *StorageSingleton) AddNewField(addFieldForm UpdateFieldForm) (resp
 }
 
 // ReadFieldsByItemID - real all the fields by ItemId
-func (storage *StorageSingleton) ReadFieldsByItemID(itemId int64) (fields []OxiField, err error) {
+func (storage *StorageSingleton) ReadFieldsByItemID(itemId int64) (fields []models.OxiField, err error) {
 	fieldsEncrypted, err := storage.dbObject.dbSelectAllItemFields(itemId)
 	if err != nil {
 		return fields, err
@@ -106,7 +108,7 @@ func (storage *StorageSingleton) ReadFieldsByItemID(itemId int64) (fields []OxiF
 }
 
 // AddNewItem - adds new item
-func (storage *StorageSingleton) ReadFieldsByFieldID(fieldId int64) (field OxiField, err error) {
+func (storage *StorageSingleton) ReadFieldsByFieldID(fieldId int64) (field models.OxiField, err error) {
 	fieldEncrypted, err := storage.dbObject.dbGetFieldById(fieldId)
 	if err != nil {
 		return field, err
@@ -119,7 +121,7 @@ func (storage *StorageSingleton) ReadFieldsByFieldID(fieldId int64) (field OxiFi
 	return fieldReady, nil
 }
 
-func (storage *StorageSingleton) DecryptField(fieldEncrypted OxiField) (field OxiField, err error) {
+func (storage *StorageSingleton) DecryptField(fieldEncrypted models.OxiField) (field models.OxiField, err error) {
 	field.Value, err = storage.encObject.Decrypt(fieldEncrypted.Value)
 	if err != nil {
 		return field, err

@@ -8,10 +8,6 @@
         "field_username",
         "field_password",
         "field_link"
-      ],
-      "tags": [
-        "tag_internet",
-        "tag_banking"
       ]
     },
     {
@@ -23,9 +19,6 @@
         "field_pin",
         "field_expdate",
         "field_cvv"
-      ],
-      "tags": [
-        "tag_banking"
       ]
     },
     {
@@ -35,9 +28,6 @@
         "field_username",
         "field_password",
         "field_link"
-      ],
-      "tags": [
-        "tag_internet"
       ]
     },
     {
@@ -46,9 +36,6 @@
       "fields": [
         "field_name",
         "field_recoverypharase"
-      ],
-      "tags": [
-        "tag_crypto"
       ]
     }
   ]

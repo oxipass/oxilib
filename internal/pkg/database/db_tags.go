@@ -1,7 +1,9 @@
-package oxilib
+package database
 
 import (
 	"database/sql"
+	"github.com/oxipass/oxilib"
+	"github.com/oxipass/oxilib/models"
 	"sort"
 	"time"
 )
@@ -13,14 +15,14 @@ const sqlInsertTag = `
 
 func (sdb *storageDB) dbInsertTag(tagName string, color string, extid string) (tagId int64, err error) {
 	if sdb.sTX == nil {
-		return 0, formError(BSERR00003DbTransactionFailed, "dbInsertTag")
+		return 0, oxilib.formError(oxilib.BSERR00003DbTransactionFailed, "dbInsertTag")
 	}
 
-	creationTime := prepareTimeForDb(time.Now())
+	creationTime := oxilib.prepareTimeForDb(time.Now())
 
 	stmt, err := sdb.sTX.Prepare(sqlInsertTag)
 	if err != nil {
-		return 0, formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertTag")
+		return 0, oxilib.formError(oxilib.BSERR00006DbInsertFailed, err.Error(), "dbInsertTag")
 	}
 	res, errStmt := stmt.Exec(extid,
 		tagName,
@@ -29,15 +31,15 @@ func (sdb *storageDB) dbInsertTag(tagName string, color string, extid string) (t
 		creationTime)
 
 	if errStmt != nil {
-		return 0, formError(BSERR00006DbInsertFailed, errStmt.Error(), "dbInsertTag")
+		return 0, oxilib.formError(oxilib.BSERR00006DbInsertFailed, errStmt.Error(), "dbInsertTag")
 	}
 	tagId, err = res.LastInsertId()
 	if err != nil {
-		return 0, formError(BSERR00006DbInsertFailed, err.Error(), "dbInsertTag")
+		return 0, oxilib.formError(oxilib.BSERR00006DbInsertFailed, err.Error(), "dbInsertTag")
 	}
 	errClose := stmt.Close()
 	if errClose != nil {
-		return 0, formError(BSERR00006DbInsertFailed, errClose.Error(), "dbInsertTag")
+		return 0, oxilib.formError(oxilib.BSERR00006DbInsertFailed, errClose.Error(), "dbInsertTag")
 	}
 
 	return tagId, nil
@@ -50,28 +52,28 @@ const sqlAssignTagToItem = `
 
 func (sdb *storageDB) dbAssignTag(tagId int64, itemId int64) (itId int64, err error) {
 	if sdb.sTX == nil {
-		return 0, formError(BSERR00003DbTransactionFailed, "dbAssignTag")
+		return 0, oxilib.formError(oxilib.BSERR00003DbTransactionFailed, "dbAssignTag")
 	}
 
-	creationTime := prepareTimeForDb(time.Now())
+	creationTime := oxilib.prepareTimeForDb(time.Now())
 
 	stmt, err := sdb.sTX.Prepare(sqlAssignTagToItem)
 	if err != nil {
-		return 0, formError(BSERR00006DbInsertFailed, err.Error(), "dbAssignTag")
+		return 0, oxilib.formError(oxilib.BSERR00006DbInsertFailed, err.Error(), "dbAssignTag")
 	}
 	res, errStmt := stmt.Exec(itemId, tagId,
 		creationTime, creationTime)
 
 	if errStmt != nil {
-		return 0, formError(BSERR00006DbInsertFailed, errStmt.Error(), "dbAssignTag")
+		return 0, oxilib.formError(oxilib.BSERR00006DbInsertFailed, errStmt.Error(), "dbAssignTag")
 	}
 	itId, err = res.LastInsertId()
 	if err != nil {
-		return 0, formError(BSERR00006DbInsertFailed, err.Error(), "dbAssignTag")
+		return 0, oxilib.formError(oxilib.BSERR00006DbInsertFailed, err.Error(), "dbAssignTag")
 	}
 	errClose := stmt.Close()
 	if errClose != nil {
-		return 0, formError(BSERR00006DbInsertFailed, errClose.Error(), "dbAssignTag")
+		return 0, oxilib.formError(oxilib.BSERR00006DbInsertFailed, errClose.Error(), "dbAssignTag")
 	}
 
 	return itId, nil
@@ -95,7 +97,7 @@ const sqlListTags = `
 `
 
 // dbSelectItemTags - select tags assigned to requested the item
-func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []OxiTag, err error) {
+func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []models.OxiTag, err error) {
 	var rows *sql.Rows
 
 	if itemId == -1 {
@@ -104,16 +106,16 @@ func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []OxiTag, err error) 
 		rows, err = sdb.sDB.Query(sqlListItemTags, itemId)
 	}
 	if err != nil {
-		return tags, formError(BSERR00021FieldsReadFailed, err.Error())
+		return tags, oxilib.formError(oxilib.BSERR00021FieldsReadFailed, err.Error())
 	}
 	defer func() {
 		errClose := rows.Close()
 		if errClose != nil {
-			err = formError(BSERR00021FieldsReadFailed, err.Error(), errClose.Error())
+			err = oxilib.formError(oxilib.BSERR00021FieldsReadFailed, err.Error(), errClose.Error())
 		}
 	}()
 
-	var tag OxiTag
+	var tag models.OxiTag
 
 	for rows.Next() {
 		err = rows.Scan(&tag.ID,
@@ -137,6 +139,6 @@ func (sdb *storageDB) dbSelectItemTags(itemId int64) (tags []OxiTag, err error) 
 }
 
 // dbSelectTags - select all available tags
-func (sdb *storageDB) dbSelectTags() (tags []OxiTag, err error) {
+func (sdb *storageDB) dbSelectTags() (tags []models.OxiTag, err error) {
 	return sdb.dbSelectItemTags(-1)
 }

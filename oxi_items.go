@@ -1,5 +1,7 @@
 package oxilib
 
+import "github.com/oxipass/oxilib/models"
+
 func (storage *StorageSingleton) checkReadiness() error {
 	if storage.encObject == nil || !storage.encObject.IsReady() {
 		return formError("Encryptor is not initialized", "checkReadiness")
@@ -12,7 +14,7 @@ func (storage *StorageSingleton) checkReadiness() error {
 	return nil
 }
 
-func (storage *StorageSingleton) DeleteItem(deleteItemParams UpdateItemForm) (response CommonResponse, err error) {
+func (storage *StorageSingleton) DeleteItem(deleteItemParams models.UpdateItemForm) (response models.CommonResponse, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
 		return response, err
@@ -41,7 +43,7 @@ func (storage *StorageSingleton) DeleteItem(deleteItemParams UpdateItemForm) (re
 	return response, nil
 }
 
-func (storage *StorageSingleton) UpdateItem(updateItemParams UpdateItemForm) (response ItemUpdatedResponse, err error) {
+func (storage *StorageSingleton) UpdateItem(updateItemParams models.UpdateItemForm) (response models.ItemUpdatedResponse, err error) {
 	var encryptedItemName, encryptedIconName string
 	err = storage.checkReadiness()
 	if err != nil {
@@ -104,7 +106,7 @@ func (storage *StorageSingleton) UpdateItem(updateItemParams UpdateItemForm) (re
 }
 
 // AddNewItem - adds new item
-func (storage *StorageSingleton) AddNewItem(addItemParams UpdateItemForm) (response ItemAddedResponse, err error) {
+func (storage *StorageSingleton) AddNewItem(addItemParams models.UpdateItemForm) (response models.ItemAddedResponse, err error) {
 
 	err = storage.checkReadiness()
 	if err != nil {
@@ -150,7 +152,7 @@ func (storage *StorageSingleton) AddNewItem(addItemParams UpdateItemForm) (respo
 }
 
 // ReadAllItems - read all not deleted items from the database and decrypt them
-func (storage *StorageSingleton) ReadAllItems(readTags bool, readDeleted bool) (items []OxiItem, err error) {
+func (storage *StorageSingleton) ReadAllItems(readTags bool, readDeleted bool) (items []models.OxiItem, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
 		return items, err
@@ -182,7 +184,7 @@ func (storage *StorageSingleton) ReadAllItems(readTags bool, readDeleted bool) (
 }
 
 // ReadItemById - read item by its Id
-func (storage *StorageSingleton) ReadItemById(itemId int64, withDeleted bool) (item OxiItem, err error) {
+func (storage *StorageSingleton) ReadItemById(itemId int64, withDeleted bool) (item models.OxiItem, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
 		return item, err

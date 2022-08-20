@@ -1,6 +1,9 @@
 package oxilib
 
-import "testing"
+import (
+	"github.com/oxipass/oxilib/models"
+	"testing"
+)
 
 const cError1Test = "error one"
 const cError2text = "error two"
@@ -19,7 +22,7 @@ func TestFormError(t *testing.T) {
 func TestFormErrorResponse(t *testing.T) {
 	newErr := formError(BSERR00015UnknownError, cError1Test, cError2text)
 	response := formErrorResponse(newErr)
-	var messageResponse CommonResponse
+	var messageResponse models.CommonResponse
 	err := DecodeJSON(response, &messageResponse)
 	if err != nil {
 		t.Error(err)
@@ -44,7 +47,7 @@ func TestFormErrorResponseShort(t *testing.T) {
 	const unknownError = "unknown error"
 	newErr := formError(unknownError)
 	response := formErrorResponse(newErr)
-	var messageResponse CommonResponse
+	var messageResponse models.CommonResponse
 	err := DecodeJSON(response, &messageResponse)
 	if err != nil {
 		t.Error(err)
