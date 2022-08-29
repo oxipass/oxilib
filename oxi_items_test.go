@@ -2,6 +2,7 @@ package oxilib
 
 import (
 	"errors"
+	"github.com/oxipass/oxilib/consts"
 	"github.com/oxipass/oxilib/models"
 	"testing"
 )
@@ -29,7 +30,7 @@ func testHelperCreateItem() (itemId int64, err error) {
 	if err != nil {
 		return 0, err
 	}
-	if response.Status != ConstSuccessResponse {
+	if response.Status != consts.CSuccessResponse {
 		return 0, errors.New("response is not successful")
 	}
 	errLock := bsInstance.Lock()
@@ -69,7 +70,7 @@ func TestUpdateItemName(t *testing.T) {
 		t.FailNow()
 		return
 	}
-	if updateResponse.Status != ConstSuccessResponse {
+	if updateResponse.Status != consts.CSuccessResponse {
 		t.Error(errors.New("update response is not successful"))
 		t.FailNow()
 		return
@@ -139,7 +140,7 @@ func TestDeleteItem(t *testing.T) {
 		t.FailNow()
 		return
 	}
-	if delResponse.Status != ConstSuccessResponse {
+	if delResponse.Status != consts.CSuccessResponse {
 		t.Error(errors.New("deletion response is not successful"))
 		t.FailNow()
 		return
@@ -222,7 +223,7 @@ func TestAddItemWithNonExistingIcon(t *testing.T) {
 		t.FailNow()
 		return
 	}
-	if response.Status == ConstSuccessResponse {
+	if response.Status == consts.CSuccessResponse {
 		t.Error(errors.New("item was added in spite of the fact that icon is not existing"))
 		t.FailNow()
 		return
@@ -290,7 +291,7 @@ func TestUpdateItemIcon(t *testing.T) {
 		t.FailNow()
 		return
 	}
-	if updateIconResponse.Status != ConstSuccessResponse {
+	if updateIconResponse.Status != consts.CSuccessResponse {
 		t.Error(errors.New("icon update response is not successful"))
 		t.FailNow()
 		return

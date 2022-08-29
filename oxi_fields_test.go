@@ -2,6 +2,7 @@ package oxilib
 
 import (
 	"errors"
+	"github.com/oxipass/oxilib/consts"
 	"github.com/oxipass/oxilib/models"
 	"testing"
 )
@@ -22,7 +23,7 @@ func testHelperCreateField(itemId int64) (fieldId int64, err error) {
 			OxiField: models.OxiField{
 				Name:      cFieldName01,
 				Icon:      cFieldIcon01,
-				ValueType: VTText,
+				ValueType: consts.VTText,
 				Value:     cFieldValue01,
 			},
 		},
@@ -30,7 +31,7 @@ func testHelperCreateField(itemId int64) (fieldId int64, err error) {
 	if errField != nil {
 		return 0, errField
 	}
-	if fieldResult.Status != ConstSuccessResponse {
+	if fieldResult.Status != consts.CSuccessResponse {
 		return 0, errors.New("response is not successful: " + fieldResult.MsgTxt)
 	}
 	errLock := bsInstance.Lock()
@@ -117,7 +118,7 @@ func TestDeleteField(t *testing.T) {
 		return
 	}
 
-	if respDel.Status != ConstSuccessResponse {
+	if respDel.Status != consts.CSuccessResponse {
 		t.Error(errors.New("response is not successful: " + respDel.MsgTxt))
 		t.FailNow()
 		return

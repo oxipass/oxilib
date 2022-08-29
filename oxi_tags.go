@@ -1,6 +1,11 @@
 package oxilib
 
-import "github.com/oxipass/oxilib/models"
+import (
+	"github.com/oxipass/oxilib/assets"
+	"github.com/oxipass/oxilib/consts"
+	"github.com/oxipass/oxilib/internal/pkg/oxierr"
+	"github.com/oxipass/oxilib/models"
+)
 
 func (storage *StorageSingleton) AssignTag(updateTagForm models.UpdateTagForm) (response models.TagAssignedResponse, err error) {
 	err = storage.checkReadiness()
@@ -10,24 +15,24 @@ func (storage *StorageSingleton) AssignTag(updateTagForm models.UpdateTagForm) (
 
 	err = storage.dbObject.StartTX()
 	if err != nil {
-		return response, formError(BSERR00006DbInsertFailed, err.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error())
 	}
 
-	response.ItemTagId, err = storage.dbObject.dbAssignTag(updateTagForm.ID, updateTagForm.ItemID)
+	response.ItemTagId, err = storage.dbObject.DbAssignTag(updateTagForm.ID, updateTagForm.ItemID)
 	if err != nil {
 		errEndTX := storage.dbObject.RollbackTX()
 		if errEndTX != nil {
-			return response, formError(BSERR00006DbInsertFailed, err.Error(), errEndTX.Error())
+			return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error(), errEndTX.Error())
 		}
-		return response, formError(BSERR00006DbInsertFailed, err.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error())
 	}
 
 	err = storage.dbObject.CommitTX()
 	if err != nil {
-		return response, formError(BSERR00006DbInsertFailed, err.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error())
 	}
 
-	response.Status = ConstSuccessResponse
+	response.Status = consts.CSuccessResponse
 
 	return response, nil
 }
@@ -42,46 +47,46 @@ func (storage *StorageSingleton) AddNewTag(addTagParam models.UpdateTagForm) (re
 
 	err = storage.dbObject.StartTX()
 	if err != nil {
-		return response, formError(BSERR00006DbInsertFailed, err.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error())
 	}
 
 	encryptedTag, errEncT := storage.encObject.Encrypt(addTagParam.Name)
 	if errEncT != nil {
-		return response, formError(BSERR00006DbInsertFailed, errEncT.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, errEncT.Error())
 	}
 
 	encryptedColor, errEncC := storage.encObject.Encrypt(addTagParam.Color)
 	if errEncC != nil {
-		return response, formError(BSERR00006DbInsertFailed, errEncC.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, errEncC.Error())
 	}
 
 	encryptedExtId, errEncE := storage.encObject.Encrypt(addTagParam.ExtId)
 	if errEncE != nil {
-		return response, formError(BSERR00006DbInsertFailed, errEncE.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, errEncE.Error())
 	}
 
-	response.TagId, err = storage.dbObject.dbInsertTag(encryptedTag, encryptedColor, encryptedExtId)
+	response.TagId, err = storage.dbObject.DbInsertTag(encryptedTag, encryptedColor, encryptedExtId)
 	if err != nil {
 		errEndTX := storage.dbObject.RollbackTX()
 		if errEndTX != nil {
-			return response, formError(BSERR00006DbInsertFailed, err.Error(), errEndTX.Error())
+			return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error(), errEndTX.Error())
 		}
-		return response, formError(BSERR00006DbInsertFailed, err.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error())
 	}
 
 	err = storage.dbObject.CommitTX()
 	if err != nil {
-		return response, formError(BSERR00006DbInsertFailed, err.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error())
 	}
 
-	response.Status = ConstSuccessResponse
+	response.Status = consts.CSuccessResponse
 
 	return response, nil
 }
 
 // ReadFieldsByItemID - real all the fields by ItemId
 func (storage *StorageSingleton) ReadTagsByItemID(itemId int64) (tags []models.OxiTag, err error) {
-	fieldsEncrypted, err := storage.dbObject.dbSelectItemTags(itemId)
+	fieldsEncrypted, err := storage.dbObject.DbSelectItemTags(itemId)
 	if err != nil {
 		return tags, err
 	}
@@ -99,7 +104,7 @@ func (storage *StorageSingleton) ReadTagsByItemID(itemId int64) (tags []models.O
 
 // ReadFieldsByItemID - real all the fields by ItemId
 func (storage *StorageSingleton) GetTags() (tags []models.OxiTag, err error) {
-	fieldsEncrypted, err := storage.dbObject.dbSelectTags()
+	fieldsEncrypted, err := storage.dbObject.DbSelectTags()
 	if err != nil {
 		return tags, err
 	}
@@ -133,7 +138,7 @@ func (storage *StorageSingleton) DecryptTag(tag models.OxiTag) (decryptedTag mod
 }
 
 func (storage *StorageSingleton) AddDefaultTags() error {
-	tags, err := GetTagsTemplate()
+	tags, err := assets.GetTagsTemplate()
 	if err != nil {
 		return err
 	}

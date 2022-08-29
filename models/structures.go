@@ -16,14 +16,14 @@ type UpdateTagForm struct {
 	OxiTag
 }
 
-// InitStorageForm - initializing the database
+// InitStorageForm - initializing the db
 type InitStorageForm struct {
 	FileName   string `json:"filename"`
 	Password   string `json:"password"`
 	Encryption string `json:"encryption"`
 }
 
-// ReadAllForm parameters for reading from database
+// ReadAllForm parameters for reading from db
 type ReadAllForm struct {
 	ReadDeleted bool `json:"read_deleted"`
 }

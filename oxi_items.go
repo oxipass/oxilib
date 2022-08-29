@@ -1,14 +1,20 @@
 package oxilib
 
-import "github.com/oxipass/oxilib/models"
+import (
+	"github.com/oxipass/oxilib/assets"
+	"github.com/oxipass/oxilib/consts"
+	"github.com/oxipass/oxilib/internal/pkg/oxierr"
+	"github.com/oxipass/oxilib/internal/pkg/validators"
+	"github.com/oxipass/oxilib/models"
+)
 
 func (storage *StorageSingleton) checkReadiness() error {
 	if storage.encObject == nil || !storage.encObject.IsReady() {
-		return formError("Encryptor is not initialized", "checkReadiness")
+		return oxierr.FormError("Encryptor is not initialized", "checkReadiness")
 	}
 
 	if storage.dbObject == nil {
-		return formError("Database is not initialized", "checkReadiness")
+		return oxierr.FormError("Database is not initialized", "checkReadiness")
 	}
 
 	return nil
@@ -24,11 +30,11 @@ func (storage *StorageSingleton) DeleteItem(deleteItemParams models.UpdateItemFo
 		return response, err
 	}
 
-	err = storage.dbObject.dbDeleteItem(deleteItemParams.ID)
+	err = storage.dbObject.DbDeleteItem(deleteItemParams.ID)
 	if err != nil {
 		errEndTX := storage.dbObject.RollbackTX()
 		if errEndTX != nil {
-			return response, formError(BSERR00016DbDeleteFailed, err.Error(), errEndTX.Error())
+			return response, oxierr.FormError(oxierr.BSERR00016DbDeleteFailed, err.Error(), errEndTX.Error())
 		}
 		return response, err
 	}
@@ -38,7 +44,7 @@ func (storage *StorageSingleton) DeleteItem(deleteItemParams models.UpdateItemFo
 		return response, err
 	}
 
-	response.Status = ConstSuccessResponse
+	response.Status = consts.CSuccessResponse
 
 	return response, nil
 }
@@ -50,7 +56,7 @@ func (storage *StorageSingleton) UpdateItem(updateItemParams models.UpdateItemFo
 		return response, err
 	}
 
-	err = ValidateItemBeforeUpdate(updateItemParams)
+	err = validators.ValidateItemBeforeUpdate(updateItemParams)
 	if err != nil {
 		return response, err
 	}
@@ -74,22 +80,22 @@ func (storage *StorageSingleton) UpdateItem(updateItemParams models.UpdateItemFo
 	}
 
 	if updateItemParams.Name != "" {
-		err = storage.dbObject.dbUpdateItemName(updateItemParams.ID, encryptedItemName)
+		err = storage.dbObject.DbUpdateItemName(updateItemParams.ID, encryptedItemName)
 		if err != nil {
 			errEndTX := storage.dbObject.RollbackTX()
 			if errEndTX != nil {
-				return response, formError(BSERR00018DbItemNameUpdateFailed, err.Error(), errEndTX.Error())
+				return response, oxierr.FormError(oxierr.BSERR00018DbItemNameUpdateFailed, err.Error(), errEndTX.Error())
 			}
 			return response, err
 		}
 	}
 
 	if updateItemParams.Icon != "" {
-		err = storage.dbObject.dbUpdateItemIcon(updateItemParams.ID, encryptedIconName)
+		err = storage.dbObject.DbUpdateItemIcon(updateItemParams.ID, encryptedIconName)
 		if err != nil {
 			errEndTX := storage.dbObject.RollbackTX()
 			if errEndTX != nil {
-				return response, formError(BSERR00026DbItemIconUpdateFailed, err.Error(), errEndTX.Error())
+				return response, oxierr.FormError(oxierr.BSERR00026DbItemIconUpdateFailed, err.Error(), errEndTX.Error())
 			}
 			return response, err
 		}
@@ -100,7 +106,7 @@ func (storage *StorageSingleton) UpdateItem(updateItemParams models.UpdateItemFo
 		return response, err
 	}
 
-	response.Status = ConstSuccessResponse
+	response.Status = consts.CSuccessResponse
 
 	return response, nil
 }
@@ -113,8 +119,8 @@ func (storage *StorageSingleton) AddNewItem(addItemParams models.UpdateItemForm)
 		return response, err
 	}
 
-	if !CheckIfExistsInFontAwesome(addItemParams.Icon) {
-		return response, formError(BSERR00024FontAwesomeIconNotFound)
+	if !assets.CheckIfExistsInFontAwesome(addItemParams.Icon) {
+		return response, oxierr.FormError(oxierr.BSERR00024FontAwesomeIconNotFound)
 	}
 
 	encryptedItemName, err := storage.encObject.Encrypt(addItemParams.Name)
@@ -132,11 +138,11 @@ func (storage *StorageSingleton) AddNewItem(addItemParams models.UpdateItemForm)
 		return response, err
 	}
 
-	response.ItemID, err = storage.dbObject.dbInsertItem(encryptedItemName, encryptedIconName)
+	response.ItemID, err = storage.dbObject.DbInsertItem(encryptedItemName, encryptedIconName)
 	if err != nil {
 		errEndTX := storage.dbObject.RollbackTX()
 		if errEndTX != nil {
-			return response, formError(BSERR00006DbInsertFailed, err.Error(), errEndTX.Error())
+			return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error(), errEndTX.Error())
 		}
 		return response, err
 	}
@@ -146,19 +152,19 @@ func (storage *StorageSingleton) AddNewItem(addItemParams models.UpdateItemForm)
 		return response, err
 	}
 
-	response.Status = ConstSuccessResponse
+	response.Status = consts.CSuccessResponse
 
 	return response, nil
 }
 
-// ReadAllItems - read all not deleted items from the database and decrypt them
+// ReadAllItems - read all not deleted items from the db and decrypt them
 func (storage *StorageSingleton) ReadAllItems(readTags bool, readDeleted bool) (items []models.OxiItem, err error) {
 	err = storage.checkReadiness()
 	if err != nil {
 		return items, err
 	}
 
-	items, err = storage.dbObject.dbSelectAllItems(readDeleted)
+	items, err = storage.dbObject.DbSelectAllItems(readDeleted)
 	if err != nil {
 		return items, err
 	}
@@ -190,7 +196,7 @@ func (storage *StorageSingleton) ReadItemById(itemId int64, withDeleted bool) (i
 		return item, err
 	}
 
-	item, err = storage.dbObject.dbGetItemById(itemId, withDeleted)
+	item, err = storage.dbObject.DbGetItemById(itemId, withDeleted)
 	if err != nil {
 		return item, err
 	}

@@ -1,6 +1,11 @@
 package oxilib
 
-import "github.com/oxipass/oxilib/models"
+import (
+	"github.com/oxipass/oxilib/consts"
+	"github.com/oxipass/oxilib/internal/pkg/oxierr"
+	"github.com/oxipass/oxilib/internal/pkg/validators"
+	"github.com/oxipass/oxilib/models"
+)
 
 // DeleteField - delete existing field
 func (storage *StorageSingleton) DeleteField(deleteFieldForm models.UpdateFieldForm) (response models.CommonResponse, err error) {
@@ -13,11 +18,11 @@ func (storage *StorageSingleton) DeleteField(deleteFieldForm models.UpdateFieldF
 	if err != nil {
 		return response, err
 	}
-	err = storage.dbObject.dbDeleteField(deleteFieldForm.ID)
+	err = storage.dbObject.DbDeleteField(deleteFieldForm.ID)
 	if err != nil {
 		errEndTX := storage.dbObject.RollbackTX()
 		if errEndTX != nil {
-			return response, formError(BSERR00016DbDeleteFailed, err.Error(), errEndTX.Error())
+			return response, oxierr.FormError(oxierr.BSERR00016DbDeleteFailed, err.Error(), errEndTX.Error())
 		}
 		return response, err
 	}
@@ -27,11 +32,11 @@ func (storage *StorageSingleton) DeleteField(deleteFieldForm models.UpdateFieldF
 		return response, err
 	}
 
-	response.Status = ConstSuccessResponse
+	response.Status = consts.CSuccessResponse
 	return response, nil
 }
 
-// AddNewItem - adds new item
+// AddNewField - adds new field
 func (storage *StorageSingleton) AddNewField(addFieldForm models.UpdateFieldForm) (response models.FieldAddedResponse, err error) {
 	var field models.OxiField
 
@@ -39,29 +44,29 @@ func (storage *StorageSingleton) AddNewField(addFieldForm models.UpdateFieldForm
 	if err != nil {
 		return response, err
 	}
-	if err := ValidateField(addFieldForm.OxiField); err != nil {
-		return response, formError(BSERR00006DbInsertFailed, err.Error())
+	if err := validators.ValidateField(addFieldForm.OxiField); err != nil {
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error())
 
 	}
 
 	field.Name, err = storage.encObject.Encrypt(addFieldForm.Name)
 	if err != nil {
-		return response, formError(BSERR00006DbInsertFailed, err.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error())
 	}
 
 	field.Icon, err = storage.encObject.Encrypt(addFieldForm.Icon)
 	if err != nil {
-		return response, formError(BSERR00006DbInsertFailed, err.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error())
 	}
 
 	field.ValueType, err = storage.encObject.Encrypt(addFieldForm.ValueType)
 	if err != nil {
-		return response, formError(BSERR00006DbInsertFailed, err.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error())
 	}
 
 	field.Value, err = storage.encObject.Encrypt(addFieldForm.Value)
 	if err != nil {
-		return response, formError(BSERR00006DbInsertFailed, err.Error())
+		return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error())
 	}
 
 	err = storage.dbObject.StartTX()
@@ -69,11 +74,11 @@ func (storage *StorageSingleton) AddNewField(addFieldForm models.UpdateFieldForm
 		return response, err
 	}
 
-	fieldId, err := storage.dbObject.dbInsertField(addFieldForm.ItemID, field)
+	fieldId, err := storage.dbObject.DbInsertField(addFieldForm.ItemID, field)
 	if err != nil {
 		errEndTX := storage.dbObject.RollbackTX()
 		if errEndTX != nil {
-			return response, formError(BSERR00006DbInsertFailed, err.Error(), errEndTX.Error())
+			return response, oxierr.FormError(oxierr.BSERR00006DbInsertFailed, err.Error(), errEndTX.Error())
 		}
 		return response, err
 	}
@@ -83,7 +88,7 @@ func (storage *StorageSingleton) AddNewField(addFieldForm models.UpdateFieldForm
 		return response, err
 	}
 
-	response.Status = ConstSuccessResponse
+	response.Status = consts.CSuccessResponse
 	response.FieldID = fieldId
 
 	return response, nil
@@ -91,7 +96,7 @@ func (storage *StorageSingleton) AddNewField(addFieldForm models.UpdateFieldForm
 
 // ReadFieldsByItemID - real all the fields by ItemId
 func (storage *StorageSingleton) ReadFieldsByItemID(itemId int64) (fields []models.OxiField, err error) {
-	fieldsEncrypted, err := storage.dbObject.dbSelectAllItemFields(itemId)
+	fieldsEncrypted, err := storage.dbObject.DbSelectAllItemFields(itemId)
 	if err != nil {
 		return fields, err
 	}
@@ -107,9 +112,9 @@ func (storage *StorageSingleton) ReadFieldsByItemID(itemId int64) (fields []mode
 	return fields, nil
 }
 
-// AddNewItem - adds new item
+// ReadFieldsByFieldID - real all the fields by FieldId
 func (storage *StorageSingleton) ReadFieldsByFieldID(fieldId int64) (field models.OxiField, err error) {
-	fieldEncrypted, err := storage.dbObject.dbGetFieldById(fieldId)
+	fieldEncrypted, err := storage.dbObject.DbGetFieldById(fieldId)
 	if err != nil {
 		return field, err
 	}

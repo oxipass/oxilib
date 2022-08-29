@@ -3,6 +3,7 @@ package oxilib
 import (
 	"errors"
 	"fmt"
+	"github.com/oxipass/oxilib/internal/pkg/utils"
 	"log"
 	"os"
 	"testing"
@@ -54,7 +55,7 @@ func setup() error {
 	log.Println("oxilib instance successfully retrieved")
 
 	dbFile := getTestDbFileName()
-	log.Println("Full path to database file: " + dbFile)
+	log.Println("Full path to db file: " + dbFile)
 
 	if _, err := os.Stat(dbFile); err == nil {
 		err = os.Remove(dbFile)
@@ -69,8 +70,8 @@ func setup() error {
 	}
 	log.Println("oxilib is initiated successfully")
 
-	// Generating random password for the database
-	dbPass = generateRandomString(12)
+	// Generating random password for the db
+	dbPass = utils.GenerateRandomString(12)
 	log.Println("Generated DB password: " + dbPass)
 
 	errSetPassword := bsInstance.SetNewPassword(dbPass, "AES256V1")
@@ -126,7 +127,7 @@ func getTestDbFileName() string {
 		return globalDBFile
 	}
 
-	globalDBFile = generateTempFilename()
+	globalDBFile = utils.GenerateTempFilename()
 
 	return globalDBFile
 }

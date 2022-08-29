@@ -2,6 +2,7 @@ package oxilib
 
 import (
 	"errors"
+	"github.com/oxipass/oxilib/consts"
 	"github.com/oxipass/oxilib/models"
 	"testing"
 )
@@ -28,7 +29,7 @@ func testHelperCreateItemAndTag(testTag string, testColor string) (itemId int64,
 	if err != nil {
 		return 0, 0, err
 	}
-	if response.Status != ConstSuccessResponse {
+	if response.Status != consts.CSuccessResponse {
 		return 0, 0, errors.New("response is not successful")
 	}
 
@@ -45,7 +46,7 @@ func testHelperCreateItemAndTag(testTag string, testColor string) (itemId int64,
 		return 0, 0, err
 	}
 
-	if responseTag.Status != ConstSuccessResponse {
+	if responseTag.Status != consts.CSuccessResponse {
 		return 0, 0, errors.New("response is not successful for tag creation")
 	}
 
@@ -127,7 +128,7 @@ func TestAssignTagToItems(t *testing.T) {
 		return
 	}
 
-	if responseTA.Status != ConstSuccessResponse {
+	if responseTA.Status != consts.CSuccessResponse {
 		t.Error(errors.New("response is not successful for tag assignment"))
 		t.FailNow()
 		return
@@ -147,7 +148,7 @@ func TestAssignTagToItems(t *testing.T) {
 		return
 	}
 
-	if responseTA2.Status != ConstSuccessResponse {
+	if responseTA2.Status != consts.CSuccessResponse {
 		t.Error(errors.New("response is not successful for tag assignment"))
 		t.FailNow()
 		return

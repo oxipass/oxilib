@@ -2,13 +2,14 @@ package oxilib
 
 import (
 	"errors"
+	"github.com/oxipass/oxilib/consts"
 	"testing"
 )
 
 const cValueTypesCount = 16
 
 func TestValueTypes(t *testing.T) {
-	vTypes := GetValueTypes()
+	vTypes := consts.GetValueTypes()
 	if vTypes == nil {
 		t.Error(errors.New("value types are empty"))
 		t.FailNow()

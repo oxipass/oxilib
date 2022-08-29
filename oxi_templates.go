@@ -1,6 +1,9 @@
 package oxilib
 
-import "github.com/oxipass/oxilib/models"
+import (
+	"github.com/oxipass/oxilib/assets"
+	"github.com/oxipass/oxilib/models"
+)
 
 // TODO: Get items templates
 // TODO: Store the item as template
@@ -17,13 +20,13 @@ func (storage *StorageSingleton) SaveItemTemplateAsItem(item models.OxiItemTempl
 }
 
 func (storage *StorageSingleton) AddItemTemplate(itemTemplate models.ItemTemplateJSON) error {
-	err := storage.dbObject.dbInsertItemTemplate(itemTemplate.ID,
+	err := storage.dbObject.DbInsertItemTemplate(itemTemplate.ID,
 		storage.T(itemTemplate.ID),
 		itemTemplate.Icon)
 	if err != nil {
 		return err
 	}
-	ft, errF := GetFieldsTemplate()
+	ft, errF := assets.GetFieldsTemplate()
 	if errF != nil {
 		return errF
 	}
@@ -41,7 +44,7 @@ func (storage *StorageSingleton) AddItemTemplate(itemTemplate models.ItemTemplat
 			}
 		}
 		if foundTemplate {
-			errField := storage.dbObject.dbInsertFieldTemplate(itemTemplate.ID, fieldId, oxiField)
+			errField := storage.dbObject.DbInsertFieldTemplate(itemTemplate.ID, fieldId, oxiField)
 			if errField != nil {
 				return errField
 			}
@@ -51,7 +54,7 @@ func (storage *StorageSingleton) AddItemTemplate(itemTemplate models.ItemTemplat
 }
 
 func (storage *StorageSingleton) AddDefaultItemsTemplates() error {
-	items, err := GetItemsTemplate()
+	items, err := assets.GetItemsTemplate()
 	if err != nil {
 		return err
 	}
