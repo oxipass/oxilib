@@ -2,7 +2,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/oxipass/oxilib)](https://goreportcard.com/report/github.com/oxipass/oxilib)
 [![codecov](https://codecov.io/gh/bykovme/bslib/branch/master/graph/badge.svg)](https://codecov.io/gh/bykovme/bslib)
 
-## Oxi Lib
+## Oxi Lib, made with love and Go ʕ◔ϖ◔ʔ
 
 Oxi Lib is a library to work with encrypted personal data stored as SQLite file keeping 
 items/fields safe and secure. This library is a part of the [OxiPass](https://oxipass.io) project 

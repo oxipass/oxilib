@@ -110,6 +110,10 @@ func (storage *StorageSingleton) FillEmptyStorage() error {
 	if errTags != nil {
 		return errTags
 	}
+	errTemplates := storage.AddDefaultItemsTemplates()
+	if errTemplates != nil {
+		return errTemplates
+	}
 	return nil
 }
 

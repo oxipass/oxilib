@@ -81,7 +81,7 @@ const sqlCreateTableTemplateFields = `
 		created  			DATETIME NOT NULL,
    		updated    			DATETIME NOT NULL,
 		deleted				BOOLEAN NOT NULL CHECK (deleted IN (0,1)) default '0',
-		FOREIGN KEY (item_id) REFERENCES templates_items(item_id)
+		FOREIGN KEY (item_id) REFERENCES template_items(item_id)
 	)
 `
 

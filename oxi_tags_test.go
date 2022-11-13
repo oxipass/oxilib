@@ -2,6 +2,7 @@ package oxilib
 
 import (
 	"errors"
+	"github.com/oxipass/oxilib/assets"
 	"github.com/oxipass/oxilib/consts"
 	"github.com/oxipass/oxilib/models"
 	"testing"
@@ -10,7 +11,7 @@ import (
 const cTestTag1 = "test_tag1"
 const cTestTagColor1 = "#ffff00"
 const cTestTag2 = "test_tag2"
-const cTesttagColor2 = "#ff0000"
+const cTestTagColor2 = "#ff0000"
 
 func testHelperCreateItemAndTag(testTag string, testColor string) (itemId int64, tagId int64, err error) {
 	bsInstance := GetInstance()
@@ -98,7 +99,7 @@ func TestCreateItemAndTag(t *testing.T) {
 
 func TestAssignTagToItems(t *testing.T) {
 	itemId1, tagId1, err := testHelperCreateItemAndTag(cTestTag1, cTestTagColor1)
-	_, tagId2, err := testHelperCreateItemAndTag(cTestTag2, cTesttagColor2)
+	_, tagId2, err := testHelperCreateItemAndTag(cTestTag2, cTestTagColor2)
 
 	if err != nil {
 		t.Error(err)
@@ -165,7 +166,7 @@ func TestAssignTagToItems(t *testing.T) {
 		if tag.ID == tagId1 && tag.Name == cTestTag1 && tag.Color == cTestTagColor1 && tag.Deleted == false {
 			foundTags++
 		}
-		if tag.ID == tagId2 && tag.Name == cTestTag2 && tag.Color == cTesttagColor2 && tag.Deleted == false {
+		if tag.ID == tagId2 && tag.Name == cTestTag2 && tag.Color == cTestTagColor2 && tag.Deleted == false {
 			foundTags++
 		}
 	}
@@ -173,5 +174,31 @@ func TestAssignTagToItems(t *testing.T) {
 		t.Error("something went wrong, assigned tags were not found")
 		t.FailNow()
 		return
+	}
+}
+
+func TestDefaultTagsAvailable(t *testing.T) {
+	storage := GetInstance()
+	tags, err := storage.GetTags()
+	if err != nil {
+		t.Error(err)
+	}
+	tagsTemplate, errTempl := assets.GetTagsTemplate()
+	if errTempl != nil {
+		t.Error(errTempl)
+	}
+
+	for _, tagTemplate := range tagsTemplate.Tags {
+		found := false
+		for _, tag := range tags {
+			if tag.ExtId == tagTemplate.ID {
+				found = true
+				break
+			}
+		}
+		if !found {
+			t.Error("tag " + tagTemplate.ID + " is not found as default tag in tags")
+		}
+
 	}
 }
