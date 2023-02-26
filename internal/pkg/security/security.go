@@ -7,16 +7,21 @@ import (
 
 func (enc OxiEncryptor) GetCypherNames() []string {
 	var lCyphers []string
-	for _, cypher := range oxicrypt.Ciphers {
-		lCyphers = append(lCyphers, cypher.GetCipherName())
+	for _, cypher := range oxicrypt.GetCiphers() {
+		lCyphers = append(lCyphers, cypher.Description)
 	}
 	return lCyphers
 }
 
 func (enc *OxiEncryptor) Init(cryptID string) error {
-	for _, cypher := range oxicrypt.Ciphers {
-		if cypher.GetCryptID() == cryptID {
-			enc.Cipher = cypher
+	for _, cipher := range oxicrypt.GetCiphers() {
+		if cipher.ID == cryptID {
+			var initError error
+			enc.Cipher, initError = oxicrypt.GetOxiCipher(cipher.ID)
+			if initError != nil {
+				return oxierr.FormError(oxierr.BSERR00004EncCypherNotExist,
+					"OxiEncryptor.Init", "CryptID: "+cryptID+", oxicrypt: "+initError.Error())
+			}
 			enc.CryptID = cryptID
 			enc.Cipher.CleanAndInit()
 			return nil
@@ -26,9 +31,9 @@ func (enc *OxiEncryptor) Init(cryptID string) error {
 }
 
 func (enc OxiEncryptor) GetCryptIDbyName(cypherName string) (string, error) {
-	for _, cypher := range oxicrypt.Ciphers {
-		if cypher.GetCipherName() == cypherName {
-			return cypher.GetCryptID(), nil
+	for _, cypher := range oxicrypt.GetCiphers() {
+		if cypher.Description == cypherName {
+			return cypher.ID, nil
 		}
 	}
 	return "", oxierr.FormError(oxierr.BSERR00004EncCypherNotExist, "OxiEncryptor.getCryptIDbyName", "cypherName: "+cypherName)
