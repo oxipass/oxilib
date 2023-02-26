@@ -5,7 +5,7 @@ import (
 	"github.com/oxipass/oxilib/internal/pkg/oxierr"
 )
 
-func (enc OxiEncryptor) GetCypherNames() []string {
+func (enc *OxiEncryptor) GetCypherNames() []string {
 	var lCyphers []string
 	for _, cypher := range oxicrypt.GetCiphers() {
 		lCyphers = append(lCyphers, cypher.Description)
@@ -30,9 +30,9 @@ func (enc *OxiEncryptor) Init(cryptID string) error {
 	return oxierr.FormError(oxierr.BSERR00004EncCypherNotExist, "OxiEncryptor.Init", "CryptID: "+cryptID)
 }
 
-func (enc OxiEncryptor) GetCryptIDbyName(cypherName string) (string, error) {
+func (enc *OxiEncryptor) GetCryptIDbyName(cypherName string) (string, error) {
 	for _, cypher := range oxicrypt.GetCiphers() {
-		if cypher.Description == cypherName {
+		if cypher.Description == cypherName || cypher.ID == cypherName {
 			return cypher.ID, nil
 		}
 	}
