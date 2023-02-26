@@ -31,4 +31,7 @@ assets/fa/.DS_Store
 
 .vscode/
 .idea/
+oxilib.test
+profile*.png
+mem.prof
 

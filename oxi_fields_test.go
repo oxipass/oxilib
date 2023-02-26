@@ -53,6 +53,17 @@ func testHelperCreateItemAndField() (itemId int64, fieldId int64, err error) {
 	return itemId, fieldId, nil
 }
 
+func BenchmarkAddField(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_, _, err := testHelperCreateItemAndField()
+		if err != nil {
+			b.Error(err)
+			b.FailNow()
+			return
+		}
+	}
+}
+
 func TestAddField(t *testing.T) {
 	itemId, fieldId, err := testHelperCreateItemAndField()
 	if err != nil {
