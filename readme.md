@@ -31,10 +31,10 @@ and add the tag 'local' when you run the tests for the package
 go test -tags local
 ```
 
-Check other related packages:    
-[Encryption library 'OxiCrypt'](https://github.com/oxipass/oxicrypt)  
+Check other related packages and links:
+[OxiPass Homepage](https://oxipass.io)
+[Encryption library 'OxiCrypt'](https://github.com/oxipass/oxicrypt)
 [Mobile/Desktop App 'OxiPass'](https://github.com/oxipass/oxipass)   
-[OxiPass Homepage](https://oxipass.io)   
 
-**[Alex Bykov](https://profile.codersrank.io/user/bykovme) © 2015 - 2022**
+**[Alex Bykov](https://profile.codersrank.io/user/bykovme) © 2015 - 2023**
 
