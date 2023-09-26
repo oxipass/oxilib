@@ -80,3 +80,6 @@ const BSERR00027ItemValidationError = "BSERR00027_ITEM_VALIDATION_FAILED"
 
 // BSERR00028DbSelectFailed - failed to select item
 const BSERR00028DbSelectFailed = "BSERR00028_DB_SELECT_FAILED"
+
+// BSERR00029PassIsEmpty - password is empty
+const BSERR00029PassIsEmpty = "BSERR00029_PASS_EMPTY"
