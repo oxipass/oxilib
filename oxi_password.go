@@ -25,6 +25,9 @@ func (storage *StorageSingleton) Unlock(password string) error {
 	if !storage.IsActive() {
 		return oxierr.FormError(oxierr.BSERR00009DbNotOpen, "Unlock", "IsActive", strconv.FormatBool(storage.IsActive()))
 	}
+	if password == "" {
+		return oxierr.FormError(oxierr.BSERR00029PassIsEmpty)
+	}
 	if storage.encObject == nil {
 		storage.encObject = new(security.OxiEncryptor)
 	}
