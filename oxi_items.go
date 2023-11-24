@@ -157,6 +157,7 @@ func (storage *StorageSingleton) AddNewItem(addItemParams models.UpdateItemForm)
 	return response, nil
 }
 
+// ReadAllItems TODO: Sort items before returning them
 // ReadAllItems - read all not deleted items from the db and decrypt them
 func (storage *StorageSingleton) ReadAllItems(readTags bool, readDeleted bool) (items []models.OxiItem, err error) {
 	err = storage.checkReadiness()

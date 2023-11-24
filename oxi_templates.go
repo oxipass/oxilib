@@ -43,8 +43,33 @@ func (storage *StorageSingleton) SaveItemAsTemplate(item models.OxiItem) (err er
 	return nil
 }
 
-func (storage *StorageSingleton) SaveItemTemplateAsItem(item models.OxiItemTemplate) (err error) {
+func CopyFieldTemplate(fTemplate models.OxiFieldTemplate) (oxiField models.OxiField) {
+	oxiField.Icon = fTemplate.Icon
+	oxiField.ValueType = fTemplate.ValueType
+	oxiField.Name = fTemplate.Name
+	return oxiField
+}
 
+func (storage *StorageSingleton) SaveItemTemplateAsItem(item models.OxiItemTemplate) (err error) {
+	err = storage.dbObject.StartTX()
+	if err != nil {
+		return err
+	}
+	itemId, errInsert := storage.dbObject.DbInsertItem(item.Name, item.Icon)
+	if errInsert != nil {
+		return err
+	}
+
+	for _, oxiFieldTemplate := range item.Fields {
+		_, errField := storage.dbObject.DbInsertField(itemId, CopyFieldTemplate(oxiFieldTemplate))
+		if errField != nil {
+			return errField
+		}
+	}
+	err = storage.dbObject.CommitTX()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

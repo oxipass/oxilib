@@ -1,5 +1,5 @@
 {
-  "updated": "2022-07-16T15:00:00.000Z",
+  "updated": "2023-11-24T15:00:00.000Z",
   "tags": [
     {
       "id": "tag_internet",
@@ -12,6 +12,26 @@
     {
       "id": "tag_crypto",
       "color": "#7c0000"
+    },
+    {
+      "id": "tag_shopping",
+      "color": "#007c00"
+    },
+    {
+      "id": "tag_documents",
+      "color": "#ffffff"
+    },
+    {
+      "id": "tag_phones",
+      "color": "#00ff00"
+    },
+    {
+      "id": "tag_computers",
+      "color": "#0000ff"
+    },
+    {
+      "id": "tag_messengers",
+      "color": "#aa0000"
     }
   ]
 }

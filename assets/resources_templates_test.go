@@ -34,6 +34,25 @@ func TestTagsTemplates(t *testing.T) {
 	}
 }
 
+func TestTagsDuplicates(t *testing.T) {
+	tagsTemplate, err := GetTagsTemplate()
+	if err != nil {
+		t.Error(err)
+	}
+	for _, tag := range tagsTemplate.Tags {
+		tagId2check := tag.ID
+		duplicates := 0
+		for _, tag2 := range tagsTemplate.Tags {
+			if tagId2check == tag2.ID {
+				duplicates++
+			}
+		}
+		if duplicates > 1 {
+			t.Error("tag duplicate found for tag id: " + tagId2check)
+		}
+	}
+}
+
 func TestTagsTemplatesTranslations(tst *testing.T) {
 	tagsTemplate, err := GetTagsTemplate()
 	if err != nil {
